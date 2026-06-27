@@ -14,7 +14,8 @@ import { registerPlugins } from '@/plugins'
 import App from './App.vue'
 
 // Styles
-import './tailwind.css';
+import '@mdi/font/css/materialdesignicons.css'
+import './tailwind.css'
 import 'unfonts.css'
 
 const app = createApp(App)
