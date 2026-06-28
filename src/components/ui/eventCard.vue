@@ -11,20 +11,20 @@
         <div class="p-4 flex flex-col gap-3">
             <h2 class="font-semibold text-base text-gray-900">{{ title }}</h2>
 
-
             <div class="flex items-center gap-2 text-sm text-gray-500">
                 <span class="mdi mdi-calendar-blank-outline text-xl"></span>
                 <span>{{ startDate }} - {{ endDate }}</span>
             </div>
-
 
             <div class="flex items-center gap-4 text-sm text-gray-500">
                 <div class="flex items-center gap-1">
                     <span class="mdi mdi-account-outline text-xl"></span>
                     <span>{{ teams }} equipes</span>
                 </div>
+
                 <div class="flex items-center gap-1">
                     <span class="mdi mdi-tag-outline text-xl "></span>
+
                     <span>{{ location }}</span>
                 </div>
             </div>
@@ -43,7 +43,7 @@
 <script setup lang="ts">
   import StatusBadge from "@/components/ui/statusSelect.vue";
 
-  type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado';
+  type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
 
   defineProps<{
     title: string
@@ -55,5 +55,5 @@
     teams: number
     location: string
     tags: string[]
-  }>();
+  }>()
 </script>
