@@ -9,7 +9,7 @@
         </div>
 
         <div class="p-4 flex flex-col gap-3">
-            <h2 class="font-semibold text-base text-gray-900">{{ title }}</h2>
+            <h2 class="font-semibold text-base text-gray-900">{{ title }} · {{ location }}</h2>
 
             <div class="flex items-center gap-2 text-sm text-gray-500">
                 <span class="mdi mdi-calendar-blank-outline text-xl"></span>

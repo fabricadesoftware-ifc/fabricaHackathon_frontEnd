@@ -17,7 +17,7 @@
 
     const variants: Record<Status, string> = {
       ativo: 'bg-green-500',
-      finalizado: 'bg-neutral-900',
+      finalizado: 'bg-neutral-700',
     }
 
     return `${base} ${variants[props.status]}`
