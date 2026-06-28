@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import EventCard from './components/ui/eventCard.vue';
+  import EventCard from './components/ui/eventCard.vue';
+  import StatusProject from './components/ui/statusProject.vue';
+
 </script>
 
 <template>
@@ -17,6 +19,13 @@ import EventCard from './components/ui/eventCard.vue';
             title="HackIFC // 2026 · Fabrica"
         />
     </div>
+  </div>
+
+  <div>
+    <StatusProject
+      label="Ativo"
+      status="ativo"
+    />
   </div>
 </template>
 
