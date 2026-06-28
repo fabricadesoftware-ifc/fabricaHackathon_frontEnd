@@ -19,7 +19,7 @@
       inscricoes: 'bg-green-500',
       avaliacao: 'bg-purple-500',
       andamento: 'bg-blue-500',
-      finalizado: 'bg-neutral-900',
+      finalizado: 'bg-neutral-700',
     }
 
     return `${base} ${variants[props.status]}`

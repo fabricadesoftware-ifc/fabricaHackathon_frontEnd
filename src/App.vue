@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import EventCard from './components/ui/eventCard.vue';
   import StatusProject from './components/ui/statusProject.vue';
+  import ProjectCard from './components/ui/projectCard.vue';
 
 </script>
 
@@ -16,7 +17,7 @@
             statusLabel="Inscrições"
             :tags="['Criatividade', 'Performance', 'Inovação']"
             :teams="8"
-            title="HackIFC // 2026 · Fabrica"
+            title="HackIFC // 2026"
         />
     </div>
   </div>
@@ -25,6 +26,18 @@
     <StatusProject
       label="Ativo"
       status="ativo"
+    />
+  </div>
+
+  <div>
+    <ProjectCard
+        logo="/images/logo.png"
+        status="ativo"
+        statusLabel="Ativo"
+        description="O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas"
+        title="Alugaê"
+        team="Os melhores"
+        event="HackIFC // 2026 · Fabrica"
     />
   </div>
 </template>
