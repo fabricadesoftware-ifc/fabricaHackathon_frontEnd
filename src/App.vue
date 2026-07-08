@@ -5,7 +5,7 @@
 <template>
 
   <div>
-    <ProgressStepper :steps="['Inscrições', 'Andamento', 'Avaliação', 'Finalizado']" :currentStep="4">
+    <ProgressStepper :steps="['Inscrições', 'Andamento', 'Avaliação', 'Finalizado']" :currentStep="2">
     </ProgressStepper>
   </div>
   
