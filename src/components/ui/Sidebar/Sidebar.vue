@@ -1,10 +1,28 @@
 <template>
-  <aside class="flex h-screen w-60 flex-col border-r border-gray-200 bg-white">
-    <div class="flex h-16 shrink-0 items-center px-4">
-      <span class="whitespace-nowrap font-semibold text-gray-900">
+  <aside
+    :class="[
+      'relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300',
+      rail ? 'w-[72px]' : 'w-60',
+    ]"
+  >
+    <div class="flex h-16 shrink-0 items-center overflow-hidden px-4">
+      <span v-if="!rail" class="whitespace-nowrap font-semibold text-gray-900">
         HackIFC <span class="text-blue-600">// 24H</span>
       </span>
+
+      <span v-else class="whitespace-nowrap text-sm font-semibold text-blue-600">
+        // 24H
+      </span>
     </div>
+
+    <button
+      :aria-label="rail ? 'Expandir menu' : 'Recolher menu'"
+      class="absolute -right-3 top-5 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-100"
+      type="button"
+      @click="rail = !rail"
+    >
+      <span :class="['mdi text-base', rail ? 'mdi-chevron-right' : 'mdi-chevron-left']" />
+    </button>
 
     <nav class="mt-2 flex flex-col gap-1 px-3">
       <RouterLink
@@ -15,7 +33,7 @@
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span class="whitespace-nowrap">{{ item.label }}</span>
+        <span v-if="!rail" class="whitespace-nowrap">{{ item.label }}</span>
       </RouterLink>
     </nav>
 
@@ -30,14 +48,14 @@
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span class="whitespace-nowrap">{{ item.label }}</span>
+        <span v-if="!rail" class="whitespace-nowrap">{{ item.label }}</span>
       </RouterLink>
     </nav>
   </aside>
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, ref } from 'vue'
 
   export interface SidebarItem {
     id: string
@@ -69,6 +87,8 @@
     'update:activeItem': [id: string]
   }>()
 
+  const rail = ref(false)
+
   const publicItems = computed(() => props.items.filter(item => !item.requiresAuth))
   const privateItems = computed(() =>
     props.items.filter(item => item.requiresAuth && props.isLoggedIn),
@@ -77,6 +97,7 @@
   function itemClasses (id: string) {
     return [
       'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+      rail.value && 'justify-center px-0',
       props.activeItem === id
         ? 'bg-blue-600 text-white'
         : 'text-gray-600 hover:bg-gray-100',
