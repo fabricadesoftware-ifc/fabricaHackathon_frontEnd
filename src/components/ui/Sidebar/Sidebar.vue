@@ -8,14 +8,9 @@
 
     <nav class="mt-2 flex flex-col gap-1 px-3">
       <RouterLink
-        v-for="item in items"
+        v-for="item in publicItems"
         :key="item.id"
-        :class="[
-          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-          activeItem === item.id
-            ? 'bg-blue-600 text-white'
-            : 'text-gray-600 hover:bg-gray-100',
-        ]"
+        :class="itemClasses(item.id)"
         :to="item.route"
         @click="emit('update:activeItem', item.id)"
       >
@@ -25,10 +20,25 @@
     </nav>
 
     <div class="mx-3 my-3 border-t border-gray-200" />
+
+    <nav v-if="privateItems.length > 0" class="flex flex-col gap-1 px-3">
+      <RouterLink
+        v-for="item in privateItems"
+        :key="item.id"
+        :class="itemClasses(item.id)"
+        :to="item.route"
+        @click="emit('update:activeItem', item.id)"
+      >
+        <span :class="['mdi text-lg', item.icon]" />
+        <span class="whitespace-nowrap">{{ item.label }}</span>
+      </RouterLink>
+    </nav>
   </aside>
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue'
+
   export interface SidebarItem {
     id: string
     label: string
@@ -43,7 +53,7 @@
     isLoggedIn?: boolean
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     isLoggedIn: false,
     items: () => [
       { id: 'home', label: 'Home', icon: 'mdi-home', route: '/' },
@@ -58,4 +68,18 @@
   const emit = defineEmits<{
     'update:activeItem': [id: string]
   }>()
+
+  const publicItems = computed(() => props.items.filter(item => !item.requiresAuth))
+  const privateItems = computed(() =>
+    props.items.filter(item => item.requiresAuth && props.isLoggedIn),
+  )
+
+  function itemClasses (id: string) {
+    return [
+      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+      props.activeItem === id
+        ? 'bg-blue-600 text-white'
+        : 'text-gray-600 hover:bg-gray-100',
+    ]
+  }
 </script>
