@@ -56,7 +56,7 @@
   }>()
 
   const model = computed({
-    get: () => props.modelValue,
-    set: (value: string | null) => emit('update:modelValue', value ?? null),
+    get: () => props.modelValue ?? undefined,
+    set: (value: string | null | undefined) => emit('update:modelValue', value ?? null),
   })
 </script>
