@@ -1,5 +1,5 @@
 <template>
-  <Select.Root>
+  <Select.Root v-model="model">
     <Select.Activator>
       <Select.Value v-slot="{ selectedValue }">
         {{ options.find((option) => option.value === selectedValue)?.label }}
@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
   import { Select } from '@vuetify/v0'
+  import { computed } from 'vue'
 
   export interface SelectOption {
     label: string
@@ -41,11 +42,16 @@
     placeholder?: string
   }
 
-  withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Ano',
   })
 
-  defineEmits<{
+  const emit = defineEmits<{
     'update:modelValue': [value: string | null]
   }>()
+
+  const model = computed<string | undefined>({
+    get: () => props.modelValue ?? undefined,
+    set: (value: string | undefined) => emit('update:modelValue', value ?? null),
+  })
 </script>
