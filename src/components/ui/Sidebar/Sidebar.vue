@@ -6,17 +6,25 @@
       </span>
     </div>
 
-    <nav class="flex flex-col gap-1 px-3">
+    <nav class="mt-2 flex flex-col gap-1 px-3">
       <RouterLink
         v-for="item in items"
         :key="item.id"
-        class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600"
+        :class="[
+          'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+          activeItem === item.id
+            ? 'bg-blue-600 text-white'
+            : 'text-gray-600 hover:bg-gray-100',
+        ]"
         :to="item.route"
+        @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
         <span class="whitespace-nowrap">{{ item.label }}</span>
       </RouterLink>
     </nav>
+
+    <div class="mx-3 my-3 border-t border-gray-200" />
   </aside>
 </template>
 
@@ -46,4 +54,8 @@
       { id: 'config', label: 'Configurações', icon: 'mdi-cog', route: '/configuracoes', requiresAuth: true },
     ],
   })
+
+  const emit = defineEmits<{
+    'update:activeItem': [id: string]
+  }>()
 </script>
