@@ -1,12 +1,17 @@
 <template>
   <v-select
     v-model="model"
+    clearable
+    hide-selected
     item-title="label"
     item-value="value"
     :items="props.options"
     persistent-placeholder
     :placeholder="props.placeholder"
-  />
+  >
+    <template #selection>
+    </template>
+  </v-select>
 </template>
 <script setup lang="ts">
   import { computed } from 'vue'
