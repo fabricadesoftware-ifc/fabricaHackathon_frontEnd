@@ -56,7 +56,7 @@ function onClear() {
     @update:model-value="onInput"
     #default="{ isDirty }"
   >
-    <div class="flex items-center bg-gray-100 rounded-2xl px-4 py-2 max-w-[50vw] mt-2">
+    <div class="flex items-center bg-gray-100 rounded-2xl px-4 py-2 max-w-[25vw] mt-2">
       <span class="mdi mdi-magnify text-gray-400 text-xl mr-2"></span>
       <Input.Control
         :placeholder="placeholder"
@@ -72,3 +72,12 @@ function onClear() {
     </div>
   </Input.Root>
 </template>
+<style scoped>
+input:focus,
+input:focus-visible,
+input:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+</style>
