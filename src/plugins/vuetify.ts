@@ -1,6 +1,17 @@
-import { createThemePlugin } from '@vuetify/v0'
+// src/plugins/vuetify.ts
 
-export default createThemePlugin({
+import { createThemePlugin } from '@vuetify/v0'
+import { createVuetify } from 'vuetify'
+
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
+export const vuetify = createVuetify({
+  components,
+  directives,
+})
+
+export const themePlugin = createThemePlugin({
   default: 'dark',
   target: 'html',
   themes: {
