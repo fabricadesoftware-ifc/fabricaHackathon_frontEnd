@@ -1,12 +1,15 @@
 <script lang="ts" setup>
-  import EventCard from './components/ui/eventCard.vue';
-  import StatusProject from './components/ui/statusProject.vue';
-  import ProjectCard from './components/ui/projectCard.vue';
-
+  import { ref } from 'vue'
+  import logo from '@/assets/logo.png'
+  import AppHeader from './components/layout/AppHeader/index.ts'
+  import EventCard from './components/ui/eventCard.vue'
+  import ProjectCard from './components/ui/projectCard.vue'
+  import StatusProject from './components/ui/statusProject.vue'
+  const model = ref('')
 </script>
 
 <template>
-  <div>
+  <div class="hidden">
     <div>
         <EventCard
             endDate="2 novembro"
@@ -22,14 +25,14 @@
     </div>
   </div>
 
-  <div>
+  <div class="hidden">
     <StatusProject
       label="Ativo"
       status="ativo"
     />
   </div>
 
-  <div>
+  <div class="hidden">
     <ProjectCard
         logo="/images/logo.png"
         status="ativo"
@@ -38,6 +41,18 @@
         title="Alugaê"
         team="Os melhores"
         event="HackIFC // 2026 · Fabrica"
+    />
+  </div>
+
+  <div>
+    <AppHeader
+      :debounce-ms="100"
+      :is-logged="true"
+      :model-value="model"
+      :notification-count="5"
+      placeholder="Pesquisar hackathons ou projetos..."
+      :user-avatar="logo"
+      user-name="Renan"
     />
   </div>
 </template>
