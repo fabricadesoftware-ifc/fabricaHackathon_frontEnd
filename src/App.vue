@@ -7,7 +7,7 @@ import AppButton from './components/ui/AppButton/index.ts';
 import HeaderActions from './components/ui/HeaderActions/index.ts';
 import SearchBar from './components/ui/SearchBar'
 import { Sidebar } from './components/ui/Sidebar'
-
+import PageHeader from './components/ui/PageHeader/PageHeader.vue';
 const activeItem = ref('home')
 const isLoggedIn = ref(true)
 
@@ -15,7 +15,11 @@ const isLoggedIn = ref(true)
 <template>
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
-    <main class="flex-1">
+    <main class="flex-1 ms-8 me">
+      <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
+      <PageHeader title="Explore Hackathon" subtitle="Descubra edições passadas e em andamento"></PageHeader>
+      <SearchBar placeholder="Pesquisar hackathons..." modelValue=""></SearchBar>
+
       <div>
         <div>
           <EventCard end-date="2 novembro" image="/images/hackifc.png" location="Fabrica" start-date="1 de Novembro"
@@ -38,7 +42,6 @@ const isLoggedIn = ref(true)
         <AppButton variant="primary" label="Criar conta" @click="() => console.log('criar conta clicado')" />
       </div>
       <HeaderActions />
-      <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
     </main>
     </div>
 </template>
