@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-row justify-between">
-        <p class="text-gray-500 text-sm">{{ total }} hackathons encontrado(s)</p>
-        <p class="text-gray-500 text-sm">mostrando {{ start }}-{{ end }} de {{ total }}</p>
+        <p class="text-gray-500 text-xs md:text-sm">{{ total }} hackathons encontrado(s)</p>
+        <p class="text-gray-500 text-xs md:text-sm">mostrando {{ start }}-{{ end }} de {{ total }}</p>
     </div>
 </template>
 
