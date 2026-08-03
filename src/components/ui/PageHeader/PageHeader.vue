@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col gap-1 my-4">
-        <p class="text-gray-900 md:text-2xl">{{ title }}</p>
+        <h1 class="text-gray-900 md:text-2xl">{{ title }}</h1>
         <p class="text-gray-600 md:text-base">{{ subtitle }}</p>
     </div>
 </template>
