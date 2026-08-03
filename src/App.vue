@@ -7,6 +7,7 @@ import AppButton from './components/ui/AppButton/index.ts';
 import HeaderActions from './components/ui/HeaderActions/index.ts';
 import SearchBar from './components/ui/SearchBar'
 import { Sidebar } from './components/ui/Sidebar'
+import ResultsBar from './components/ui/ResultsBar/ResultsBar.vue';
 
 const activeItem = ref('home')
 const isLoggedIn = ref(true)
@@ -15,7 +16,7 @@ const isLoggedIn = ref(true)
 <template>
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
-    <main class="flex-1">
+    <main class="flex-1 flex-row">
       <div>
         <div>
           <EventCard end-date="2 novembro" image="/images/hackifc.png" location="Fabrica" start-date="1 de Novembro"
@@ -39,7 +40,8 @@ const isLoggedIn = ref(true)
       </div>
       <HeaderActions />
       <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
+      <ResultsBar total="66" start="1" end="12"></ResultsBar>
     </main>
-    </div>
+  </div>
 </template>
 <style></style>
