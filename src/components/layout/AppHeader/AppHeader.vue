@@ -1,27 +1,31 @@
 <template>
-  <header class="flex bg-white min-w-max justify-between items-center py-6.75 pr-9 pl-[80px]">
+  <header class="flex w-full bg-white min-w-max justify-between items-center py-6.75 pr-5 xl:pr-9 pl-5 xl:pl-20">
 
     <searchBar
       class="flex-1 justify-start"
       :debounce-ms="props.debounceMs"
       :model-value="props.modelValue"
       :placeholder="props.placeholder"
+      @search="emit('search', $event)"
+      @update:model-value="emit('update:modelValue', $event)"
     />
 
     <HeaderActions
       v-if="props.isLogged"
-      class="flex-1 flex items-center gap-6 justify-end"
+      class="flex-1"
       :notification-count="props.notificationCount"
       :user-avatar="props.userAvatar"
       :user-name="props.userName"
+      @menu-option-click="emit('menu-option-click', $event)"
+      @notification-click="emit('notification-click')"
     />
 
     <div
       v-else
-      class="flex-1 flex items-center gap-6 justify-end"
+      class="flex-1 flex items-center gap-2 xl:gap-6 justify-center xl:justify-end"
     >
-      <AppButton class="text-[30px]" label="Entrar" variant="text" />
-      <AppButton class="text-[30px]" label="Criar conta" variant="primary" />
+      <AppButton label="Entrar" variant="text" />
+      <AppButton label="Criar conta" variant="primary" />
     </div>
 
   </header>
@@ -29,7 +33,7 @@
 
 <script setup lang="ts">
   import AppButton from '@/components/ui/AppButton'
-  import HeaderActions from '@/components/ui/HeaderActions'
+  import HeaderActions from '@/components/ui/HeaderActions/HeaderActions.vue'
   import searchBar from '@/components/ui/SearchBar'
 
   const props = defineProps<{
@@ -43,4 +47,12 @@
     placeholder?: string
     debounceMs?: number
   }>()
+
+  const emit = defineEmits<{
+    (e: 'update:modelValue' | 'search', value: string): void
+
+    (e: 'notification-click'): void
+    (e: 'menu-option-click', option: 'perfil' | 'configuracoes' | 'sair'): void
+  }>()
+
 </script>

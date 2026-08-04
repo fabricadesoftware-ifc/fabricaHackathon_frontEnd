@@ -56,13 +56,13 @@
     :model-value="searchValue"
     @update:model-value="onInput"
   >
-    <div class="focus-within:border-blue-500 flex items-center border-[#E5E7EB] border-[3px] border-solid bg-gray-100 rounded-full px-8 max-w-[50vw]">
+    <div class="focus-within:border-blue-500 flex items-center border-[#E5E7EB] border-4 border-solid bg-gray-100 rounded-full px-4 xl:px-8 max-w-[65vw] xl:max-w-[38vw]">
       <span
-        class="mdi mdi-magnify text-gray-400 mr-2 text-[60px]"
+        class="mdi mdi-magnify text-gray-400 mr-2 text-[40px] xl:text-[50px]"
       />
 
       <Input.Control
-        class="bg-transparent w-[35vw] text-gray-700 py-2.5 text-[35px] placeholder-gray-400 rounded-[10px] px-1.5"
+        class="bg-transparent truncate w-full text-gray-700 py-1.5 xl:py-2.5 text-[25px] xl:text-[35px] placeholder-gray-400 rounded-[10px] px-1.5"
         :placeholder="placeholder"
         style="outline: none;"
         @keydown.enter="onEnter"
@@ -70,7 +70,7 @@
 
       <button
         v-if="isDirty"
-        class="mdi mdi-close text-gray-400 text-lg hover:text-gray-600 ml-2"
+        class="mdi mdi-close text-gray-400 text-[30px] xl:text-[50px] hover:text-gray-600 ml-2"
         type="button"
         @click="onClear"
       />

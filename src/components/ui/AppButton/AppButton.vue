@@ -17,7 +17,7 @@
     emit('click')
   }
 
-  const base = 'py-3 px-7 rounded-md text-[30px] font-normal normal-case transition-all duration-150 ease-in-out'
+  const base = 'py-5 xl:py-8 px-5 xl:px-9 rounded-md text-[20px] xl:text-[30px] font-normal normal-case transition-all duration-150 ease-in-out'
 
   const buttonClasses = computed(() => {
     const variants: Record<Variant, string> = {

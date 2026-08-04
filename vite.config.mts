@@ -1,5 +1,5 @@
-import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
 import Vue from '@vitejs/plugin-vue'
 import Fonts from 'unplugin-fonts/vite'
 import { defineConfig } from 'vite'
