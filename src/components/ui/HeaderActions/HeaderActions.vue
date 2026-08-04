@@ -101,7 +101,6 @@
           disabled
           :title="props.userName"
         />
-
         <v-list-item title="Perfil" @click="handleOptionClick('perfil')" />
         <v-list-item title="Configurações" @click="handleOptionClick('configuracoes')" />
         <v-list-item title="Sair" @click="handleOptionClick('sair')" />

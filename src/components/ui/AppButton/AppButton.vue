@@ -33,6 +33,7 @@
   <v-btn
     :class="buttonClasses"
     :disabled="props.disabled"
+    :loading="props.loading"
     @click="handleClick"
   >
     {{ props.label }}
