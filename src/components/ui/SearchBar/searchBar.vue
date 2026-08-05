@@ -1,79 +1,83 @@
 <script setup lang="ts">
-  import { Input } from '@vuetify/v0'
-  import { ref, watch } from 'vue'
+import { Input } from '@vuetify/v0'
+import { ref, watch } from 'vue'
 
-  const props = withDefaults (defineProps<{
-    modelValue: string
-    placeholder?: string
-    debounceMs?: number
-  }>(), {
-    placeholder: 'Buscar...',
-    debounceMs: 300,
-  })
+const props = withDefaults(defineProps<{
+  modelValue: string
+  placeholder?: string
+  debounceMs?: number
+}>(), {
+  placeholder: 'Buscar...',
+  debounceMs: 300,
+})
 
-  const emit = defineEmits<{
-    'update:modelValue': [value: string]
-    'search': [query: string]
-  }>()
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  search: [query: string]
+}>()
 
-  const searchValue = ref(props.modelValue)
-  let debounceTimer: ReturnType<typeof setTimeout> | null = null
+const searchValue = ref(props.modelValue)
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
-  watch(() => props.modelValue, (val: string) => {
-    searchValue.value = val
-  })
+watch(() => props.modelValue, (val) => {
+  searchValue.value = val
+})
 
-  function onInput (value: string) {
-    searchValue.value = value
-    emit('update:modelValue', value)
-    debounceSearch()
-  }
+function onInput(value: string) {
+  searchValue.value = value
+  emit('update:modelValue', value)
+  debounceSearch()
+}
 
-  function debounceSearch () {
-    if (debounceTimer) clearTimeout(debounceTimer)
-    debounceTimer = setTimeout(() => {
-      emit('search', searchValue.value)
-    }, props.debounceMs)
-  }
-
-  function onEnter () {
-    if (debounceTimer) clearTimeout(debounceTimer)
+function debounceSearch() {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
     emit('search', searchValue.value)
-  }
+  }, props.debounceMs)
+}
 
-  function onClear () {
-    searchValue.value = ''
-    emit('update:modelValue', '')
-    if (debounceTimer) clearTimeout(debounceTimer)
-    emit('search', '')
-  }
+function onEnter() {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  emit('search', searchValue.value)
+}
+
+function onClear() {
+  searchValue.value = ''
+  emit('update:modelValue', '')
+  if (debounceTimer) clearTimeout(debounceTimer)
+  emit('search', '')
+}
 // Nota: o isDirty é nativo do Input, logo, ele funciona como um valor booleano que retorna true sempre que tem algo no input
 </script>
 
 <template>
   <Input.Root
-    v-slot="{ isDirty }"
     :model-value="searchValue"
     @update:model-value="onInput"
+    #default="{ isDirty }"
   >
-    <div class="focus-within:border-blue-500 flex items-center border-[#E5E7EB] border-4 border-solid bg-gray-100 rounded-full px-4 xl:px-8 max-w-[65vw] xl:max-w-[38vw]">
-      <span
-        class="mdi mdi-magnify text-gray-400 mr-2 text-[40px] xl:text-[50px]"
-      />
-
+    <div class="flex items-center bg-gray-100 rounded-2xl px-4 py-2 max-w-[25vw] mt-2">
+      <span class="mdi mdi-magnify text-gray-400 text-xl mr-2"></span>
       <Input.Control
-        class="bg-transparent truncate w-full text-gray-700 py-1.5 xl:py-2.5 text-[25px] xl:text-[35px] placeholder-gray-400 rounded-[10px] px-1.5"
         :placeholder="placeholder"
-        style="outline: none;"
+        class="bg-transparent w-full text-gray-700 outline-none placeholder-gray-400 rounded-[10px] px-1.5"
         @keydown.enter="onEnter"
       />
-
       <button
         v-if="isDirty"
-        class="mdi mdi-close text-gray-400 text-[30px] xl:text-[50px] hover:text-gray-600 ml-2"
-        type="button"
         @click="onClear"
-      />
+        type="button"
+        class="mdi mdi-close text-gray-400 text-lg hover:text-gray-600 ml-2"
+      ></button>
     </div>
   </Input.Root>
 </template>
+<style scoped>
+input:focus,
+input:focus-visible,
+input:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+}
+</style>
