@@ -1,8 +1,8 @@
 <template>
-  <header class="flex items-center min-w-full bg-white pr-[20px] pl-[30px] py-[10px]">
+  <header class="flex w-full h-20 bg-white justify-between items-center px-5 xl:px-10 ">
 
     <searchBar
-      class="flex-1 justify-start"
+  class="w-full max-w-xl"
       :debounce-ms="props.debounceMs"
       :model-value="props.modelValue"
       :placeholder="props.placeholder"
@@ -12,7 +12,7 @@
 
     <HeaderActions
       v-if="props.isLogged"
-      class="flex-1 justify-end"
+      class="ml-auto" 
       :notification-count="props.notificationCount"
       :user-avatar="props.userAvatar"
       :user-name="props.userName"
@@ -22,7 +22,7 @@
 
     <div
       v-else
-      class="flex flex-1 gap-3.25 justify-end"
+      class="flex-1 flex items-center gap-0 xl:gap-3 justify-center xl:justify-end"
     >
       <AppButton label="Entrar" variant="text" />
       <AppButton label="Criar conta" variant="primary" />

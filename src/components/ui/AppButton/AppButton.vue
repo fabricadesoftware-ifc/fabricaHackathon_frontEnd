@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { computed } from 'vue'
+import { computed } from 'vue'
 
-  type Variant = 'primary' | 'text'
+type Variant = 'primary' | 'text'
 
   const props = defineProps<{
     variant: Variant
@@ -10,9 +10,9 @@
     loading?: boolean
   }>()
 
-  const emit = defineEmits<{
-    (e: 'click'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
   function handleClick () {
     if (props.disabled || props.loading) return
@@ -35,7 +35,6 @@
   <v-btn
     :class="buttonClasses"
     :disabled="props.disabled"
-    :loading="props.loading"
     @click="handleClick"
   >
     {{ props.label }}
