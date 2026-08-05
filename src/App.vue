@@ -25,6 +25,7 @@
   ]
 </script>
 <template>
+
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
