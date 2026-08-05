@@ -1,88 +1,61 @@
 <script lang="ts" setup>
   import { ref } from 'vue'
-  import EventCard from './components/ui/eventCard.vue';
-  import StatusProject from './components/ui/statusProject.vue';
-  import ProjectCard from './components/ui/projectCard.vue';
-  import AppSelect from '@/components/ui/AppSelect'
-  import AppButton from './components/ui/AppButton/index.ts';
-  import HeaderActions from './components/ui/HeaderActions/index.ts';
+  import { CardGrid, type ProjectCardItem } from './components/layout/CardGrid'
+  import { Section } from './components/layout/Section'
+  import AppButton from './components/ui/AppButton/index.ts'
+  import EventCard from './components/ui/eventCard.vue'
+  import HeaderActions from './components/ui/HeaderActions/index.ts'
   import SearchBar from './components/ui/SearchBar'
   import { Sidebar } from './components/ui/Sidebar'
+
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
-// --- Tipo ---
-const tipoOptions = [
-  { label: 'Frontend', value: 'frontend' },
-  { label: 'Backend', value: 'backend' },
-  { label: 'Fullstack', value: 'fullstack' },
-]
-const tipoSelecionado = ref<string | null>(null)
 
-// --- Ano ---
-const anoOptions = [
-  { label: '2023', value: '2023' },
-  { label: '2024', value: '2024' },
-  { label: '2025', value: '2025' },
-  { label: '2026', value: '2026' },
-]
-const anoSelecionado = ref<string | null>(null)
-
-// --- Status ---
-const statusOptions = [
-  { label: 'Ativo', value: 'ativo' },
-  { label: 'Inativo', value: 'inativo' },
-  { label: 'Pendente', value: 'pendente' },
-]
-const statusSelecionado = ref<string | null>(null)
+  const projetos: ProjectCardItem[] = [
+    {
+      id: 1,
+      logo: '/images/logo.png',
+      status: 'ativo',
+      statusLabel: 'Ativo',
+      description: 'O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas',
+      title: 'Alugaê',
+      team: 'Os melhores',
+      event: 'HackIFC // 2026 · Fabrica',
+    },
+  ]
 </script>
 <template>
 
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
-    <main class="flex-1">
-      <div class="flex gap-4">
-    <AppSelect
-      v-model="tipoSelecionado"
-      :options="tipoOptions"
-      placeholder="Tipo"
-    />
 
-    <AppSelect
-      v-model="anoSelecionado"
-      :options="anoOptions"
-      placeholder="Ano"
-    />
-
-    <AppSelect
-      v-model="statusSelecionado"
-      :options="statusOptions"
-      placeholder="Status"
-    />
-  </div>
+    <main class="flex-1 bg-gray-50 p-4">
       <div>
-        <div>
-          <EventCard end-date="2 novembro" image="/images/hackifc.png" location="Fabrica" start-date="1 de Novembro"
-            status="inscricoes" status-label="Inscrições" :tags="['Criatividade', 'Performance', 'Inovação']" :teams="8"
-            title="HackIFC // 2026" />
-        </div>
+        <EventCard
+          end-date="2 novembro"
+          image="/images/hackifc.png"
+          location="Fabrica"
+          start-date="1 de Novembro"
+          status="inscricoes"
+          status-label="Inscrições"
+          :tags="['Criatividade', 'Performance', 'Inovação']"
+          :teams="8"
+          title="HackIFC // 2026"
+        />
       </div>
 
-      <div>
-        <StatusProject label="Ativo" status="ativo" />
-      </div>
+      <Section class="mt-6" title="Em andamento">
+        <CardGrid :items="projetos" />
+      </Section>
 
-      <div>
-        <ProjectCard description="O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas"
-          event="HackIFC // 2026 · Fabrica" logo="/images/logo.png" status="ativo" status-label="Ativo"
-          team="Os melhores" title="Alugaê" />
-      </div>
       <div class="flex items-center gap-3 p-4">
-        <AppButton variant="text" label="Entrar" @click="() => console.log('entrar clicado')" />
-        <AppButton variant="primary" label="Criar conta" @click="() => console.log('criar conta clicado')" />
+        <AppButton label="Entrar" variant="text" @click="() => console.log('entrar clicado')" />
+        <AppButton label="Criar conta" variant="primary" @click="() => console.log('criar conta clicado')" />
       </div>
+
       <HeaderActions />
-      <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
+      <SearchBar model-value="asdasd" placeholder="Pesquisar hackathons ou projetos..." />
     </main>
-    </div>
+  </div>
 </template>
 <style></style>
