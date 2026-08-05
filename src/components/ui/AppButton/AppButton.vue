@@ -7,6 +7,7 @@
     variant: Variant
     label: string
     disabled?: boolean
+    loading?: boolean
   }>()
 
   const emit = defineEmits<{
@@ -14,10 +15,11 @@
   }>()
 
   function handleClick () {
+    if (props.disabled || props.loading) return
     emit('click')
   }
 
-  const base = 'py-5 xl:py-8 px-5 xl:px-9 rounded-md text-[20px] xl:text-[30px] font-normal normal-case transition-all duration-150 ease-in-out'
+  const base = 'py-2 px-3.5 rounded-md text-[20px] font-normal normal-case transition-all duration-150 ease-in-out'
 
   const buttonClasses = computed(() => {
     const variants: Record<Variant, string> = {
