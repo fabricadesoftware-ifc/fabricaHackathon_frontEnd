@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import heroSection from './components/ui/HeroSection/heroSection.vue';
+import HeroSection from './components/ui/HeroSection/heroSection.vue';
 
 const projetos: ProjectCardItem[] = [
   {
@@ -14,11 +14,17 @@ const projetos: ProjectCardItem[] = [
     event: 'HackIFC // 2026 · Fabrica',
   },
 ]
+
+const search = ref('')
 </script>
 <template>
 
   <div class="flex">
-    <heroSection></heroSection>
+    <HeroSection
+    title="Desenvolva, colabore e inove no HackIFC // 24H"
+    subtitle="Desenvolva, colabore e inove no HackIFC // 24H"
+    v-model="search"
+  />
     </div>
 </template>
 <style></style>
