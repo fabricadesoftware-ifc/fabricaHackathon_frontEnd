@@ -49,8 +49,18 @@ const paginatedProjects = computed(() => {
 })
 const activeItem = ref('home')
 const isLoggedIn = ref(true)
-
 const search = ref('')
+const initialData = ref({ name: 'João' })
+const formData = ref({ ...initialData.value })
+const hasUnsavedChanges = computed(() => {
+  return JSON.stringify(formData.value) !== JSON.stringify(initialData.value)
+})
+function handleCancel() {
+  formData.value = { ...initialData.value }
+}
+function handleSave() {
+  initialData.value = { ...formData.value }
+}
 </script>
 <template>
 
