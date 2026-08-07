@@ -4,13 +4,18 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* 🎨 Sobrescreve a cor primária do @vuetify/v0 com a paleta HackIFC */
+:root {
+  --v0-primary: #2563EB;
+}
+
 button:not(:disabled),
 [role="button"]:not(:disabled) {
   cursor: pointer;
 }
 
 *:focus-visible {
-  outline: 2px solid var(--v0-primary);
+  outline: 0px solid var(--v0-primary);
   outline-offset: 2px;
 }
 
@@ -22,6 +27,25 @@ button:not(:disabled),
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* 🎨 Paleta HackIFC — Modo Claro */
+:root {
+  --hackifc-primary: #2563EB;
+  --hackifc-primary-hover: #1D4ED8;
+  --hackifc-primary-light: #3B82F6;
+
+  --hackifc-bg: #F9FAFB;
+  --hackifc-bg-alt: #F3F4F6;
+  --hackifc-bg-dashboard: #FFFFFF;
+
+  --hackifc-card-bg: #FFFFFF;
+  --hackifc-card-border: #E5E7EB;
+  --hackifc-card-shadow: rgba(0, 0, 0, 0.05);
+
+  --hackifc-text-primary: #111827;
+  --hackifc-text-secondary: #4B5563;
+  --hackifc-text-weak: #9CA3AF;
 }
 
 @theme inline {
@@ -45,6 +69,34 @@ button:not(:disabled),
   --color-on-background: var(--v0-on-background);
   --color-on-surface: var(--v0-on-surface);
   --color-on-surface-variant: var(--v0-on-surface-variant);
+
+  --color-hackifc-primary: var(--hackifc-primary);
+  --color-hackifc-primary-hover: var(--hackifc-primary-hover);
+  --color-hackifc-primary-light: var(--hackifc-primary-light);
+
+  --color-hackifc-bg: var(--hackifc-bg);
+  --color-hackifc-bg-alt: var(--hackifc-bg-alt);
+  --color-hackifc-bg-dashboard: var(--hackifc-bg-dashboard);
+
+  --color-hackifc-card-bg: var(--hackifc-card-bg);
+  --color-hackifc-card-border: var(--hackifc-card-border);
+
+  --color-hackifc-text-primary: var(--hackifc-text-primary);
+  --color-hackifc-text-secondary: var(--hackifc-text-secondary);
+  --color-hackifc-text-weak: var(--hackifc-text-weak);
+}
+
+@layer base {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #F3F4F6 inset !important;
+    -webkit-text-fill-color: #111827 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 }
 
 @layer utilities {
@@ -56,5 +108,8 @@ button:not(:disabled),
   }
   .bg-glass-surface {
     @apply [background:color-mix(in_srgb,var(--v0-surface)_70%,transparent)] backdrop-blur-[12];
+  }
+  .shadow-hackifc-card {
+    box-shadow: 0 1px 2px 0 var(--hackifc-primary-hover);
   }
 }

@@ -6,7 +6,7 @@
 
         <Input.Root id="profile-nome" v-model="nome" :rules="requiredRule">
           <Input.Control
-            class="w-full rounded-xl border border-transparent bg-gray-100 px-4 py-3 text-base text-black outline-none transition-colors data-[focused]:border-blue-600 data-[state=invalid]:border-red-500"
+            class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
           />
         </Input.Root>
       </div>
@@ -16,7 +16,7 @@
 
         <Input.Root id="profile-sobrenome" v-model="sobrenome" :rules="requiredRule">
           <Input.Control
-            class="w-full rounded-xl border border-transparent bg-gray-100 px-4 py-3 text-base text-black outline-none transition-colors data-[focused]:border-blue-600 data-[state=invalid]:border-red-500"
+            class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
           />
         </Input.Root>
       </div>
@@ -27,7 +27,7 @@
 
       <Input.Root id="profile-username" v-model="username" :rules="requiredRule">
         <Input.Control
-          class="w-full rounded-xl border border-transparent bg-gray-100 px-4 py-3 text-base text-black outline-none transition-colors data-[focused]:border-blue-600 data-[state=invalid]:border-red-500"
+          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
         />
       </Input.Root>
     </div>
@@ -38,7 +38,7 @@
       <Input.Root id="profile-bio" v-model="bio">
         <Input.Control
           as="textarea"
-          class="w-full resize-none rounded-xl border border-transparent bg-gray-100 px-4 py-3 text-base text-black outline-none transition-colors data-[focused]:border-blue-600"
+          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
           :maxlength="props.bioMaxLength"
           rows="4"
         />
@@ -58,7 +58,7 @@
       >
 
         <Input.Control
-          class="w-full rounded-xl border border-transparent bg-gray-100 px-4 py-3 text-base text-black outline-none transition-colors data-[focused]:border-blue-600 data-[state=invalid]:border-red-500"
+          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
         />
       </Input.Root>
     </div>
