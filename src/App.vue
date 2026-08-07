@@ -1,30 +1,27 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import HeroSection from './components/ui/HeroSection/heroSection.vue';
-
-const projetos: ProjectCardItem[] = [
-  {
-    id: 1,
-    logo: '/images/logo.png',
-    status: 'ativo',
-    statusLabel: 'Ativo',
-    description: 'O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas',
-    title: 'Alugaê',
-    team: 'Os melhores',
-    event: 'HackIFC // 2026 · Fabrica',
-  },
-]
+import settingSectionHeader from './components/ui/SettingSectionHeader/settingSectionHeader.vue';
+import SettingSectionHeader from './components/ui/SettingSectionHeader/settingSectionHeader.vue';
 
 const search = ref('')
 </script>
 <template>
 
-  <div class="flex">
-    <HeroSection
-    title="Desenvolva, colabore e inove no HackIFC // 24H"
-    subtitle="Desenvolva, colabore e inove no HackIFC // 24H"
-    v-model="search"
-  />
-    </div>
+  <div class="p-6 flex flex-col gap-4">
+    <SettingSectionHeader
+      icon="mdi mdi-account"
+      title="Perfil do Usuário"
+      subtitle="Gerencie suas informações pessoais"
+      variant="perfil"
+    />
+
+    <SettingSectionHeader
+      icon="mdi mdi-alert-circle"
+      title="Zona de Perigo"
+      subtitle="Ações irreversíveis na sua conta"
+      variant="perigo"
+    />
+  </div>
 </template>
 <style></style>

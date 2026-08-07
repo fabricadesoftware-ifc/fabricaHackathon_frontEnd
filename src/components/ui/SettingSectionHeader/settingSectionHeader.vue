@@ -12,7 +12,7 @@ const props = defineProps<{
 
 const variantes = {
     perigo: 'text-red-400',
-    perfil: 'text-black'
+    perfil: 'text-[#111827]',
 }
 const iconClass = computed(()=>{
     const base = 'text-[1.5rem]'
@@ -24,8 +24,8 @@ const titleClass = computed(()=>{
 })
 </script>
 <template>
- <div class="bg-white p-5 gap-2 flex items-start justify-space-between w-m sm:max-w-[25vw] rounded-xl">
-  <div class="rounded-full p-1 px-2 bg-gray-100 flex justify-center items-center shadow-lg mr-2">
+ <div class="p-5 gap-2 flex items-start  w-m sm:max-w-[20vw] rounded-xl">
+  <div class="rounded-full p-1 px-2 bg-[#F3F4F6] flex justify-center items-center shadow-lg mr-2">
     <span  :class="iconClass"></span>
   </div>  
   <div>
