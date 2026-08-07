@@ -4,7 +4,7 @@
     v-model="model"
     :size="length"
     :items-per-page="1"
-    class="flex flex-wrap items-center justify-center gap-1"
+    class="flex flex-wrap items-center justify-center gap-1 mt-10"
   >
     <Pagination.Prev
       class="flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-500 transition-colors hover:bg-gray-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
