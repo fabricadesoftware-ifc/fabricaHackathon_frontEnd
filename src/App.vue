@@ -17,37 +17,37 @@ const search = ref('')
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
-    <main class="flex-1 ms-8 me">
-      <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
       
-    <main class="flex-1 flex-row">
-      <PageHeader title="Explore Hackathon" subtitle="Descubra edições passadas e em andamento"></PageHeader>
-      <SearchBar placeholder="Pesquisar hackathons..." modelValue=""></SearchBar>
-      <div>
+
+      <main class="flex-1 flex-row">
+        <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
+        <PageHeader title="Explore Hackathon" subtitle="Descubra edições passadas e em andamento"></PageHeader>
+        <SearchBar placeholder="Pesquisar hackathons..." modelValue=""></SearchBar>
         <div>
-          <EventCard end-date="2 novembro" image="/images/hackifc.png" location="Fabrica" start-date="1 de Novembro"
-            status="inscricoes" status-label="Inscrições" :tags="['Criatividade', 'Performance', 'Inovação']" :teams="8"
-            title="HackIFC // 2026" />
+          <div>
+            <EventCard end-date="2 novembro" image="/images/hackifc.png" location="Fabrica" start-date="1 de Novembro"
+              status="inscricoes" status-label="Inscrições" :tags="['Criatividade', 'Performance', 'Inovação']"
+              :teams="8" title="HackIFC // 2026" />
+          </div>
         </div>
-      </div>
 
-      <div>
-        <StatusProject label="Ativo" status="ativo" />
-      </div>
+        <div>
+          <StatusProject label="Ativo" status="ativo" />
+        </div>
 
-      <div>
-        <ProjectCard description="O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas"
-          event="HackIFC // 2026 · Fabrica" logo="/images/logo.png" status="ativo" status-label="Ativo"
-          team="Os melhores" title="Alugaê" />
-      </div>
-      <div class="flex items-center gap-3 p-4">
-        <AppButton variant="text" label="Entrar" @click="() => console.log('entrar clicado')" />
-        <AppButton variant="primary" label="Criar conta" @click="() => console.log('criar conta clicado')" />
-      </div>
-      <HeaderActions />
-      <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
-      <ResultsBar total="66" start="1" end="12"></ResultsBar>
-    </main>
+        <div>
+          <ProjectCard description="O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas"
+            event="HackIFC // 2026 · Fabrica" logo="/images/logo.png" status="ativo" status-label="Ativo"
+            team="Os melhores" title="Alugaê" />
+        </div>
+        <div class="flex items-center gap-3 p-4">
+          <AppButton variant="text" label="Entrar" @click="() => console.log('entrar clicado')" />
+          <AppButton variant="primary" label="Criar conta" @click="() => console.log('criar conta clicado')" />
+        </div>
+        <HeaderActions />
+        <SearchBar placeholder="Pesquisar hackathons ou projetos..." modelValue="asdasd"></SearchBar>
+        <ResultsBar total="66" start="1" end="12"> </ResultsBar>
+      </main>
   </div>
 </template>
 <style></style>
