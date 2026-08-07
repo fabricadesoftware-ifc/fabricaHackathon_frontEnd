@@ -6,6 +6,7 @@
 
 // Composables
 import { createApp } from 'vue'
+import { createVuetify } from 'vuetify/lib/entry-bundler.mjs'
 
 // Plugins
 import { registerPlugins } from '@/plugins'
@@ -18,8 +19,10 @@ import '@mdi/font/css/materialdesignicons.css'
 import './tailwind.css'
 import 'unfonts.css'
 
+const vuetify = createVuetify()
+
 const app = createApp(App)
 
 registerPlugins(app)
 
-app.mount('#app')
+app.use(vuetify).mount('#app')

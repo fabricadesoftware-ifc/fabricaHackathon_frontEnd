@@ -9,9 +9,20 @@ import SearchBar from './components/ui/SearchBar'
 import { Sidebar } from './components/ui/Sidebar'
 import ResultsBar from './components/ui/ResultsBar/ResultsBar.vue';
 
-const activeItem = ref('home')
-const isLoggedIn = ref(true)
+const projetos: ProjectCardItem[] = [
+  {
+    id: 1,
+    logo: '/images/logo.png',
+    status: 'ativo',
+    statusLabel: 'Ativo',
+    description: 'O alugaê é um sistema desenvolvido com intuito de ajudar as pessoas',
+    title: 'Alugaê',
+    team: 'Os melhores',
+    event: 'HackIFC // 2026 · Fabrica',
+  },
+]
 
+const search = ref('')
 </script>
 <template>
   <div class="flex">
