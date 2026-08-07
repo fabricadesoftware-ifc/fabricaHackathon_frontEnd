@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <div class="bg-white flex flex-col gap-6 pt-5.5 px-11 pb-30 w-225 pr-25 rounded-md">
+    <div class="bg-white flex flex-col gap-4 pt-5.5 px-11 pb-30 w-full pr-25 rounded-md">
       <v-card-title class="text-[24px] text-[#111827]">
         {{ letraMaiscPrep(props.title) }}
       </v-card-title>
