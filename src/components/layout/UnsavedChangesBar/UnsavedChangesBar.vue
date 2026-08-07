@@ -8,14 +8,14 @@
       >
         <div class="flex items-center gap-3">
           <span
-            class="mdi mdi-alert flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[1.6rem] text-gray-500"
-          />
+  class="mdi mdi-exclamation flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[1.6rem] text-[#2563EB]"
+/>
 
           <div class="flex flex-col">
-            <span class="text-[1.4rem] font-medium text-black">
+            <span class="text-[1.2rem] text-[#111827]">
               {{ title }}
             </span>
-            <span class="text-[1.1rem] leading-snug text-gray-500">
+            <span class="text-[1rem] leading-snug text-gray-500">
               {{ description }}
             </span>
           </div>
