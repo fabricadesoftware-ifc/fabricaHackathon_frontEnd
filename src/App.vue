@@ -14,6 +14,7 @@ const isLoggedIn = ref(true)
 const search = ref('')
 </script>
 <template>
+
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
@@ -30,6 +31,7 @@ const search = ref('')
               :teams="8" title="HackIFC // 2026" />
           </div>
         </div>
+
 
         <div>
           <StatusProject label="Ativo" status="ativo" />
