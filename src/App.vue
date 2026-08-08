@@ -10,16 +10,16 @@ import DangerActionItem from './components/layout/DangerActionItem/DangerActionI
       <li>
         <DangerActionItem 
         icon='mdi mdi-exit-to-app'
-        title="Sair Conta"
+        title="Sair da conta"
         subtitle="encerre sua sessão"
         variant="sair"
         />
       </li>
       <li>
         <DangerActionItem 
-        icon='mdi mdi-exit-to-app'
-        title="Sair Conta"
-        subtitle="encerre sua sessão"
+        icon='mdi mdi-trash-can'
+        title="Excluir conta"
+        subtitle="Isso deleta todas as informações das contas"
         variant="excluir"
         />
       </li>
