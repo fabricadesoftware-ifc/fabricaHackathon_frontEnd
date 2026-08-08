@@ -12,32 +12,49 @@ export const vuetify = createVuetify({
 })
 
 export const themePlugin = createThemePlugin({
-  default: 'dark',
+  default: 'light',
   target: 'html',
   themes: {
     light: {
       dark: false,
       colors: {
-        'primary': '#3b82f6',
+        // 🔵 Cor principal
+        'primary': '#2563EB',
+        'primary-hover': '#1D4ED8',
+        'primary-light': '#3B82F6',
+
         'secondary': '#64748b',
         'error': '#ef4444',
         'info': '#1867c0',
         'success': '#22c55e',
         'warning': '#f59e0b',
-        'background': '#f5f5f5',
-        'surface': '#ffffff',
-        'surface-tint': '#f5f5f5',
-        'surface-variant': '#eeeeee',
-        'divider': '#e0e0e0',
+
+        // ⚪ Fundo
+        'background': '#F9FAFB',
+        'background-alt': '#F3F4F6',
+        'background-dashboard': '#FFFFFF',
+
+        // 🧾 Cards
+        'surface': '#FFFFFF',
+        'surface-tint': '#F9FAFB',
+        'surface-variant': '#F3F4F6',
+        'divider': '#E5E7EB',
+
+        // Textos "on-*" (usados em cima das cores acima)
         'on-primary': '#ffffff',
         'on-secondary': '#ffffff',
         'on-error': '#ffffff',
         'on-info': '#ffffff',
         'on-success': '#ffffff',
         'on-warning': '#1a1a1a',
-        'on-background': '#212121',
-        'on-surface': '#212121',
-        'on-surface-variant': '#666666',
+        'on-background': '#111827',
+        'on-surface': '#111827',
+        'on-surface-variant': '#4B5563',
+
+        // 📝 Textos (hierarquia) — cores customizadas extras
+        'text-primary': '#111827',   // título / texto principal
+        'text-secondary': '#4B5563', // subtítulo / texto secundário
+        'text-weak': '#9CA3AF',      // label / informações menores
       },
     },
     dark: {
