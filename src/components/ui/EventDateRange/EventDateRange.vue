@@ -3,9 +3,9 @@
     <span class="mdi mdi-calendar text-[30px]" />
 
     <div class="flex gap-3">
-      <span>{{ props.startDate }}</span>
+      <span>{{ formatDate(props.startDate) }}</span>
       <span>{{ '-' }}</span>
-      <span>{{ props.endDate }}</span>
+      <span>{{ formatDate(props.endDate) }}</span>
     </div>
   </div>
 </template>
@@ -14,4 +14,19 @@
     startDate: string
     endDate: string
   }>()
+
+  function formatDate (date: string) {
+    if (date.includes(' de ')) {
+      return date
+    }
+
+    const [day, month] = date.split('/')
+
+    const monthName = new Intl.DateTimeFormat('pt-BR', {
+      month: 'long',
+    }).format(new Date(2000, Number(month) - 1, 1))
+
+    return `${Number(day)} de ${monthName}`
+  }
+
 </script>
