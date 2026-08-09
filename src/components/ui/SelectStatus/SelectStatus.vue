@@ -5,7 +5,7 @@ Sim é a mesma coisa do SelectTipo, mas é que ele
 <template>
   <Select.Root v-model="model">
     <Select.Activator
-      class="border-0 flex items-center gap-7 text-left rounded-xl bg-white px-6 py-2 text-[1.8rem] text-black transition-colors hover:bg-[#e8e8e8] data-[open=true]:border-blue-600"
+      class="border-0 flex items-center gap-7 text-left rounded-xl bg-white px-6 py-2 text-[1.5rem] text-black transition-colors hover:bg-[#e8e8e8] data-[open=true]:border-blue-600"
     >
       <Select.Value
         class="block truncate whitespace-nowrap"
@@ -26,7 +26,7 @@ Sim é a mesma coisa do SelectTipo, mas é que ele
       </Select.Placeholder>
 
       <Select.Cue class="leading-0 text-black transition-transform data-[state=open]:rotate-180">
-        <span class="mdi mdi-chevron-down text-[2.4rem]" />
+        <span class="mdi mdi-chevron-down text-[2.2rem]" />
       </Select.Cue>
     </Select.Activator>
 
