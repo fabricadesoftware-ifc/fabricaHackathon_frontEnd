@@ -1,6 +1,6 @@
 <template>
   <div class="text-[16px] flex gap-3.5 bg-[#F3F4F6] w-fit h-min items-center rounded-full px-7">
-    <span class="mdi mdi-calendar text-[30px]" />
+    <span class="mdi mdi-calendar text-[25px] text-[#111827] " />
 
     <div class="flex gap-3">
       <span>{{ formatDate(props.startDate) }}</span>
