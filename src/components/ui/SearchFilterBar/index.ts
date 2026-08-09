@@ -1,2 +1,2 @@
-import searchFilterBar from "./searchFilterBar.vue";
-export {searchFilterBar}
+import SearchFilterBar from "./searchFilterBar.vue";
+export default SearchFilterBar;

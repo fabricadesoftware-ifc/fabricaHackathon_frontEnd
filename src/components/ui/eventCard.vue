@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-md bg-white shadow-md overflow-hidden w-72">
+    <div class="rounded-md bg-white shadow-md overflow-hidden w-full">
         <div class="relative m-2 ">
             <img :alt="title" class="w-full h-30 object-cover rounded-md " :src="image" />
 
