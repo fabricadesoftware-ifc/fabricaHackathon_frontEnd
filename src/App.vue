@@ -13,31 +13,15 @@ const isLoggedIn = ref(true)
 <template>
 
   <div class="flex">
+    <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
+
+
     <main class="flex-1 flex-row">
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
-      <RouterView />
-      <EventDateRange :start-date="'01/03/2025'" :end-date="'15/04/2025'" />
-
-      <DangerZoneSection>
-    <ul>
-      <li>
-        <DangerActionItem 
-        icon='mdi mdi-exit-to-app'
-        title="Sair da conta"
-        subtitle="encerre sua sessão"
-        variant="sair"
-        />
-      </li>
-      <li>
-        <DangerActionItem 
-        icon='mdi mdi-trash-can-outline'
-        title="Excluir conta"
-        subtitle="Isso deleta todas as informações das contas"
-        variant="excluir"
-        />
-      </li>
-    </ul>
-  </DangerZoneSection>
+      <div class="mx-10">
+        <RouterView />
+      </div>
+      
     </main>
   </div>
 </template>
