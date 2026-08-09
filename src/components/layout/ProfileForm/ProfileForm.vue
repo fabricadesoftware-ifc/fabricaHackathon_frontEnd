@@ -1,25 +1,23 @@
 <template>
-  <div class="mx-auto flex w-full max-w-3xl flex-col gap-6">
-    <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500" for="profile-nome">Nome</label>
+  <div class="grid w-full grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2">
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium text-gray-500" for="profile-nome">Nome</label>
 
-        <Input.Root id="profile-nome" v-model="nome" :rules="requiredRule">
-          <Input.Control
-            class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-          />
-        </Input.Root>
-      </div>
+      <Input.Root id="profile-nome" v-model="nome" :rules="requiredRule">
+        <Input.Control
+          class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+        />
+      </Input.Root>
+    </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label class="text-sm font-medium text-gray-500" for="profile-sobrenome">Sobrenome</label>
+    <div class="flex flex-col gap-1.5">
+      <label class="text-sm font-medium text-gray-500" for="profile-sobrenome">Sobrenome</label>
 
-        <Input.Root id="profile-sobrenome" v-model="sobrenome" :rules="requiredRule">
-          <Input.Control
-            class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-          />
-        </Input.Root>
-      </div>
+      <Input.Root id="profile-sobrenome" v-model="sobrenome" :rules="requiredRule">
+        <Input.Control
+           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+        />
+      </Input.Root>
     </div>
 
     <div class="flex flex-col gap-1.5">
@@ -27,24 +25,9 @@
 
       <Input.Root id="profile-username" v-model="username" :rules="requiredRule">
         <Input.Control
-          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
         />
       </Input.Root>
-    </div>
-
-    <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-500" for="profile-bio">Bio</label>
-
-      <Input.Root id="profile-bio" v-model="bio">
-        <Input.Control
-          as="textarea"
-          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-          :maxlength="props.bioMaxLength"
-          rows="4"
-        />
-      </Input.Root>
-
-      <span class="self-end text-xs text-gray-400">{{ bio.length }}/{{ props.bioMaxLength }}</span>
     </div>
 
     <div class="flex flex-col gap-1.5">
@@ -56,11 +39,25 @@
         :rules="emailRules"
         type="email"
       >
-
         <Input.Control
-          class="w-full rounded-xl border border-2 border-hackifc-card-border bg-hackifc-bg-alt px-4 py-3 text-base text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
         />
       </Input.Root>
+    </div>
+
+    <div class="flex flex-col gap-1.5 md:col-span-2">
+      <label class="text-sm font-medium text-gray-500" for="profile-bio">Bio</label>
+
+      <Input.Root id="profile-bio" v-model="bio">
+        <Input.Control
+          as="textarea"
+           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+          :maxlength="props.bioMaxLength"
+          rows="4"
+        />
+      </Input.Root>
+
+      <span class="self-end text-xs text-gray-400">{{ bio.length }}/{{ props.bioMaxLength }}</span>
     </div>
   </div>
 </template>

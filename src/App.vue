@@ -1,8 +1,6 @@
 <script lang="ts" setup>
   import { ref, computed } from 'vue'
-  import AvatarUpload from '@/components/layout/AvatarUpload'
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
-  import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
 
   const activeItem = ref('home')
@@ -20,7 +18,6 @@
       <div class="mx-10">
         <RouterView />
       </div>
-      
     </main>
   </div>
 </template>
