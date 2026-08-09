@@ -1,5 +1,5 @@
 <template>
-    <PageHeader title="Explore Hackathon" subtitle="Descubra edições passadas e em andamento" />
+    <PageHeader title="Meus projetos" subtitle="Pesquise seus atuais e antigos projetos" />
     <div>
         <SearchFilterBar />
         <ResultsBar :total="hackathons.length" :start="startIndex + 1" :end="endIndex" />
