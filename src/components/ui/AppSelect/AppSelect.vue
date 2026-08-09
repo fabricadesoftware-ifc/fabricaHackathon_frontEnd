@@ -1,7 +1,7 @@
 <template>
   <Select.Root v-model="model">
     <Select.Activator
-      class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 shadow-sm transition-colors hover:bg-gray-50 data-[open=true]:border-blue-600"
+      class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 shadow-sm transition-colors hover:bg-gray-50 data-[open=true]:border-blue-600"
     >
       <Select.Value v-slot="{ selectedValue }" class="whitespace-nowrap">
         {{ options.find((option) => option.value === selectedValue)?.label }}
