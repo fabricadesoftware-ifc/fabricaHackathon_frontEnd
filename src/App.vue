@@ -17,7 +17,7 @@ import DangerActionItem from './components/layout/DangerActionItem/DangerActionI
       </li>
       <li>
         <DangerActionItem 
-        icon='mdi mdi-trash-can'
+        icon='mdi mdi-trash-can-outline'
         title="Excluir conta"
         subtitle="Isso deleta todas as informações das contas"
         variant="excluir"

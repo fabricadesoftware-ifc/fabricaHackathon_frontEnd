@@ -19,12 +19,12 @@ const subTitleClass = computed(()=>{
 })
 </script>
 <template>
- <div class="p-5 gap-2 flex items-center w-m sm:max-w-[20vw] rounded-xl">
-  <div class=" p-0.5 px-1.5 rounded-2xl bg-red-200 flex justify-center items-center shadow-lg mr-2">
-    <span  class="p-1.5  text-[1.5rem] text-red-700" :class="props.icon"></span>
+ <div class="p-5 gap-2 flex items-center w-m sm:max-w-[40vw] rounded-xl">
+  <div class=" p-0.5 px-1.5 rounded-sm bg-red-100 flex justify-center items-center shadow-lg mr-2">
+    <span  class="p-1.5  text-[1.5rem] text-red-500" :class="props.icon"></span>
   </div>  
   <div>
-    <h1 class="mb-0.5 text-[1.3rem] font-semibold">
+    <h1 class="mb-0.5 text-[1.3rem] text-[#111827]">
         {{ props.title }}
     </h1>
     <h2 :class="subTitleClass">

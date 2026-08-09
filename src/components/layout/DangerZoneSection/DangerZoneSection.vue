@@ -4,7 +4,7 @@ import settingSectionHeader from '@/components/ui/SettingSectionHeader/settingSe
 </script>
 
 <template>
-  <div class="min-w-40 flex bg-white justify-between">
+  <div class="min-w-40 flex bg-white justify-between gap-10">
     <settingSectionHeader
     title='Zona de Perigo'
     subtitle="Ações que podem ser irreversíveis"
