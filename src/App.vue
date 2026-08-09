@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+  import { ref, computed } from 'vue'
+  import AvatarUpload from '@/components/layout/AvatarUpload'
+  import AppHeader from './components/layout/AppHeader/AppHeader.vue'
+  import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
+  import { Sidebar } from './components/ui/Sidebar'
 
-import { Sidebar } from './components/ui/Sidebar'
-
-import AppHeader from './components/layout/AppHeader/AppHeader.vue';
-import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue';
-
-const activeItem = ref('home')
-const isLoggedIn = ref(true)
-
+  const activeItem = ref('home')
+  const isLoggedIn = ref(true)
+  const file: File = { name: '', lastModified: 0, size: 0, type: '', webkitRelativePath: '' }
 </script>
 <template>
 

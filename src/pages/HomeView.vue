@@ -57,7 +57,6 @@ const projects: ProjectCardItem[] = [
 ];
 </script>
 <template>
-
     <HeroSection title="Desenvolva, colabore e inove no HackIFC // 24H"
         subtitle="Desenvolva, colabore e inove no HackIFC // 24H" :model-value="search"
         @update:model-value="search = $event" />
