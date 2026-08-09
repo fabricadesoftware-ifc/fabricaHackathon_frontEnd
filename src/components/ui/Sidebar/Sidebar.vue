@@ -74,7 +74,7 @@
   const props = withDefaults(defineProps<Props>(), {
     isLoggedIn: false,
     items: () => [
-      { id: 'home', label: 'Home', icon: 'mdi-home', route: '/' },
+      { id: 'home', label: 'Home', icon: 'mdi-home', route: '/home' },
       { id: 'edicoes', label: 'Edições', icon: 'mdi-code-tags', route: '/edicoes' },
       { id: 'projetos', label: 'Meus projetos', icon: 'mdi-folder', route: '/projetos', requiresAuth: true },
       { id: 'equipes', label: 'Minhas equipes', icon: 'mdi-account-group', route: '/equipes', requiresAuth: true },
