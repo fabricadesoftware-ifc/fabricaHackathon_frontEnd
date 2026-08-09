@@ -1,32 +1,44 @@
 <script lang="ts" setup>
-import SponsorLogo from './components/ui/SponsorLogo/SponsorLogo.vue';
-import SponsorList from './components/ui/SponsorList/SponsorList.vue';
+import { ref, computed } from 'vue';
 
-const arr:any = [{
-  name: "logo-vue", 
-  imageUrl: "images/hackifc.png",
-   href: "https://pictogrammers.com/docs/library/mdi/getting-started/webfont/"
-},{
-  name: "logo-vue", 
-  imageUrl: "images/hackifc.png",
-   href: "https://pictogrammers.com/docs/library/mdi/getting-started/webfont/"
-},
-{
-  name: "logo-vue", 
-  imageUrl: "images/hackifc.png",
-  
-}
-];
+import { Sidebar } from './components/ui/Sidebar'
+
+import AppHeader from './components/layout/AppHeader/AppHeader.vue';
+import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue';
+
+const activeItem = ref('home')
+const isLoggedIn = ref(true)
+
 </script>
 <template>
 
   <div class="flex">
     <main class="flex-1 flex-row">
-      <SponsorLogo name="logo-vue" image-url="/0.png" href="https://pictogrammers.com/docs/library/mdi/getting-started/webfont/" :max-width="2"></SponsorLogo>
-      <SponsorList
-      :images="arr"
-      ></SponsorList>
-  </main>
+      <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
+      <RouterView />
+      <EventDateRange :start-date="'01/03/2025'" :end-date="'15/04/2025'" />
+
+      <DangerZoneSection>
+    <ul>
+      <li>
+        <DangerActionItem 
+        icon='mdi mdi-exit-to-app'
+        title="Sair da conta"
+        subtitle="encerre sua sessão"
+        variant="sair"
+        />
+      </li>
+      <li>
+        <DangerActionItem 
+        icon='mdi mdi-trash-can-outline'
+        title="Excluir conta"
+        subtitle="Isso deleta todas as informações das contas"
+        variant="excluir"
+        />
+      </li>
+    </ul>
+  </DangerZoneSection>
+    </main>
   </div>
 </template>
 <style></style>
