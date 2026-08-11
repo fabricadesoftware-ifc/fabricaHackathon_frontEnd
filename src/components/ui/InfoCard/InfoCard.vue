@@ -1,12 +1,12 @@
 <template>
   <v-card>
-    <div class="bg-white flex flex-col gap-4 pt-5.5 px-11 pb-30 w-full pr-25 rounded-md">
+    <div class="bg-white flex flex-col gap-4 pt-5.5 px-11 pb-30 pr-25">
       <v-card-title class="text-[24px] text-[#111827]">
         {{ letraMaiscPrep(props.title) }}
       </v-card-title>
 
       <v-card-text class="text-[16px] text-[#4B5563]">
-        {{ textoFormatado(props.description) }}
+        {{ props.description ? textoFormatado(props.description) : 'Sem mais descrições' }}
       </v-card-text>
 
       <v-card-title class="text-[20px] text-[#111827]">
@@ -28,7 +28,7 @@
 <script setup lang="ts">
   const props = defineProps<{
     title: string
-    description: string
+    description?: string
     criteriaLabel: string
     criteria: string[]
   }>()

@@ -5,7 +5,7 @@
   const props = defineProps<{
     title: string
     image: string
-    status: Status
+    status?: Status
   }>()
   const label = computed(() => {
     if (props.status === 'inscricoes') return 'Inscrições'
@@ -23,9 +23,9 @@
     >
 
     <statusSelect
-      class="absolute top-6.5 left-8"
+      class="absolute top-7 left-8.5 w-[11vw] flex justify-center py-0.5 rounded-lg text-[20px]"
       :label="label"
-      :status="props.status"
+      :status="props.status ? props.status : 'andamento'"
     />
   </div>
 </template>

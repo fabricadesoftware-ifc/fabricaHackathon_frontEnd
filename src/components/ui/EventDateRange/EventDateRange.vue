@@ -3,16 +3,16 @@
     <span class="mdi mdi-calendar text-[25px] text-[#111827] " />
 
     <div class="flex gap-3">
-      <span>{{ formatDate(props.startDate) }}</span>
+      <span>{{ props.startDate ? formatDate(props.startDate) : '--' }}</span>
       <span>{{ '-' }}</span>
-      <span>{{ formatDate(props.endDate) }}</span>
+      <span>{{ props.endDate ? formatDate(props.endDate) : '--' }}</span>
     </div>
   </div>
 </template>
 <script setup lang="ts">
   const props = defineProps<{
-    startDate: string
-    endDate: string
+    startDate?: string
+    endDate?: string
   }>()
 
   function formatDate (date: string) {

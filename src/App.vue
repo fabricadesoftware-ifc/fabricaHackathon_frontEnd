@@ -15,7 +15,7 @@
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
 
-    <main class="flex-1 flex-row">
+    <main class="flex-1 flex-row bg-[#F9FAFB]">
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
       <div class="mx-10">
         <RouterView />

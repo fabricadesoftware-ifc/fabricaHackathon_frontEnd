@@ -16,7 +16,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="min-h-40 grid grid-cols-1 justify-items-center text-black bg-white py-10 min-w-full">
+  <div class="min-h-40 grid grid-cols-1 justify-items-center text-black py-10 min-w-full">
     <heroTitle
       :title="title"
       :subtitle="subtitle"
