@@ -7,7 +7,7 @@
       title="hackathon"
     />
 
-    <div class="flex justify-between items-baseline mb-[2vw]">
+    <div class="flex justify-between items-baseline mb-[3vw]">
       <div>
         <h2 class="text-[40px] text-[#111827]">{{ evento?.title }}</h2>
         <p class="text-[20px] text-[#4B5563]">Gerenciado por: <span class="text-[#111827]">{{ evento?.manager }}</span></p>
@@ -19,7 +19,13 @@
       />
     </div>
 
-    <div class="flex justify-center mb-[2vw]">
+    <SponsorList
+      class="justify-start mb-[3vw]"
+      :images="evento?.sponsor ? evento?.sponsor : []"
+    />
+
+    <div class="flex justify-center mb-[3vw]">
+
       <progressStepper
         :current-step="step"
         :steps="['Inscrições', 'Andamento', 'Avaliação', 'Finalizado']"
@@ -27,7 +33,7 @@
     </div>
 
     <InfoCard
-      :criteria="['Inscrições', 'Andamento', 'Avaliação', 'Finalizado']"
+      :criteria="evento?.tags ? evento?.tags : []"
       criteria-label="Critérios"
       :description="evento?.description"
       :title="`Sobre o ${evento?.title}`"
@@ -38,12 +44,7 @@
       :items="evento?.teams"
       :title="evento?.title"
     />
-    <!--
-    <SponsorList
-    
-    />
-    -->
-</section>
+  </section>
 </template>
 <script setup lang="ts">
   import { computed } from 'vue'

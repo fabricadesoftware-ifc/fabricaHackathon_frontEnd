@@ -9,6 +9,12 @@ interface ProjectCardItem {
   event: string
 }
 
+interface image {
+  name: string
+  imageUrl: string
+  href?: string
+}
+
 type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
 
 interface Hackathon {
@@ -22,6 +28,7 @@ interface Hackathon {
   endDate: string
   teamsCounter?: number
   teams?: ProjectCardItem[]
+  sponsor?: image[]
   location: string
   tags: string[]
   description?: string
@@ -36,6 +43,28 @@ export const hackathons: Hackathon[] = [
     status: 'andamento',
     statusLabel: 'Em andamento',
     startDate: '01/09/2026',
+    sponsor: [
+      {
+        name: 'SoftExpert',
+        imageUrl: '/sponsor/softExpert.png',
+        href: '',
+      },
+      {
+        name: 'portoRico',
+        imageUrl: '/sponsor/portoRico.png',
+        href: '',
+      },
+      {
+        name: 'boxTi',
+        imageUrl: '/sponsor/boxTI.png',
+        href: '',
+      },
+      {
+        name: 'Dinamio',
+        imageUrl: '/sponsor/Dinamio.png',
+        href: '',
+      },
+    ],
     endDate: '05/09/2026',
     teamsCounter: 12,
     teams: [

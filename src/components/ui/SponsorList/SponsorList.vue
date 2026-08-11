@@ -13,7 +13,7 @@ const props = defineProps<{
 
 <template>
   <div class="bg-white p-1">
-    <ul class="flex flex-wrap gap-2 justify-evenly  items-center">
+    <ul class="flex flex-wrap gap-10 items-center">
         <li v-for="image in props.images" :key="'key-' + image.name">
             <SponsorLogo 
             :name="image.name"
