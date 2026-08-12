@@ -12,7 +12,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="bg-white p-1">
+  <div class="p-1">
     <ul class="flex flex-wrap gap-10 items-center">
         <li v-for="image in props.images" :key="'key-' + image.name">
             <SponsorLogo 

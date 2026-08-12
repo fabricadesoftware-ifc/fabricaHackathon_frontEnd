@@ -13,10 +13,16 @@
         <p class="text-[20px] text-[#4B5563]">Gerenciado por: <span class="text-[#111827]">{{ evento?.manager }}</span></p>
       </div>
 
-      <EventDateRange
-        :end-date="evento?.endDate"
-        :start-date="evento?.startDate"
-      />
+      <div class="flex flex-col items-end gap-6 h-[10vh]">
+        <EventDateRange
+          :end-date="evento?.endDate"
+          :start-date="evento?.startDate"
+        />
+
+        <RouterLink v-if="evento?.status == 'inscricoes'" to="/nomePraMudar">
+          <SubscribeButton />
+        </RouterLink>
+      </div>
     </div>
 
     <SponsorList
@@ -48,7 +54,8 @@
 </template>
 <script setup lang="ts">
   import { computed } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { RouterLink, useRoute } from 'vue-router'
+  import SubscribeButton from '@/components/layout/SubscribeButton'
   import TeamsSection from '@/components/layout/TeamsSection'
   import EventDateRange from '@/components/ui/EventDateRange'
   import EventThumbnail from '@/components/ui/EventThumbnail'
@@ -68,7 +75,7 @@
 
   const evento = computed(() => {
     return hackathons.find(
-      hackathon => hackathon.id === Number(route.params.id)
+      hackathon => hackathon.id === Number(route.params.id),
     )
   })
 </script>
