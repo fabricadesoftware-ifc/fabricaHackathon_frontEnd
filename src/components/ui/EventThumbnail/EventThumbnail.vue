@@ -23,7 +23,7 @@
     >
 
     <statusSelect
-      class="absolute top-7 left-8.5 w-[11vw] flex justify-center py-0.5 rounded-lg text-[20px]"
+      class="absolute top-7 left-8.5 px-5 flex justify-center py-0.5 rounded-lg text-[17px]"
       :label="label"
       :status="props.status ? props.status : 'andamento'"
     />

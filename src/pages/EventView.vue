@@ -9,8 +9,8 @@
 
     <div class="flex justify-between items-baseline mb-[3vw]">
       <div>
-        <h2 class="text-[40px] text-[#111827]">{{ evento?.title }}</h2>
-        <p class="text-[20px] text-[#4B5563]">Gerenciado por: <span class="text-[#111827]">{{ evento?.manager }}</span></p>
+        <h2 class="text-[30px] text-[#111827]">{{ evento?.title }}</h2>
+        <p class="text-[16px] text-[#4B5563]">Gerenciado por: <span class="text-[#111827]">{{ evento?.manager }}</span></p>
       </div>
 
       <div class="flex flex-col items-end gap-6 h-[10vh]">
@@ -48,7 +48,7 @@
     <TeamsSection
       class="max-w-max mt-[3vw]"
       :items="evento?.teams"
-      :title="evento?.title"
+      title="Equipes Participantes"
     />
   </section>
 </template>
