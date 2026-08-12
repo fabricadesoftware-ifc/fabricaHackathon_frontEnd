@@ -4,6 +4,7 @@
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
+import LoginCard from './components/layout/LoginCard/LoginCard.vue'
 
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
@@ -18,6 +19,7 @@
     <main class="flex-1 flex-row bg-[#F9FAFB]">
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
       <div class="mx-10">
+        <LoginCard title="tes" subtitle="tes"></LoginCard>
         <RouterView />
       </div>
       
