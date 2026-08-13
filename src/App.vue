@@ -4,6 +4,28 @@
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
+import LoginCard from './components/layout/LoginCard/LoginCard.vue'
+
+
+const handleLogin = (dados: {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}) => {
+  console.log('Login:', dados);
+};
+
+const handleGoogleLogin = () => {
+  console.log('Login com Google');
+};
+
+const handleForgotPassword = () => {
+  console.log('Esqueci minha senha');
+};
+
+const handleCreateAccount = () => {
+  console.log('Criar conta');
+};
 
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
@@ -20,7 +42,14 @@
       <div class="mx-10">
         <RouterView />
       </div>
-      
+      <LoginCard
+    submit-text="Entrar"
+    :is-loading="false"
+    @submit="handleLogin"
+    @google-login="handleGoogleLogin"
+    @forgot-password="handleForgotPassword"
+    @create-account="handleCreateAccount"
+  />
     </main>
   </div>
 </template>
