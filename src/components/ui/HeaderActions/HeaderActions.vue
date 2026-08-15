@@ -87,7 +87,7 @@ function handleOptionClick(option: MenuOption) {
       <v-badge v-if="props.notificationCount > 0" :class="[
         'simple-badge absolute -top-1 -right-1',
         badgeClass
-      ]" color="#1455CC" :content="props.notificationCount" overlap />
+      ]" color="#1455CC"  :content="props.notificationCount" overlap />
 
     </button>
 
@@ -191,12 +191,11 @@ function handleOptionClick(option: MenuOption) {
 
 /* Badge */
 .badge-sm :deep(.v-badge__badge) {
-  width: 14px;
+  min-width: 14px;
   height: 14px;
   font-size: 9px;
   border-radius: 100%;
 }
-
 
 .badge-md :deep(.v-badge__badge) {
   width: 16px;
@@ -204,7 +203,6 @@ function handleOptionClick(option: MenuOption) {
   font-size: 10px;
   border-radius: 100%;
 }
-
 
 .badge-lg :deep(.v-badge__badge) {
   width: 18px;

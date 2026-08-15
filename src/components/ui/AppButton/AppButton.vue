@@ -19,7 +19,7 @@ const emit = defineEmits<{
     emit('click')
   }
 
-  const base = 'py-2 px-3.5 rounded-md text-[20px] font-normal normal-case transition-all duration-150 ease-in-out'
+  const base = 'max-[400px]:py-0.5 py-2 max-[400px]:px-2.5 px-3.5 rounded-md max-[400px]:text-[17px] text-[20px] font-normal normal-case transition-all duration-150 ease-in-out'
 
   const buttonClasses = computed(() => {
     const variants: Record<Variant, string> = {
