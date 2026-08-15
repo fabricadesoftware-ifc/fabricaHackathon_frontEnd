@@ -1,7 +1,7 @@
 <template>
   <aside
     :class="[
-      'relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300',
+      'max-[400px]:hidden relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300',
       rail ? 'w-[72px]' : 'w-60',
     ]"
   >
