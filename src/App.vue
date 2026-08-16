@@ -3,24 +3,25 @@
   import AvatarUpload from '@/components/layout/AvatarUpload'
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
+  import NavButton from './components/ui/NavButton/NavButton.vue'
   import { Sidebar } from './components/ui/Sidebar'
-
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
-  const file: File = { name: '', lastModified: 0, size: 0, type: '', webkitRelativePath: '' }
+  const file: File = { name: '', lastModified: 0, size: 0, type: '', webkitRelativePath: '' } 
 </script>
 <template>
 
   <div class="flex">
     <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
-
     <main class="flex-1 flex-row">
+
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
+
       <div class="mx-10">
+
         <RouterView />
       </div>
-      
     </main>
   </div>
 </template>
