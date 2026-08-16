@@ -5,7 +5,15 @@
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
+import AppButton from './components/ui/AppButton/AppButton.vue'
 
+function salvar() {
+  console.log("Salvou!")
+}
+
+const remover = (id: number) => {
+  convidados.value = convidados.value.filter(c => c.id !== id)
+}
 
 const handleLogin = (dados: {
   email: string;
@@ -42,14 +50,32 @@ const handleCreateAccount = () => {
       <div class="mx-10">
         <RouterView />
       </div>
-      <LoginCard
-    submit-text="Entrar"
-    :is-loading="false"
-    @submit="handleLogin"
-    @google-login="handleGoogleLogin"
-    @forgot-password="handleForgotPassword"
-    @create-account="handleCreateAccount"
+      <AppButton
+    variant="primary"
+    label="Salvar"
+    @click="salvar"
   />
+  <AppButton
+  variant="primary"
+  label="Adicionar"
+  icon="+"
+  iconPosition="left"
+  @click="adicionar"
+/>
+<AppButton
+  variant="text"
+  label="Próximo"
+  icon="→"
+  iconPosition="right"
+  @click="proximo"
+/>
+<AppButton
+  variant="secondary"
+  label="Voltar"
+  icon="←"
+  iconPosition="left"
+  @click="voltar"
+/>      
     </main>
   </div>
 </template>
