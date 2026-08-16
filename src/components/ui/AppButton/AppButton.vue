@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-type Variant = "primary" | "text";
+type Variant = "primary" | "text" | "secondary";
 
 const props = defineProps<{
   variant: Variant;
@@ -26,9 +26,10 @@ const base =
 
 const buttonClasses = computed(() => {
   const variants: Record<Variant, string> = {
-    primary: "bg-[#2563EB] text-white hover:bg-[#2054C6]",
-    text: "bg-transparent text-[#111827] shadow-none hover:bg-gray-200",
-  };
+  primary: "bg-[#2563EB] text-white hover:bg-[#2054C6]",
+  text: "bg-transparent text-[#111827] shadow-none hover:bg-gray-200",
+  secondary: "bg-white text-[#4B5563] hover:bg-gray-50 border border-gray-200",
+};
 
   return `${base} ${variants[props.variant]}`;
 });
