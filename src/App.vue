@@ -6,6 +6,7 @@
   import { Sidebar } from './components/ui/Sidebar'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
 import AppButton from './components/ui/AppButton/AppButton.vue'
+import ProgressBar from './components/ui/ProgressBar/ProgressBar.vue'
 
 function salvar() {
   console.log("Salvou!")
@@ -76,6 +77,8 @@ const handleCreateAccount = () => {
   iconPosition="left"
   @click="voltar"
 />      
+
+      <ProgressBar :current="2" :total="10" label="Projetos avaliados"></ProgressBar>
     </main>
   </div>
 </template>
