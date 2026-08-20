@@ -16,10 +16,10 @@
     const base = 'px-3 py-1 rounded-full text-sm font-medium text-white'
 
     const variants: Record<Status, string> = {
-      inscricoes: 'bg-green-500',
-      avaliacao: 'bg-purple-500',
-      andamento: 'bg-blue-500',
-      finalizado: 'bg-neutral-700',
+      inscricoes: 'bg-[#1DA422]',
+      avaliacao: 'bg-[#6238CF]',
+      andamento: 'bg-[#1C74FB]',
+      finalizado: 'bg-[#161B22]',
     }
 
     return `${base} ${variants[props.status]}`

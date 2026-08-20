@@ -1,12 +1,13 @@
 <template>
-  <div class="px-[3vw]">
+  <div>
     <SectionCounterHeader
       class="mb-[2vw]"
       :count="count"
-      :title="props.title"
+      :title="props.items?.length ? props.title : 'Ainda sem equipes participantes'"
     />
 
     <CardGrid
+      v-if="props.items"
       :items="props.items"
     />
   </div>
@@ -16,7 +17,8 @@
   import { CardGrid } from '../CardGrid'
   import SectionCounterHeader from '../SectionCounterHeader'
   const count = computed(() => {
-    return props.items.length
+    if (props.items !== undefined) return props.items.length
+    return undefined
   })
   interface ProjectCardItem {
     id: string | number
@@ -30,7 +32,7 @@
   }
 
   const props = defineProps<{
-    title: string
-    items: ProjectCardItem[]
+    title?: string
+    items?: ProjectCardItem[]
   }>()
 </script>

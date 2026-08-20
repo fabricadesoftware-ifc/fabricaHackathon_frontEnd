@@ -54,7 +54,7 @@ const optionsAno = [{
 </script>
 
 <template>
-  <div class="flex justify-between py-3 bg-white min-w-full">
+  <div class="flex justify-between py-3 min-w-full">
     <searchBar :modelValue='model'></searchBar>
     <div class="flex gap-4">
     <!-- Tipo -->
