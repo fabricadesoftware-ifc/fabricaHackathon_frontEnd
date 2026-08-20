@@ -1,1 +1,0 @@
-export { default as UnsavedChangesBar } from './UnsavedChangesBar.vue'
