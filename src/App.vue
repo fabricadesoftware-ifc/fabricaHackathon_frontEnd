@@ -51,34 +51,6 @@ const handleCreateAccount = () => {
       <div class="mx-10">
         <RouterView />
       </div>
-      <AppButton
-    variant="primary"
-    label="Salvar"
-    @click="salvar"
-  />
-  <AppButton
-  variant="primary"
-  label="Adicionar"
-  icon="+"
-  iconPosition="left"
-  @click="adicionar"
-/>
-<AppButton
-  variant="text"
-  label="Próximo"
-  icon="→"
-  iconPosition="right"
-  @click="proximo"
-/>
-<AppButton
-  variant="secondary"
-  label="Voltar"
-  icon="←"
-  iconPosition="left"
-  @click="voltar"
-/>      
-
-      <ProgressBar :current="2" :total="10" label="Projetos avaliados"></ProgressBar>
     </main>
   </div>
 </template>
