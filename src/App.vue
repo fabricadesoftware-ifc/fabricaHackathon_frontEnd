@@ -4,6 +4,7 @@
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
+  import EvaluationBadge from './components/ui/EvaluationBadge/EvaluationBadge.vue'
 
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
@@ -20,7 +21,12 @@
       <div class="mx-10">
         <RouterView />
       </div>
-      
+      <EvaluationBadge status="Pendente" />
+
+  <EvaluationBadge
+    status="Avaliado"
+    score="9.5"
+  />
     </main>
   </div>
 </template>
