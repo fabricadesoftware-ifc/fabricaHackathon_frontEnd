@@ -6,7 +6,8 @@
   import { Sidebar } from './components/ui/Sidebar'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
 import AppButton from './components/ui/AppButton/AppButton.vue'
-
+import summaryRow from './components/ui/SummaryRow/summaryRow.vue'
+import SummaryRow from './components/ui/SummaryRow/summaryRow.vue'
 function salvar() {
   console.log("Salvou!")
 }
@@ -50,32 +51,10 @@ const handleCreateAccount = () => {
       <div class="mx-10">
         <RouterView />
       </div>
-      <AppButton
-    variant="primary"
-    label="Salvar"
-    @click="salvar"
+      <SummaryRow
+    label="Equipe"
+    values="Equipe Alpha"
   />
-  <AppButton
-  variant="primary"
-  label="Adicionar"
-  icon="+"
-  iconPosition="left"
-  @click="adicionar"
-/>
-<AppButton
-  variant="text"
-  label="Próximo"
-  icon="→"
-  iconPosition="right"
-  @click="proximo"
-/>
-<AppButton
-  variant="secondary"
-  label="Voltar"
-  icon="←"
-  iconPosition="left"
-  @click="voltar"
-/>      
     </main>
   </div>
 </template>
