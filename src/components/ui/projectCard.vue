@@ -1,9 +1,9 @@
 <template>
-  <div class="rounded-md bg-white shadow-md p-4 flex flex-col justify-between w-full">
+  <div class="flex flex-col justify-between w-full bg-white border-1 rounded-md border-solid border-[#E5E7EB] p-5">
 
     <div class="flex items-start justify-between">
       <div class="w-12 h-12 rounded-full border border-gray-200 overflow-hidden flex items-center justify-center">
-        <img :alt="title" class="" :src="logo">
+        <img :alt="title" :src="logo">
       </div>
 
       <statusProject :label="statusLabel" :status="status" />
