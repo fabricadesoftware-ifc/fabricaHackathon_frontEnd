@@ -10,12 +10,12 @@
       <p class="text-[16px] text-[#4B5563]">{{ description }}</p>
 
       <p class="font-[16px] text-[#4B5563] flex gap-2">
-        Equipe: <span class="flex gap-2"><span class="text-[#111827]">{{ teamName }}</span> <span class="text-[#2563EB] font-[14px]">{{ projectUrl }}</span></span>
+        Equipe: <span class="flex gap-2"><span class="text-[#111827]">{{ teamName }}</span> <span class="text-[#2563EB] font-[14px]">{{ projectUrl }} <span class="mdi mdi-arrow-top-right"></span></span></span>
       </p>
       </div>
 
       <div class="flex items-center gap-2 text-[14px] text-[#2563EB] font-medium">
-        <span class="mdi mdi-trophy-outline text-lg" />
+        <span class="mdi mdi-trophy-outline text-lg"></span>
         <span>{{ editionName }}</span>
       </div>
     </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-  import EvaluationBadge from '../../EvaluationBadge'
+  import EvaluationBadge from '../EvaluationBadge'
 
   type Status = 'Pendente' | 'Avaliado'
 
