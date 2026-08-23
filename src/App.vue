@@ -5,7 +5,7 @@
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
-import AppButton from './components/ui/AppButton/AppButton.vue'
+import SuccessState from './components/ui/SucessState/sucessState.vue'
 
 function salvar() {
   console.log("Salvou!")
@@ -49,33 +49,14 @@ const handleCreateAccount = () => {
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
       <div class="mx-10">
         <RouterView />
-      </div>
-      <AppButton
-    variant="primary"
-    label="Salvar"
-    @click="salvar"
+      </div>  
+
+      <SuccessState
+    title="avaliação enviada"
+  description="Sua nota para o projeto Rotativa foi registrada. Faltam 8 projetos pendentes nesta edição."
+  button-label="Voltar para lista de projetos"
+  @click="handleClick"
   />
-  <AppButton
-  variant="primary"
-  label="Adicionar"
-  icon="+"
-  iconPosition="left"
-  @click="adicionar"
-/>
-<AppButton
-  variant="text"
-  label="Próximo"
-  icon="→"
-  iconPosition="right"
-  @click="proximo"
-/>
-<AppButton
-  variant="secondary"
-  label="Voltar"
-  icon="←"
-  iconPosition="left"
-  @click="voltar"
-/>      
     </main>
   </div>
 </template>
