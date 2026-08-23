@@ -8,13 +8,14 @@ import LoginCard from "./components/layout/LoginCard/LoginCard.vue";
 import AppButton from "./components/ui/AppButton/AppButton.vue";
 import ProgressBar from "./components/ui/ProgressBar/ProgressBar.vue";
 import EvaluationCriteriaCard from "./components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue";
+import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
 
 function salvar() {
   console.log("Salvou!");
 }
 
 const remover = (id: number) => {
-  convidados.value = convidados.value.filter((c) => c.id !== id);
+  convidados.value = convidados.value.filter((c) => c.id !== id);       
 };
 
 const handleLogin = (dados: {
@@ -63,21 +64,16 @@ const comentarioCriatividade = ref('')
       />
       <div class="mx-10">
         <RouterView />
-        <EvaluationCriteriaCard
-          criteriaName="Criatividade"
-          v-model="notaCriatividade"
-          v-model:comment="comentarioCriatividade"
-        />
-         <EvaluationCriteriaCard
-          criteriaName="Criatividade"
-          v-model="notaCriatividade"
-          v-model:comment="comentarioCriatividade"
-        />
-         <EvaluationCriteriaCard
-          criteriaName="Criatividade"
-          v-model="notaCriatividade"
-          v-model:comment="comentarioCriatividade"
-        />
+        <EvaluationProjectCard
+          avatar="/avatar.png"
+          name="Hackathon App"
+          description="Sistema para gerenciamento de hackathons"
+          teamName="Equipe Alpha"
+          editionName="HackIFC 2026"
+          projectUrl="github.com/equipe-alpha"
+          status="Avaliado"
+          :score="9.5"
+        />  
       </div>
     </main>
   </div>

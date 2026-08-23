@@ -16,10 +16,10 @@
   type EvaluationBadge
     = | {
       status: 'Pendente'
-      score?: string
+      score?: number
     } | {
       status: 'Avaliado'
-      score: string
+      score: number
     }
   const props = defineProps<EvaluationBadge>()
 
