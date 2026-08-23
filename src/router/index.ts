@@ -24,6 +24,11 @@ const router = createRouter({
       component: EdicoesView,
     },
     {
+      path: '/edicoes/:id',
+      name: 'edicoes',
+      component: () => import('@/pages/EventView.vue'),
+    },
+    {
       path: '/projetos',
       component: MyProjectsView,
     },
