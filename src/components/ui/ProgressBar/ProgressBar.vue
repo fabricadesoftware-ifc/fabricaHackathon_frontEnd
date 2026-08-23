@@ -8,7 +8,7 @@
     </div>
     
     <div class="mt-2 flex justify-between items-center">
-      <h3 class="text-sm font-normal text-gray-700 text-foreground">
+      <h3 class="text-sm font-normal text-[#4B5563] text-foreground">
         {{ props.current }}/{{ props.total }} {{ props.label }}
       </h3>
     </div>
