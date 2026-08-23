@@ -4,7 +4,9 @@
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
+import LogoUpload from './components/ui/LogoUpload/LogoUpload.vue'
 
+const logo = ref<File | string | null>(null)
   const activeItem = ref('home')
   const isLoggedIn = ref(true)
   const file: File = { name: '', lastModified: 0, size: 0, type: '', webkitRelativePath: '' }
@@ -20,7 +22,9 @@
       <div class="mx-10">
         <RouterView />
       </div>
-      
+      <LogoUpload
+  v-model="logo"
+/>
     </main>
   </div>
 </template>
