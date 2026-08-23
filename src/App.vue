@@ -4,6 +4,7 @@
   import AppHeader from './components/layout/AppHeader/AppHeader.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import { Sidebar } from './components/ui/Sidebar'
+  import EvaluationCard from './components/ui/EvaluationCard/EvaluationCard.vue'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
 import AppButton from './components/ui/AppButton/AppButton.vue'
 
@@ -49,33 +50,17 @@ const handleCreateAccount = () => {
       <AppHeader :is-logged="true" :notification-count="3" user-avatar="/avatar.png" user-name="Renan" />
       <div class="mx-10">
         <RouterView />
-      </div>
-      <AppButton
-    variant="primary"
-    label="Salvar"
-    @click="salvar"
+        <EvaluationCard
+    image="/public/images/hackifc.png"
+    title="HackIFC 2026"
+    deadline="30/08/2026"
+    :current="26"
+    :total="32"
+    progressLabel="24 de 40 equipes"
+    status="inscricoes"
+    @click="abrirEvento"
   />
-  <AppButton
-  variant="primary"
-  label="Adicionar"
-  icon="+"
-  iconPosition="left"
-  @click="adicionar"
-/>
-<AppButton
-  variant="text"
-  label="Próximo"
-  icon="→"
-  iconPosition="right"
-  @click="proximo"
-/>
-<AppButton
-  variant="secondary"
-  label="Voltar"
-  icon="←"
-  iconPosition="left"
-  @click="voltar"
-/>      
+      </div>
     </main>
   </div>
 </template>

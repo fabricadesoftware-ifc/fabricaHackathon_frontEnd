@@ -1,7 +1,7 @@
 <template>
   <div class="group hover:-translate-y-0.5 transition-all duration-350 w-fit cursor-pointer p-3 flex flex-col gap-4 shadow-xl rounded-lg" @click="emits('click')">
     <div class="flex gap-3">
-      <img :alt="props.image" class="rounded-lg" :src="props.image">
+      <img :alt="props.image" class="w-30 h-30 rounded-lg object-cover shrink-0" :src="props.image">
 
       <div class="flex justify-between items-start gap-[4vw] pt-2">
         <div>
