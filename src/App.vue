@@ -6,7 +6,7 @@
   import { Sidebar } from './components/ui/Sidebar'
 import LoginCard from './components/layout/LoginCard/LoginCard.vue'
 import AppButton from './components/ui/AppButton/AppButton.vue'
-
+import FinalScoreBar from './components/ui/FinalScoreBar/FinalScoreBar.vue'
 function salvar() {
   console.log("Salvou!")
 }
@@ -55,27 +55,7 @@ const handleCreateAccount = () => {
     label="Salvar"
     @click="salvar"
   />
-  <AppButton
-  variant="primary"
-  label="Adicionar"
-  icon="+"
-  iconPosition="left"
-  @click="adicionar"
-/>
-<AppButton
-  variant="text"
-  label="Próximo"
-  icon="→"
-  iconPosition="right"
-  @click="proximo"
-/>
-<AppButton
-  variant="secondary"
-  label="Voltar"
-  icon="←"
-  iconPosition="left"
-  @click="voltar"
-/>      
+  <FinalScoreBar :score="8.7" />
     </main>
   </div>
 </template>
