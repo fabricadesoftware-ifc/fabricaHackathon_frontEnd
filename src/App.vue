@@ -7,6 +7,7 @@ import { Sidebar } from "./components/ui/Sidebar";
 import LoginCard from "./components/layout/LoginCard/LoginCard.vue";
 import AppButton from "./components/ui/AppButton/AppButton.vue";
 import ProgressBar from "./components/ui/ProgressBar/ProgressBar.vue";
+import EvaluationCriteriaCard from "./components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue";
 import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
 
 function salvar() {
@@ -46,6 +47,9 @@ const file: File = {
   type: "",
   webkitRelativePath: "",
 };
+
+const notaCriatividade = ref(7.0)
+const comentarioCriatividade = ref('')
 </script>
 <template>
   <div class="flex">
