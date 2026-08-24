@@ -83,7 +83,7 @@
 </script>
 
 <template>
-  <section class="bg-gray-300 flex justify-center">
+  <section class="bg-red-400 flex justify-center">
     <div class="min-w-[50vw] bg-white px-[2vw] py-[4vh] border-solid border-3 rounded-2xl border-gray-400">
         <h2 class="text-[1.5rem] font-medium">Sua equipe</h2>
       <p class=" mb-5">
@@ -123,13 +123,13 @@
 
     <p v-if="errorMessage" class="text-red-400 text-[0.8rem]">{{ errorMessage }}</p>
 
-    <ul>
-      <li v-for="participant in props.participants" :key="participant">
-        <InviteChip
-          :email="participant"
-          status="Convidado"
-          @remove="removeParticipante(participant)"
-          />
+    <ul class="block ">
+      <li class="mt-2" v-for="participant in props.participants" :key="participant">
+          <InviteChip
+            :email="participant"
+            status="Convidado"
+            @remove="removeParticipante(participant)"
+            />
       </li>
     </ul>
     
@@ -138,7 +138,10 @@
       <AppButton 
       label="Voltar" 
       variant="secondary" 
-      @click="handleBack" />    
+      @click="handleBack" 
+      icon-position="left"
+      icon="🠔"
+      />    
       <AppButton
       :disabled="!canContinue"
       label="Continuar para o projeto"
@@ -151,3 +154,11 @@
   </div>
   </section>
 </template>
+<style scoped>
+ul {
+  display: block;
+}
+ul li {
+  display: block ;
+}
+</style>
