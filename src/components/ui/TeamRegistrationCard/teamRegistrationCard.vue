@@ -83,7 +83,7 @@
 </script>
 
 <template>
-  <section class="bg-red-400 flex justify-center">
+  <section class=" flex justify-center">
     <div class="min-w-[50vw] bg-white px-[2vw] py-[4vh] border-solid border-3 rounded-2xl border-gray-400">
         <h2 class="text-[1.5rem] font-medium">Sua equipe</h2>
       <p class=" mb-5">
