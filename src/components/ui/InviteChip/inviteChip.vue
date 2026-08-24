@@ -9,11 +9,11 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  <div class="bg-white flex justify-between lg:min-w-10 min-w-5 rounded-3xl lg:gap-5 gap-2 lg:px-4 px-2 items-center">
-    <span class="lg:text-[1.1rem] text-[0.7rem] max-w-[50vw]">
+  <div class="bg-gray-300 flex justify-between max-w-[30vw] lg:min-w-7 min-w-5 rounded-3xl lg:gap-3 gap-2 lg:px-4 px-2 items-center">
+    <span class="lg:text-[0.9rem] text-[0.7rem] max-w-[50vw]">
     {{ props.email }}          
     </span>
-    <span class="text-blue-400 lg:text-[1rem] text-[0.6rem]">
+    <span class="text-blue-400 lg:text-[0.8rem] text-[0.6rem]">
         {{ status }}
     </span>
     <button @click="emits('remove')" class="lg:text-[1.4rem]">
