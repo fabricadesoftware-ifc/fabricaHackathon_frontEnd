@@ -10,6 +10,15 @@ import ProgressBar from "./components/ui/ProgressBar/ProgressBar.vue";
 import EvaluationCriteriaCard from "./components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue";
 import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
 import ProjectDetailsCard from "./components/ui/ProjectDetailsCard/ProjectDetailsCard.vue";
+import { reactive } from 'vue';
+
+const form = reactive({
+  logo: null,
+  teamName: '',
+  bio: '',
+  deployUrl: ''
+});
+
 
 function salvar() {
   console.log("Salvou!");
@@ -76,7 +85,7 @@ const comentarioCriatividade = ref('')
           :score="9.5"
         />  
         <ProjectDetailsCard
-        />
+  />
       </div>
     </main>
   </div>
