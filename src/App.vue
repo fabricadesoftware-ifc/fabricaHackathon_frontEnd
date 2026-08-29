@@ -9,13 +9,23 @@ import AppButton from "./components/ui/AppButton/AppButton.vue";
 import ProgressBar from "./components/ui/ProgressBar/ProgressBar.vue";
 import EvaluationCriteriaCard from "./components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue";
 import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
+import RegistrationReviewCard from "./components/ui/RegistrationReviewCard/index";
+
+//  Inicio dos testes do RegistrationReviewCard
+function handleBack() {
+  console.log('Clicou em Voltar')
+}
+function handleConfirms() {
+  console.log('Inscrição confirmada!')
+}
+// Fim dos testes do RegistrationReviewCard
 
 function salvar() {
   console.log("Salvou!");
 }
 
 const remover = (id: number) => {
-  convidados.value = convidados.value.filter((c) => c.id !== id);       
+  convidados.value = convidados.value.filter((c) => c.id !== id);
 };
 
 const handleLogin = (dados: {
@@ -48,8 +58,8 @@ const file: File = {
   webkitRelativePath: "",
 };
 
-const notaCriatividade = ref(7.0)
-const comentarioCriatividade = ref('')
+const notaCriatividade = ref(7.0);
+const comentarioCriatividade = ref("");
 </script>
 <template>
   <div class="flex">
@@ -73,7 +83,21 @@ const comentarioCriatividade = ref('')
           projectUrl="github.com/equipe-alpha"
           status="Avaliado"
           :score="9.5"
-        />  
+        />
+        <RegistrationReviewCard
+          edition="HackIfc 2026"
+          team-name="Eight"
+          :participants="[
+            'Joãolima@gmail.com',
+            'anapereira@gmail.com',
+            'ricardoroban@gmail.com',
+          ]"
+          project-name="Alugaê"
+          theme="Vendas"
+          deploy-url="alugae.vercel.app"
+          @back="handleBack"
+          @confirm="handleConfirms"
+        />
       </div>
     </main>
   </div>
