@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full max-w-3xl mx-auto my-8 p-6 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col gap-6"
+    class="w-full max-w-3xl mx-auto my-8 p-9 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col gap-6"
   >
     <!-- Cabeçalho -->
     <div class="flex flex-col gap-1">
