@@ -9,16 +9,16 @@ import AppButton from "./components/ui/AppButton/AppButton.vue";
 import ProgressBar from "./components/ui/ProgressBar/ProgressBar.vue";
 import EvaluationCriteriaCard from "./components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue";
 import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
-import RegistrationReviewCard from "./components/ui/RegistrationReviewCard/index";
+import ProjectDetailsCard from "./components/ui/ProjectDetailsCard/ProjectDetailsCard.vue";
+import { reactive } from 'vue';
 
-//  Inicio dos testes do RegistrationReviewCard
-function handleBack() {
-  console.log('Clicou em Voltar')
-}
-function handleConfirms() {
-  console.log('Inscrição confirmada!')
-}
-// Fim dos testes do RegistrationReviewCard
+const form = reactive({
+  logo: null,
+  teamName: '',
+  bio: '',
+  deployUrl: ''
+});
+
 
 function salvar() {
   console.log("Salvou!");
@@ -83,21 +83,9 @@ const comentarioCriatividade = ref("");
           projectUrl="github.com/equipe-alpha"
           status="Avaliado"
           :score="9.5"
-        />
-        <RegistrationReviewCard
-          edition="HackIfc 2026"
-          team-name="Eight"
-          :participants="[
-            'Joãolima@gmail.com',
-            'anapereira@gmail.com',
-            'ricardoroban@gmail.com',
-          ]"
-          project-name="Alugaê"
-          theme="Vendas"
-          deploy-url="alugae.vercel.app"
-          @back="handleBack"
-          @confirm="handleConfirms"
-        />
+        />  
+        <ProjectDetailsCard
+  />
       </div>
     </main>
   </div>
