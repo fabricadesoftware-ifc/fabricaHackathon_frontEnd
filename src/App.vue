@@ -25,7 +25,7 @@ function salvar() {
 }
 
 const remover = (id: number) => {
-  convidados.value = convidados.value.filter((c) => c.id !== id);       
+  convidados.value = convidados.value.filter((c) => c.id !== id);
 };
 
 const handleLogin = (dados: {
@@ -58,8 +58,8 @@ const file: File = {
   webkitRelativePath: "",
 };
 
-const notaCriatividade = ref(7.0)
-const comentarioCriatividade = ref('')
+const notaCriatividade = ref(7.0);
+const comentarioCriatividade = ref("");
 </script>
 <template>
   <div class="flex">
