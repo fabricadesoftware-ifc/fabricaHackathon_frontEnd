@@ -60,7 +60,7 @@ const buttonClasses = computed(() => {
     <span class="inline-flex items-center justify-center gap-1.5">
       <span class="leading-none">{{ props.label }}</span>
       <span
-        class="text-[24px] leading-none font-light transform -translate-y-0.5 select-none"
+        class="text-[24px] leading-none font-light transform -translate-y-[1.5px] select-none"
       >
         {{ props.icon }}
       </span>
