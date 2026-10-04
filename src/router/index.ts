@@ -36,6 +36,16 @@ const router = createRouter({
       path: '/inscricao',
       component: InscricaoView,
     },
+    {
+      path: '/avaliacao',
+      name: 'avaliacao',
+      component: () => import('@/pages/EvaluationsListView.vue')
+    },
+    {
+      path: '/avaliacao/:id/projetos',
+      name: 'avaliacao-projetos',
+      component: () => import('@/pages/EvaluationsListView.vue')
+    }
   ],
 })
 
