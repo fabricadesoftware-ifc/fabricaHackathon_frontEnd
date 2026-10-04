@@ -6,13 +6,15 @@
   </div>
 
   <div v-else class="bg-[#FEF3C7] border-[#E5E7EB]" :class="baseStyle">
-    <p :class="textColor" style=" paint-order: stroke fill">{{ props.status }}</p>
+    <p :class="textColor" style="paint-order: stroke fill">{{ props.status }}</p>
   </div>
 </template>
+
 <script setup lang="ts">
   import { computed } from 'vue'
 
-  const baseStyle = 'w-33 justify-center py-px rounded-lg flex '
+  const baseStyle = 'w-fit justify-center px-3 py-px rounded-[6px] flex text-[13px]'
+
   type EvaluationBadge
     = | {
       status: 'Pendente'
@@ -21,6 +23,7 @@
       status: 'Avaliado'
       score: number
     }
+
   const props = defineProps<EvaluationBadge>()
 
   const textColor = computed(() => {
