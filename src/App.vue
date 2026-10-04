@@ -61,9 +61,6 @@ const file: File = {
 const notaCriatividade = ref(7.0);
 const comentarioCriatividade = ref("");
 </script>
-<template>
-  <div class="flex">
-    <Sidebar v-model:active-item="activeItem" :is-logged-in="isLoggedIn" />
 
     <main class="flex-1 flex-row bg-[#F9FAFB]">
       <AppHeader
