@@ -17,7 +17,7 @@ const values = computed(()=>{
       {{ props.label }}
     </span>
 
-    <div class="flex gap-1.5 items-center">
+    <div class="flex gap-1.5 items-center text-gray-900">
       <span v-for="(valor, index) in values" :key="index">
         {{ valor }}
       </span>

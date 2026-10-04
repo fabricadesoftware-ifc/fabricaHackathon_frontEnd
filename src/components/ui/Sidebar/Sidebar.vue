@@ -2,7 +2,7 @@
   <aside
     :class="[
       'relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300',
-      rail ? 'w-[72px]' : 'w-60',
+      rail ? 'w-18' : 'w-60',
     ]"
   >
     <div class="flex h-16 shrink-0 items-center overflow-hidden px-4">
@@ -76,6 +76,7 @@
     items: () => [
       { id: 'home', label: 'Home', icon: 'mdi-home', route: '/home' },
       { id: 'edicoes', label: 'Edições', icon: 'mdi-code-tags', route: '/edicoes' },
+      {id: 'explorar', label: 'Explorar', icon: 'mdi mdi-magnify', route: '/explorar' },
       { id: 'projetos', label: 'Meus projetos', icon: 'mdi-folder', route: '/projetos', requiresAuth: true },
       { id: 'equipes', label: 'Minhas equipes', icon: 'mdi-account-group', route: '/equipes', requiresAuth: true },
       { id: 'inscricao', label: 'Inscrição', icon: 'mdi-clipboard-text', route: '/inscricao', requiresAuth: true },
