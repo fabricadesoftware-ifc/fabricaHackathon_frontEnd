@@ -6,9 +6,11 @@ import AppHeader from './components/layout/AppHeader/AppHeader.vue';
 <template>
   <div class="flex">
     <Sidebar :active-item="'home'" />
-    <div >
+    <div class="flex-1">
       <AppHeader :is-logged="true"/>
-      <RouterView />
+      <main>
+        <RouterView/>
+      </main>
     </div>
   </div>
 </template>
