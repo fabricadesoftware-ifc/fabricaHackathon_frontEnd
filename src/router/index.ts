@@ -11,7 +11,8 @@ import HomeView from '@/pages/HomeView.vue'
 import EdicoesView from '@/pages/EdicoesView.vue'
 import MyProjectsView from '@/pages/MyProjectsView.vue'
 import InscricaoView from '@/pages/InscricaoView.vue'
-
+import EvaluationsListView from '@/pages/EvaluationsListView.vue'
+import EventView from '@/pages/EventView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -26,7 +27,7 @@ const router = createRouter({
     {
       path: '/edicoes/:id',
       name: 'edicoes',
-      component: () => import('@/pages/EventView.vue'),
+      component: EventView,
     },
     {
       path: '/projetos',
@@ -38,14 +39,9 @@ const router = createRouter({
     },
     {
       path: '/avaliacao',
-      name: 'avaliacao',
-      component: () => import('@/pages/EvaluationsListView.vue')
+      component: EvaluationsListView,
+      name: 'avaliacões',
     },
-    {
-      path: '/avaliacao/:id/projetos',
-      name: 'avaliacao-projetos',
-      component: () => import('@/pages/EvaluationsListView.vue')
-    }
   ],
 })
 

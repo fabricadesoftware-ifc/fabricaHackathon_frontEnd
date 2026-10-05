@@ -1,9 +1,9 @@
 <template>
-  <div class="group hover:-translate-y-0.5 transition-all duration-350 w-fit cursor-pointer p-3 flex flex-col gap-4 shadow-xl rounded-lg" @click="emits('click')">
+  <div class="group hover:-translate-y-0.5 transition-all duration-350 w-full cursor-pointer p-3 flex flex-col gap-4 shadow-xl rounded-lg" @click="emits('click')">
     <div class="flex gap-3">
       <img :alt="props.image" class="w-30 h-30 rounded-lg object-cover shrink-0" :src="props.image">
 
-      <div class="flex justify-between items-start gap-[4vw] pt-2">
+      <div class="flex flex-col justify-between items-start gap-[4vw] pt-2 lg:flex-row">
         <div>
           <h4 class="text-[#111827] text-[16px]">{{ props.title }}</h4>
           <p class="text-[#4B5563] text-[14px]">prazo final {{ props.deadline }}</p>

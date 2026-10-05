@@ -43,7 +43,7 @@
 
   interface Props {
     options: SelectOption[]
-    modelValue: string | null
+    modelValue: string
     placeholder?: string
   }
 
@@ -52,11 +52,11 @@
   })
 
   const emit = defineEmits<{
-    'update:modelValue': [value: string | null]
+    'update:modelValue': [value: string]
   }>()
 
   const model = computed({
-    get: () => props.modelValue ?? undefined,
-    set: (value: string | null | undefined) => emit('update:modelValue', value ?? null),
+    get: () => props.modelValue || undefined,
+    set: (value: string | undefined) => emit('update:modelValue', value ?? ''),
   })
 </script>
