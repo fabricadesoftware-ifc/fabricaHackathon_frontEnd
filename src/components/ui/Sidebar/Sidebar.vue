@@ -72,7 +72,7 @@
   }
 
   const props = withDefaults(defineProps<Props>(), {
-    isLoggedIn: false,
+    isLoggedIn: true,
     items: () => [
       { id: 'home', label: 'Home', icon: 'mdi-home', route: '/home' },
       { id: 'edicoes', label: 'Edições', icon: 'mdi-code-tags', route: '/edicoes' },
