@@ -1,15 +1,18 @@
 <template>
-  <div class="group hover:-translate-y-0.5 transition-all duration-350 w-fit cursor-pointer p-3 flex flex-col gap-4 shadow-xl rounded-lg" @click="emits('click')">
+  <div
+    class="group hover:-translate-y-0.5 transition-all duration-300 w-full cursor-pointer p-3 flex flex-col gap-4 rounded-lg border border-gray-200 hover:border-gray-300"
+    @click="emits('click')"
+  >
     <div class="flex gap-3">
-      <img :alt="props.image" class="w-30 h-30 rounded-lg object-cover shrink-0" :src="props.image">
+      <img :alt="props.title" class="w-28 h-28 rounded-lg object-cover shrink-0" :src="props.image">
 
-      <div class="flex justify-between items-start gap-[4vw] pt-2">
+      <div class="flex flex-col justify-between items-start gap-2 pt-2 w-full lg:flex-row lg:items-start">
         <div>
-          <h4 class="text-[#111827] text-[16px]">{{ props.title }}</h4>
-          <p class="text-[#4B5563] text-[14px]">prazo final {{ props.deadline }}</p>
+          <h4 class="text-gray-900 text-base">{{ props.title }}</h4>
+          <p class="text-gray-600 text-sm">prazo final {{ props.deadline }}</p>
         </div>
 
-        <statusSelect
+        <StatusSelect
           :label="label"
           :status="props.status"
         />
@@ -24,28 +27,20 @@
       />
 
       <div class="flex justify-end">
-        <span
-          class="text-[20px] text-[#3B82F6] group-hover:text-[#1a60d2] mdi mdi-arrow-right"
-          @click="emits('click')"
-        />
+        <span class="text-xl text-blue-500 group-hover:text-blue-600 mdi mdi-arrow-right" />
       </div>
     </div>
   </div>
-
 </template>
+
 <script setup lang="ts">
   import { computed } from 'vue'
 
   import ProgressBar from '../ProgressBar'
-  import statusSelect from '../statusSelect.vue'
+  import StatusSelect from '../StatusSelect.vue'
 
-  const label = computed(() => {
-    if (props.status === 'inscricoes') return 'Inscrições'
-    if (props.status === 'avaliacao') return 'Avaliação'
-    if (props.status === 'andamento') return 'Andamento'
-    return 'Finalizado'
-  })
   type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
+
   const props = defineProps<{
     image: string
     title: string
@@ -55,7 +50,17 @@
     progressLabel: string
     status: Status
   }>()
+
   const emits = defineEmits<{
     (e: 'click'): void
   }>()
+
+  const STATUS_LABELS: Record<Status, string> = {
+    inscricoes: 'Inscrições',
+    avaliacao: 'Avaliação',
+    andamento: 'Andamento',
+    finalizado: 'Finalizado',
+  }
+
+  const label = computed(() => STATUS_LABELS[props.status])
 </script>

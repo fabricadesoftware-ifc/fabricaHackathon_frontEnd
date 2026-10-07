@@ -1,75 +1,66 @@
 <script setup lang="ts">
 
-import { Input } from '@vuetify/v0'
-import { ref, watch } from 'vue'
+  import { Input } from '@vuetify/v0'
+  import { ref, watch } from 'vue'
 
+  const props = withDefaults(defineProps<{
+    modelValue: string
+    placeholder?: string
+    debounceMs?: number
+  }>(), {
+    placeholder: 'Buscar...',
+    debounceMs: 300,
+  })
 
-const props = withDefaults(defineProps<{
-  modelValue: string
-  placeholder?: string
-  debounceMs?: number
-}>(), {
-  placeholder: 'Buscar...',
-  debounceMs: 300,
-})
+  const emit = defineEmits<{
+    'update:modelValue': [value: string]
+    'search': [query: string]
+  }>()
 
+  const searchValue = ref(props.modelValue)
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string]
-  'search': [query: string]
-}>()
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
+  watch(() => props.modelValue, (val: string) => {
+    searchValue.value = val
+  })
 
-const searchValue = ref(props.modelValue)
+  function onInput (value: string) {
+    searchValue.value = value
+    emit('update:modelValue', value)
+    debounceSearch()
+  }
 
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
+  function debounceSearch () {
+    if (debounceTimer) clearTimeout(debounceTimer)
 
+    debounceTimer = setTimeout(() => {
+      emit('search', searchValue.value)
+    }, props.debounceMs)
+  }
 
-watch(() => props.modelValue, (val: string) => {
-  searchValue.value = val
-})
+  function onEnter () {
+    if (debounceTimer) clearTimeout(debounceTimer)
 
-
-function onInput(value: string) {
-  searchValue.value = value
-  emit('update:modelValue', value)
-  debounceSearch()
-}
-
-
-function debounceSearch() {
-  if (debounceTimer) clearTimeout(debounceTimer)
-
-  debounceTimer = setTimeout(() => {
     emit('search', searchValue.value)
-  }, props.debounceMs)
-}
+  }
 
+  function onClear () {
+    searchValue.value = ''
 
-function onEnter() {
-  if (debounceTimer) clearTimeout(debounceTimer)
+    emit('update:modelValue', '')
 
-  emit('search', searchValue.value)
-}
+    if (debounceTimer) clearTimeout(debounceTimer)
 
-
-function onClear() {
-  searchValue.value = ''
-
-  emit('update:modelValue', '')
-
-  if (debounceTimer) clearTimeout(debounceTimer)
-
-  emit('search', '')
-}
+    emit('search', '')
+  }
 
 </script>
-
 
 <template>
 
   <Input.Root
-    #default="{ isDirty }"
+    v-slot="{ isDirty }"
     :model-value="searchValue"
     @update:model-value="onInput"
   >
@@ -83,8 +74,8 @@ function onClear() {
       border-[#E5E7EB]
       focus-within:border-blue-500
       rounded-full
-      h-[45px]
-      w-[350px]
+      h-11.25
+      w-87.5
       px-3
     "
     >
@@ -98,7 +89,6 @@ function onClear() {
       "
       />
 
-
       <Input.Control
         class="
         bg-transparent
@@ -108,11 +98,9 @@ function onClear() {
         placeholder-gray-400
         outline-none
       "
-        "
         :placeholder="placeholder"
         @keydown.enter="onEnter"
       />
-
 
       <button
         v-if="isDirty"
