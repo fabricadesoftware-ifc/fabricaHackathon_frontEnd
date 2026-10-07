@@ -6,7 +6,7 @@
   import LoginCard from './components/layout/LoginCard/LoginCard.vue'
   import AppButton from './components/ui/AppButton/AppButton.vue'
   import EvaluationCriteriaCard from './components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue'
-  import EvalutionProjectCardList from './components/ui/EvalutionProjectCardList/EvalutionProjectCardList.vue'
+  import EvaluationProjectCardList from './components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
   import EventDateRange from './components/ui/EventDateRange/EventDateRange.vue'
   import ProgressBar from './components/ui/ProgressBar/ProgressBar.vue'
   import ProjectDetailsCard from './components/ui/ProjectDetailsCard/ProjectDetailsCard.vue'
@@ -24,7 +24,7 @@
   }
 
   function remover (id: number) {
-  convidados.value = convidados.value.filter(c => c.id !== id)
+    convidados.value = convidados.value.filter(c => c.id !== id)
   }
 
   function handleLogin (dados: {
@@ -104,14 +104,14 @@
         />
       </div>
 
-      <EvalutionProjectCardList
+      <EvaluationProjectCardList
         name="Alugaê"
         :score="8.4"
         status="avaliado"
         team-name="Os tops"
       />
 
-      <EvalutionProjectCardList
+      <EvaluationProjectCardList
         name="Alugaê"
         status="pendente"
         team-name="Os tops"
