@@ -20,18 +20,13 @@ type Step = 0 | 1 | 2 | 3
 
 const STEPS: string[] = ['Sua equipe', 'Seu projeto', 'Revisão', 'Confirmação']
 
-// Limites de participantes por equipe. Ajustar conforme as regras da edição
-// quando esses dados vierem do backend.
 const TEAM_LIMITS = { min: 2, max: 5 }
 
-// Limite de caracteres da bio do projeto
 const BIO_MAX_LENGTH = 150
 
 const router = useRouter()
 const route = useRoute()
 
-// Nome da edição vem pela URL (/projetos/novo?edicao=HackIFC). Quando o
-// backend existir, trocar por um id de edição e buscar o nome real.
 const edition = computed(() => {
   const value = route.query.edicao
   return typeof value === 'string' && value.trim() ? value : 'Edição atual'
@@ -39,15 +34,11 @@ const edition = computed(() => {
 
 const NOT_INFORMED = 'Não informado'
 
-// Estado do envio
 const isSubmitting = ref(false)
 const submitError = ref('')
 
-// Etapa atual: 0 = equipe, 1 = projeto, 2 = revisão, 3 = confirmação
 const currentStep = ref<Step>(0)
 
-// Estado centralizado, compartilhado entre todas as etapas.
-// Como ele vive na view (e não nos cards), voltar uma etapa não apaga nada.
 const form = reactive<RegistrationForm>({
   teamName: '',
   participants: [],
@@ -56,7 +47,6 @@ const form = reactive<RegistrationForm>({
   deployUrl: '',
 })
 
-// Mensagem de validação da etapa atual
 const stepError = ref('')
 
 function goToStep (step: Step) {
@@ -64,13 +54,11 @@ function goToStep (step: Step) {
   currentStep.value = step
 }
 
-// Some com o aviso assim que o usuário corrige o campo
 watch(() => form.teamName, () => {
   stepError.value = ''
 })
 
 function onTeamBack () {
-  // Primeira etapa: sai do fluxo e volta para a lista de edições
   router.push('/inscricao')
 }
 
@@ -93,11 +81,6 @@ function onProjectContinue () {
 interface RegistrationPayload extends RegistrationForm {
   edition: string
 }
-
-// TODO(backend): trocar o corpo por a chamada real da API (POST da inscrição).
-// É o único ponto que precisa mudar quando o backend estiver disponível.
-// Em desenvolvimento, abrir /projetos/novo?simularErro=1 força uma falha
-// para testar o tratamento de erro.
 async function submitRegistration (_payload: RegistrationPayload): Promise<void> {
   await new Promise(resolve => setTimeout(resolve, 1200))
 
@@ -107,7 +90,6 @@ async function submitRegistration (_payload: RegistrationPayload): Promise<void>
 }
 
 async function onConfirm () {
-  // Evita envio duplicado por clique repetido
   if (isSubmitting.value) return
 
   isSubmitting.value = true
@@ -117,7 +99,6 @@ async function onConfirm () {
     await submitRegistration({ ...form, edition: edition.value })
     goToStep(3)
   } catch {
-    // Mantém o usuário na revisão, com os dados intactos, para tentar de novo
     submitError.value = 'Não foi possível concluir a inscrição. Verifique sua conexão e tente novamente.'
   } finally {
     isSubmitting.value = false
@@ -161,7 +142,6 @@ defineExpose({ form, currentStep, goToStep })
     </div>
 
     <div class="relative mt-6" :aria-busy="isSubmitting">
-      <!-- Etapa 1: Sua equipe -->
       <TeamRegistrationCard
         v-if="currentStep === 0"
         v-model:participants="form.participants"
@@ -171,8 +151,6 @@ defineExpose({ form, currentStep, goToStep })
         @back="onTeamBack"
         @continue="onTeamContinue"
       />
-
-      <!-- Etapa 2: Seu projeto -->
       <ProjectDetailsCard
         v-else-if="currentStep === 1"
         v-model:bio="form.bio"
@@ -185,8 +163,6 @@ defineExpose({ form, currentStep, goToStep })
         @back="goToStep(0)"
         @continue="onProjectContinue"
       />
-
-      <!-- Etapa 3: Revisão -->
       <RegistrationReviewCard
         v-else-if="currentStep === 2"
         :deploy-url="form.deployUrl.trim() || NOT_INFORMED"
@@ -198,8 +174,6 @@ defineExpose({ form, currentStep, goToStep })
         @back="goToStep(1)"
         @confirm="onConfirm"
       />
-
-      <!-- Etapa 4: Confirmação (sem voltar) -->
       <div v-else class="flex min-h-[60vh] items-center justify-center">
         <SuccessState
           button-label="Ver meus projetos"
@@ -208,8 +182,6 @@ defineExpose({ form, currentStep, goToStep })
           @click="onFinish"
         />
       </div>
-
-      <!-- Bloqueia a tela e mostra loading durante o envio -->
       <div
         v-if="isSubmitting"
         class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70"
