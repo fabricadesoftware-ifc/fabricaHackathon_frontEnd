@@ -11,6 +11,7 @@ import SuccessState from '@/components/ui/SucessState/sucessState.vue'
 interface RegistrationForm {
   teamName: string
   participants: string[]
+  projectName: string
   logo: File | string | null
   bio: string
   deployUrl: string
@@ -20,9 +21,11 @@ type Step = 0 | 1 | 2 | 3
 
 const STEPS: string[] = ['Sua equipe', 'Seu projeto', 'Revisão', 'Confirmação']
 
-const TEAM_LIMITS = { min: 2, max: 5 }
+const TEAM_LIMITS = { min: 3, max: 5 }
 
 const BIO_MAX_LENGTH = 150
+
+const NOT_INFORMED = 'Não informado'
 
 const router = useRouter()
 const route = useRoute()
@@ -32,34 +35,38 @@ const edition = computed(() => {
   return typeof value === 'string' && value.trim() ? value : 'Edição atual'
 })
 
-const NOT_INFORMED = 'Não informado'
+const editionTheme = computed(() => NOT_INFORMED)
 
 const isSubmitting = ref(false)
 const submitError = ref('')
+const stepError = ref('')
 
 const currentStep = ref<Step>(0)
 
 const form = reactive<RegistrationForm>({
   teamName: '',
   participants: [],
+  projectName: '',
   logo: null,
   bio: '',
   deployUrl: '',
 })
-
-const stepError = ref('')
 
 function goToStep (step: Step) {
   stepError.value = ''
   currentStep.value = step
 }
 
-watch(() => form.teamName, () => {
+watch(() => [form.teamName, form.projectName], () => {
   stepError.value = ''
 })
 
 function onTeamBack () {
-  router.push('/inscricao')
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push('/edicoes')
+  }
 }
 
 function onTeamContinue () {
@@ -67,12 +74,16 @@ function onTeamContinue () {
     stepError.value = 'Informe o nome da equipe antes de continuar.'
     return
   }
+  if (form.participants.length < TEAM_LIMITS.min) {
+    stepError.value = `Adicione pelo menos ${TEAM_LIMITS.min} participantes antes de continuar.`
+    return
+  }
   goToStep(1)
 }
 
 function onProjectContinue () {
-  if (!form.teamName.trim()) {
-    stepError.value = 'Informe o nome da equipe antes de continuar.'
+  if (!form.projectName.trim()) {
+    stepError.value = 'Informe o nome do projeto antes de continuar.'
     return
   }
   goToStep(2)
@@ -81,6 +92,8 @@ function onProjectContinue () {
 interface RegistrationPayload extends RegistrationForm {
   edition: string
 }
+
+
 async function submitRegistration (_payload: RegistrationPayload): Promise<void> {
   await new Promise(resolve => setTimeout(resolve, 1200))
 
@@ -151,29 +164,33 @@ defineExpose({ form, currentStep, goToStep })
         @back="onTeamBack"
         @continue="onTeamContinue"
       />
+
+
       <ProjectDetailsCard
         v-else-if="currentStep === 1"
         v-model:bio="form.bio"
         v-model:deploy-url="form.deployUrl"
         v-model:logo="form.logo"
-        v-model:team-name="form.teamName"
+        v-model:team-name="form.projectName"
         :max-bio-length="BIO_MAX_LENGTH"
         subtitle="Esses dados aparecem para os avaliadores durante o julgamento."
         title="Seu projeto"
         @back="goToStep(0)"
         @continue="onProjectContinue"
       />
+
       <RegistrationReviewCard
         v-else-if="currentStep === 2"
         :deploy-url="form.deployUrl.trim() || NOT_INFORMED"
         :edition="edition"
         :participants="form.participants"
-        :project-name="form.teamName"
+        :project-name="form.projectName"
         :team-name="form.teamName"
-        :theme="form.bio.trim() || NOT_INFORMED"
+        :theme="editionTheme"
         @back="goToStep(1)"
         @confirm="onConfirm"
       />
+
       <div v-else class="flex min-h-[60vh] items-center justify-center">
         <SuccessState
           button-label="Ver meus projetos"
@@ -182,6 +199,7 @@ defineExpose({ form, currentStep, goToStep })
           @click="onFinish"
         />
       </div>
+
       <div
         v-if="isSubmitting"
         class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70"

@@ -2,23 +2,17 @@
   <div
     class="w-full max-w-3xl mx-auto p-6 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col gap-6"
   >
-    <!-- Cabeçalho -->
     <div class="flex flex-col gap-1">
       <h2 class="text-xl font-semibold text-gray-900">{{ title }}</h2>
       <p class="text-sm text-gray-600">{{ subtitle }}</p>
     </div>
-
-    <!-- Upload da Logo -->
     <div class="flex flex-col">
       <LogoUpload :model-value="logo" @update:model-value="handleLogoUpdate" />
     </div>
-
-    <!-- Campos do Formulário -->
     <div class="flex flex-col gap-4">
-      <!-- Nome da Equipe -->
       <div class="flex flex-col gap-1.5">
         <label for="team-name" class="text-sm font-medium text-gray-700"
-          >Nome da equipe</label
+          >Nome do Projeto</label
         >
         <input
           id="team-name"
@@ -30,7 +24,6 @@
         />
       </div>
 
-      <!-- Bio / Descrição -->
       <div class="flex flex-col gap-1.5">
         <label for="bio" class="text-sm font-medium text-gray-700">Bio</label>
         <div class="relative">
@@ -51,7 +44,6 @@
         </div>
       </div>
 
-      <!-- Deploy -->
       <div class="flex flex-col gap-1.5">
         <label for="deploy-url" class="text-sm font-medium text-gray-700"
           >Deploy</label
@@ -71,7 +63,6 @@
       </div>
     </div>
 
-    <!-- Rodapé / Ações -->
     <div
       class="flex items-center justify-between pt-2 border-t border-gray-100 mt-2"
     >

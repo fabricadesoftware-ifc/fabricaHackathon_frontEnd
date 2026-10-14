@@ -19,9 +19,9 @@
           :start-date="evento?.startDate"
         />
 
-        <RouterLink v-if="evento?.status == 'inscricoes'" to="/nomePraMudar">
+        <RouterLink v-if="evento?.status == 'inscricoes'" to="/novo">
           <SubscribeButton />
-        </RouterLink>
+        </RouterLink> 
       </div>
     </div>
 

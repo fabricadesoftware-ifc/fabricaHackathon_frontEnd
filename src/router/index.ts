@@ -42,9 +42,9 @@ const router = createRouter({
       path: '/avaliacao',
       component: EvaluationsListView,
       name: 'avaliacões',
-    },
+    },  
     {
-      path: '/projetos/novo',
+      path: '/novo',
       name: 'projeto-novo',
       component: ProjectRegistrationView,
       meta: { requiresAuth: true },
