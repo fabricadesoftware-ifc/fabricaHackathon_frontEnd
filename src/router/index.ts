@@ -13,6 +13,7 @@ import MyProjectsView from '@/pages/MyProjectsView.vue'
 import InscricaoView from '@/pages/InscricaoView.vue'
 import EvaluationsListView from '@/pages/EvaluationsListView.vue'
 import EventView from '@/pages/EventView.vue'
+import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,6 +43,11 @@ const router = createRouter({
       component: EvaluationsListView,
       name: 'avaliacões',
     },
+    {
+      path: '/avaliacao/:id/projeto/:id',
+      component: ProjectEvaluationView,
+      name: 'avaliacõesUnica'
+    }
   ],
 })
 
