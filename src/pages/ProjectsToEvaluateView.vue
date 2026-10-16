@@ -78,27 +78,20 @@
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-auto px-4 py-6 sm:px-6 lg:px-8">
+  <div class="mx-auto w-full max-w-auto px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
     <!-- Cabeçalho -->
-    <header class="mb-6">
-      <div v-if="edition?.title" class="mb-2 flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-          <span class="mdi mdi-trophy-outline text-sm" />
-          {{ edition.title }}
-        </span>
-      </div>
-
-      <h1 class="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+    <header class="mb-5 sm:mb-6">
+      <h1 class="text-xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
         Projetos para avaliar
       </h1>
 
-      <p class="mt-1 text-sm text-gray-500 sm:text-base">
+      <p class="mt-1 text-sm text-gray-500">
         {{ evaluatedCount }} de {{ totalCount }} projetos avaliados
       </p>
     </header>
 
     <!-- Filtro de status -->
-    <div class="mb-6 overflow-x-auto pb-1">
+    <div class="mb-5 sm:mb-6">
       <FilterChipGroup
         v-model="selectedFilter"
         :options="filterOptions"
@@ -172,7 +165,7 @@
       </div>
 
       <!-- Lista de Projetos -->
-      <div v-else class="space-y-3">
+      <div v-else class="flex flex-col gap-3 sm:gap-4">
         <template v-for="project in filteredProjects" :key="project.id">
           <EvaluationProjectCardList
             v-if="project.status === 'avaliado'"
@@ -195,12 +188,13 @@
       </div>
 
       <!-- Rodapé / Ação de Voltar -->
-      <footer class="mt-8 flex items-center justify-start border-t border-gray-100 pt-6">
+      <footer class="mt-6 sm:mt-8 flex items-center justify-start">
         <AppButton
           icon="←"
           icon-position="left"
           label="Voltar para edições"
           variant="secondary"
+          class="!bg-[#EEF2FF] !text-[#4338CA] hover:!bg-[#E0E7FF] !rounded-xl !py-3 !px-4.5 !h-auto !shadow-none font-medium !text-sm sm:!text-base"
           @click="handleBackToEditions"
         />
       </footer>
