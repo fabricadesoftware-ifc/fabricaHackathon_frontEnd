@@ -42,6 +42,12 @@ const router = createRouter({
       component: EvaluationsListView,
       name: 'avaliacões',
     },
+    {
+      path: '/avaliacao/:editionId',
+      name: 'projetos-para-avaliar',
+      component: () => import('@/views/ProjectsToEvaluateView/ProjectsToEvaluateView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 
