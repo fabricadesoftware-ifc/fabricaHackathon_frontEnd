@@ -2,7 +2,7 @@
   import { computed, onMounted, ref } from 'vue'
   import { useRouter } from 'vue-router'
   import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
-  import SearchFilterBar from '@/components/ui/SearchFilterBar/SearchFilterBar.vue'
+  import SearchFilterBar from '@/components/ui/SearchFilterBar'
   import { hackathons } from '@/data/hackathons'
 
   type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'

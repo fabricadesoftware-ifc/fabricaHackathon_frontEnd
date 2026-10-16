@@ -78,7 +78,7 @@
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8">
+  <div class="mx-auto w-full max-w-auto px-4 py-6 sm:px-6 lg:px-8">
     <!-- Cabeçalho -->
     <header class="mb-6">
       <div v-if="edition?.title" class="mb-2 flex items-center gap-2">
@@ -173,16 +173,25 @@
 
       <!-- Lista de Projetos -->
       <div v-else class="space-y-3">
-        <EvaluationProjectCardList
-          v-for="project in filteredProjects"
-          :key="project.id"
-          :avatar="project.avatar"
-          :name="project.name"
-          :score="project.status === 'avaliado' ? project.score! : undefined"
-          :status="project.status"
-          :team-name="project.teamName"
-          @click="handleProjectClick(project.id)"
-        />
+        <template v-for="project in filteredProjects" :key="project.id">
+          <EvaluationProjectCardList
+            v-if="project.status === 'avaliado'"
+            :avatar="project.avatar"
+            :name="project.name"
+            :score="project.score ?? 0"
+            status="avaliado"
+            :team-name="project.teamName"
+            @click="handleProjectClick(project.id)"
+          />
+          <EvaluationProjectCardList
+            v-else
+            :avatar="project.avatar"
+            :name="project.name"
+            status="pendente"
+            :team-name="project.teamName"
+            @click="handleProjectClick(project.id)"
+          />
+        </template>
       </div>
 
       <!-- Rodapé / Ação de Voltar -->

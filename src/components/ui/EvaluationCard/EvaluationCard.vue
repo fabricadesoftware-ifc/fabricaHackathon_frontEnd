@@ -37,7 +37,7 @@
   import { computed } from 'vue'
 
   import ProgressBar from '../ProgressBar'
-  import StatusSelect from '../StatusSelect.vue'
+  import StatusSelect from '../statusSelect.vue'
 
   type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
 

@@ -1,1 +1,1 @@
-export { default } from './EvaluationProjectCardList.vue/index.js'
+export { default } from './EvaluationProjectCardList.vue'
