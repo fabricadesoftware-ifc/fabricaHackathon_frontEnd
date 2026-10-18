@@ -8,8 +8,8 @@ import AppHeader from './components/layout/AppHeader/AppHeader.vue';
     <Sidebar :active-item="'home'" />
     <div class="flex-1">
       <AppHeader :is-logged="true"/>
-      <main>
-        <RouterView/>
+      <main class="m-10">
+        <RouterView class=""/>
       </main>
     </div>
   </div>
