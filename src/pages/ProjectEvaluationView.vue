@@ -26,6 +26,10 @@ const finalScore = computed(
   () => (score1.value + score2.value + score3.value) / 3,
 );
 
+const comment1 = ref('');
+const comment2 = ref('');
+const comment3 = ref('');
+
 const tipo = ref("");
 const status = ref("");
 const ano = ref("");
@@ -43,7 +47,6 @@ const hackaton = (route.params.id)
 const project = computed(() =>
   projects.find((p) => p.id === Number(route.params.id)),
 );
-
 
 async function fetchProjects() {
   loading.value = true;
@@ -63,8 +66,18 @@ async function fetchProjects() {
 function salvaAvaliacao() {
   const avaliacao = {
     projetoId: Number(route.params.id),
-    notas: [score1.value, score2.value, score3.value],
+    notas: {
+      nota1: score1.value,
+      nota2: score2.value,
+      nota3: score3.value,
+    },
+    comentarios: {
+      comentario1: comment1.value,
+      comentario2: comment2.value,
+      comentario3: comment3.value,
+    },
     media: finalScore.value,
+    userId: null // coloquei aqui porque imagino que seja util para anexar a um usario no futuro
   }
 
   console.log(avaliacao)
@@ -102,22 +115,24 @@ onMounted(() => {
       :projectUrl="'https://google.com'"
       :editionName="project.event"
       :teamName="project.team"
-      :alt="project.title"
-      :src="project.logo"
+      :avatar="project.logo"
       :status="project.status"
       :score="project.score"
     >
     </EvaluationProjectCard>
     <EvaluationCriteriaCard
       :criteriaName="'Criatividade'"
+      v-model:comment="comment1"
       v-model="score1"
     ></EvaluationCriteriaCard>
     <EvaluationCriteriaCard
       :criteriaName="'Criatividade'"
+      v-model:comment="comment2"
       v-model="score2"
     ></EvaluationCriteriaCard>
     <EvaluationCriteriaCard
       :criteriaName="'Criatividade'"
+      v-model:comment="comment3"
       v-model="score3"
     ></EvaluationCriteriaCard>
     <FinalScoreBar :score="finalScore" :label="'Nota final (Média)'"></FinalScoreBar>
