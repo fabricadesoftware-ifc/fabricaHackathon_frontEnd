@@ -1,0 +1,212 @@
+<script setup lang="ts">
+  import { computed, onMounted, ref, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import AppButton from '@/components/ui/AppButton/AppButton.vue'
+  import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
+  import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
+  import { type EvaluationProject, getProjectsByEdition } from '@/data/evaluationProjects'
+  import { hackathons } from '@/data/hackathons'
+
+  type FilterType = 'todos' | 'avaliados' | 'pendentes'
+
+  const route = useRoute()
+  const router = useRouter()
+
+const editionId = computed(() => Number(route.params.editionId))
+
+  const edition = computed(() => {
+    return hackathons.find(h => h.id === editionId.value)
+  })
+
+  const projects = ref<EvaluationProject[]>([])
+  const loading = ref(true)
+  const error = ref(false)
+  const selectedFilter = ref<FilterType>('todos')
+
+  const totalCount = computed(() => projects.value.length)
+  const evaluatedCount = computed(() => projects.value.filter(p => p.status === 'avaliado').length)
+  const pendingCount = computed(() => projects.value.filter(p => p.status === 'pendente').length)
+
+  const filterOptions = computed(() => [
+    { label: `Todos (${totalCount.value})`, value: 'todos' },
+    { label: `Avaliados (${evaluatedCount.value})`, value: 'avaliados' },
+    { label: `Pendentes (${pendingCount.value})`, value: 'pendentes' },
+  ])
+
+  const filteredProjects = computed(() => {
+    if (selectedFilter.value === 'avaliados') {
+      return projects.value.filter(p => p.status === 'avaliado')
+    }
+    if (selectedFilter.value === 'pendentes') {
+      return projects.value.filter(p => p.status === 'pendente')
+    }
+    return projects.value
+  })
+
+  async function fetchProjects () {
+    loading.value = true
+    error.value = false
+
+    try {
+      projects.value = await getProjectsByEdition(editionId.value)
+    } catch (err) {
+      console.error('Erro ao buscar projetos para avaliação:', err)
+      error.value = true
+    } finally {
+      loading.value = false
+    }
+  }
+
+  function handleProjectClick (projectId: number) {
+    router.push(`/avaliacao/${editionId.value}/projeto/${projectId}`)
+  }
+
+  function handleBackToEditions () {
+    router.push('/avaliacao')
+  }
+
+  function resetFilter () {
+    selectedFilter.value = 'todos'
+  }
+  watch(
+  editionId,
+  () => {
+    selectedFilter.value = 'todos'
+
+    if (!Number.isInteger(editionId.value) || editionId.value <= 0) {
+      projects.value = []
+      error.value = true
+      loading.value = false
+      return
+    }
+
+    fetchProjects()
+  },
+  { immediate: true },
+)
+</script>
+
+<template>
+  <div class="mx-auto w-full max-w-auto px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+    <!-- Cabeçalho -->
+    <header class="mb-5 sm:mb-6">
+      <h1 class="text-xl sm:text-2xl font-semibold text-gray-900 tracking-tight">
+        Projetos para avaliar
+      </h1>
+
+      <p class="mt-1 text-sm text-gray-500">
+        {{ evaluatedCount }} de {{ totalCount }} projetos avaliados
+      </p>
+    </header>
+
+    <!-- Filtro de status -->
+    <div class="mb-5 sm:mb-6">
+      <FilterChipGroup
+        v-model="selectedFilter"
+        :options="filterOptions"
+      />
+    </div>
+
+    <!-- Conteúdo principal -->
+    <main>
+      <!-- Estado de Carregamento -->
+      <div
+        v-if="loading"
+        class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center"
+      >
+        <span class="mdi mdi-loading animate-spin text-3xl text-blue-600" />
+        <p class="mt-3 text-sm font-medium text-gray-600">
+          Carregando projetos para avaliação...
+        </p>
+      </div>
+
+      <!-- Estado de Erro -->
+      <div
+        v-else-if="error"
+        class="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50/50 p-8 text-center"
+      >
+        <span class="mdi mdi-alert-circle-outline text-4xl text-red-500" />
+        <h3 class="mt-2 text-base font-semibold text-gray-900">
+          Erro ao carregar projetos
+        </h3>
+        <p class="mt-1 text-sm text-gray-600">
+          Não foi possível carregar a lista de projetos desta edição.
+        </p>
+        <button
+          class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
+          type="button"
+          @click="fetchProjects"
+        >
+          Tentar novamente
+        </button>
+      </div>
+
+      <!-- Estado Vazio -->
+      <div
+        v-else-if="filteredProjects.length === 0"
+        class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center"
+      >
+        <div class="flex size-14 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+          <span class="mdi mdi-folder-open-outline text-2xl" />
+        </div>
+        <h3 class="mt-4 text-base font-semibold text-gray-900">
+          Nenhum projeto encontrado
+        </h3>
+        <p class="mt-1 text-sm text-gray-500">
+          <template v-if="selectedFilter === 'avaliados'">
+            Nenhum projeto foi avaliado ainda nesta edição.
+          </template>
+          <template v-else-if="selectedFilter === 'pendentes'">
+            Todos os projetos desta edição já foram avaliados!
+          </template>
+          <template v-else>
+            Não há projetos cadastrados para esta edição.
+          </template>
+        </p>
+        <button
+          v-if="selectedFilter !== 'todos' && totalCount > 0"
+          class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+          type="button"
+          @click="resetFilter"
+        >
+          Ver todos os projetos
+        </button>
+      </div>
+
+      <!-- Lista de Projetos -->
+      <div v-else class="flex flex-col gap-3 sm:gap-4">
+        <template v-for="project in filteredProjects" :key="project.id">
+          <EvaluationProjectCardList
+            v-if="project.status === 'avaliado'"
+            :avatar="project.avatar"
+            :name="project.name"
+            :score="project.score ?? 0"
+            status="avaliado"
+            :team-name="project.teamName"
+            @click="handleProjectClick(project.id)"
+          />
+          <EvaluationProjectCardList
+            v-else
+            :avatar="project.avatar"
+            :name="project.name"
+            status="pendente"
+            :team-name="project.teamName"
+            @click="handleProjectClick(project.id)"
+          />
+        </template>
+      </div>
+
+      <!-- Rodapé / Ação de Voltar -->
+      <footer class="mt-6 sm:mt-8 flex items-center justify-start">
+       <AppButton
+  icon="←"
+  icon-position="left"
+  label="Voltar para edições"
+  variant="secondary"
+  class="!bg-[#EFF6FF] !text-[#2563EB] hover:!bg-[#DBEAFE] !rounded-xl !py-3 !px-4.5 !h-auto !shadow-none font-medium !text-sm sm:!text-base"
+  @click="handleBackToEditions"
+/>
+      </footer>
+    </main>
+  </div>
+</template>

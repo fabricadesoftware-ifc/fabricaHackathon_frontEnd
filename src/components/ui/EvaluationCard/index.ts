@@ -1,1 +1,1 @@
-export { default } from '@/EvaluationCard.vue'
+export { default } from './EvaluationCard.vue'

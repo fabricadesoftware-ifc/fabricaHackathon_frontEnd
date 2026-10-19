@@ -54,6 +54,7 @@ function itemClasses(id: string) {
       rail ? 'w-18' : 'w-60',
     ]"
   >
+    <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center overflow-hidden px-4">
       <span
         v-if="!rail"
@@ -70,6 +71,7 @@ function itemClasses(id: string) {
       </span>
     </div>
 
+    <!-- Botão para recolher/expandir -->
     <button
       :aria-label="rail ? 'Expandir menu' : 'Recolher menu'"
       class="absolute -right-3 top-5 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-100"
@@ -84,6 +86,7 @@ function itemClasses(id: string) {
       />
     </button>
 
+    <!-- Navegação pública -->
     <nav class="mt-2 flex flex-col gap-1 px-3">
       <RouterLink
         v-for="item in publicItems"
@@ -93,17 +96,23 @@ function itemClasses(id: string) {
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span v-if="!rail" class="whitespace-nowrap">
+
+        <span
+          v-if="!rail"
+          class="whitespace-nowrap"
+        >
           {{ item.label }}
         </span>
       </RouterLink>
     </nav>
 
+    <!-- Separador -->
     <div
       v-if="privateItems.length > 0"
       class="mx-3 my-3 border-t border-gray-200"
     />
 
+    <!-- Navegação privada -->
     <nav
       v-if="privateItems.length > 0"
       class="flex flex-col gap-1 px-3"
@@ -116,7 +125,11 @@ function itemClasses(id: string) {
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span v-if="!rail" class="whitespace-nowrap">
+
+        <span
+          v-if="!rail"
+          class="whitespace-nowrap"
+        >
           {{ item.label }}
         </span>
       </RouterLink>

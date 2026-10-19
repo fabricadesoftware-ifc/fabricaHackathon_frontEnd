@@ -32,7 +32,7 @@ const emit = defineEmits<{
 
 <template>
   <header
-    class="flex h-16 w-full items-center justify-between bg-white px-4 sm:px-5 md:h-20 xl:px-10"
+    class="flex h-16 w-full items-center justify-between bg-white px-4 sm:px-5 md:h-20 md:px-2 xl:px-10"
   >
     <!-- Logo mobile -->
     <span

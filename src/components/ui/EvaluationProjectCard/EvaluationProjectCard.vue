@@ -1,29 +1,31 @@
 <template>
-  <div class="flex justify-between items-start px-5 py-5 w-full bg-white border-1 rounded-md border-solid border-[#E5E7EB]">
-    <div class="max-w-[70%] flex flex-col gap-4">
-        <div class="w-12 shadow-xl h-12 bg-white rounded-full border border-gray-200 overflow-hidden flex items-center justify-center">
-          <img :alt="name" class="" :src="avatar">
-        </div>
+  <div class="relative flex w-full min-w-0 flex-col gap-4 rounded-md border border-solid border-[#E5E7EB] bg-white px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-5 sm:py-5">
+    <div class="flex justify-end sm:absolute sm:right-4 sm:top-4">
+      <EvaluationBadge :score="score" :status="status" />
+    </div>
 
-      <div>
-        <h2 class="font-semibold text-[20px] text-[#111827]">{{ name }}</h2>
-      <p class="text-[16px] text-[#4B5563]">{{ description }}</p>
-
-      <p class="font-[16px] text-[#4B5563] flex gap-2">
-        Equipe: <span class="flex gap-2"><span class="text-[#111827]">{{ teamName }}</span> <span class="text-[#2563EB] font-[14px]">{{ projectUrl }} <span class="mdi mdi-arrow-top-right"></span></span></span>
-      </p>
+    <div class="flex min-w-0 items-start gap-3 sm:max-w-[70%]">
+      <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-white shadow-xl">
+        <img :alt="name" class="h-full w-full object-cover" :src="avatar">
       </div>
 
-      <div class="flex items-center gap-2 text-[14px] text-[#2563EB] font-medium">
-        <span class="mdi mdi-trophy-outline text-lg"></span>
-        <span>{{ editionName }}</span>
+      <div class="min-w-0 flex-1">
+        <h2 class="break-words text-lg font-semibold text-[#111827] sm:text-xl">{{ name }}</h2>
+        <p class="mt-1 break-words text-sm text-[#4B5563] sm:text-base">{{ description }}</p>
+
+        <p class="mt-2 flex min-w-0 flex-wrap gap-x-2 text-sm text-[#4B5563]">
+          <span>Equipe:</span>
+          <span class="text-[#111827]">{{ teamName }}</span>
+          <span class="break-all text-[#2563EB]">{{ projectUrl }} <span class="mdi mdi-arrow-top-right"></span></span>
+        </p>
+
+        <div class="mt-3 flex items-center gap-2 break-words text-sm font-medium text-[#2563EB]">
+          <span class="mdi mdi-trophy-outline shrink-0 text-lg"></span>
+          <span>{{ editionName }}</span>
+        </div>
       </div>
     </div>
 
-    <EvaluationBadge
-      :score="score"
-      :status="status"
-    />
   </div>
 </template>
 
