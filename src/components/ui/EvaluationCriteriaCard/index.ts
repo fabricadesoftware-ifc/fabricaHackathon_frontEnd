@@ -1,0 +1,1 @@
+export { default as EvaluationCriteriaCard } from './EvaluationCriteriaCard.vue';

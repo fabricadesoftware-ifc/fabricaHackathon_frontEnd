@@ -23,17 +23,17 @@ function selectOption(value: string) {
 </script>
 
 <template>
-  <div class="flex gap-3">
+  <div class="flex gap-2 sm:gap-3 flex-wrap">
 
     <button
       v-for="option in props.options"
       :key="option.value"
       @click="selectOption(option.value)"
       :class="[
-        'px-4 py-2 rounded-full text-sm font-medium transition',
+        'px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap',
         props.modelValue === option.value
-          ? 'bg-blue-600 text-white'
-          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          ? 'bg-blue-600 text-white border border-blue-600'
+          : 'bg-white border border-gray-400 text-gray-700 hover:bg-gray-50'
       ]"
     >
       {{ option.label }}
