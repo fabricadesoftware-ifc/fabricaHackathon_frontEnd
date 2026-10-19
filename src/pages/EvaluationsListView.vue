@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+
 import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
 import SearchFilterBar from '@/components/ui/SearchFilterBar'
+
 import { hackathons } from '@/data/hackathons'
+import { useEvaluationsStore } from '@/stores/evaluations'
 
 type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
 
@@ -29,14 +32,24 @@ const STATUS_FILTER_CODES: Record<Status, string> = {
 
 const router = useRouter()
 
+// Store responsável pelas avaliações.
+const evaluationsStore = useEvaluationsStore()
+
+// Filtros.
 const searchQuery = ref('')
 const tipo = ref('')
 const status = ref('')
 const ano = ref('')
 
+// Estados da página.
 const loading = ref(false)
 const error = ref(false)
 const editions = ref<EvaluationEdition[]>([])
+
+// Obtém o progresso atualizado de cada edição.
+function getProgress(editionId: number) {
+  return evaluationsStore.getEditionProgress(editionId)
+}
 
 function extractYear(date: string): string {
   const parts = date.split('/')
@@ -62,6 +75,7 @@ function extractType(title: string): string {
   return ''
 }
 
+// Filtra as edições.
 const filteredEditions = computed(() => {
   return editions.value.filter((edition) => {
     const matchesSearch =
@@ -85,16 +99,19 @@ const filteredEditions = computed(() => {
   })
 })
 
+// Navega para os projetos da edição selecionada.
 function navigateToProjects(editionId: number) {
   router.push(`/avaliacao/${editionId}`)
 }
 
+// Busca as edições utilizando os mocks.
 async function fetchEditions() {
   loading.value = true
   error.value = false
 
   try {
     await new Promise(resolve => setTimeout(resolve, 400))
+
     editions.value = [...hackathons]
   } catch (err) {
     console.error('Erro ao carregar edições para avaliação:', err)
@@ -111,6 +128,7 @@ onMounted(() => {
 
 <template>
   <div class="px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Cabeçalho -->
     <h1 class="mb-2 text-xl font-semibold text-gray-900 sm:text-2xl">
       Avaliações
     </h1>
@@ -123,6 +141,7 @@ onMounted(() => {
       Escolha uma para ver os projetos
     </p>
 
+    <!-- Filtros -->
     <SearchFilterBar
       v-model:ano="ano"
       v-model:search="searchQuery"
@@ -157,6 +176,8 @@ onMounted(() => {
         Tentar novamente
       </button>
     </div>
+
+    <!-- Nenhuma edição -->
     <div
       v-else-if="filteredEditions.length === 0"
       class="flex items-center justify-center py-12"
@@ -174,13 +195,13 @@ onMounted(() => {
       <EvaluationCard
         v-for="edition in filteredEditions"
         :key="edition.id"
-        :current="edition.currentEvaluations || 0"
+        :current="getProgress(edition.id).evaluated"
         :deadline="edition.endDate"
         :image="edition.image"
         :progress-label="edition.progressLabel || 'projetos avaliados'"
         :status="edition.status"
         :title="edition.title"
-        :total="edition.totalProjects || 0"
+        :total="getProgress(edition.id).total"
         @click="navigateToProjects(edition.id)"
       />
     </div>
