@@ -1,12 +1,12 @@
 <template>
   <aside
     :class="[
-      'relative flex h-screen flex-col border-r border-gray-200 bg-white transition-all duration-300',
-      rail ? 'w-18' : 'w-60',
+      ' flex flex-col border-r border-gray-200 bg-white transition-all duration-300',
+      isCollapsed ? 'w-12 sm:w-18' : 'w-60',
     ]"
   >
     <div class="flex h-16 shrink-0 items-center overflow-hidden px-4">
-      <span v-if="!rail" class="whitespace-nowrap font-semibold text-gray-900">
+      <span v-if="!isCollapsed" class="whitespace-nowrap font-semibold text-gray-900">
         HackIFC <span class="text-blue-600">// 24H</span>
       </span>
 
@@ -16,6 +16,7 @@
     </div>
 
     <button
+      v-if="!smAndDown"
       :aria-label="rail ? 'Expandir menu' : 'Recolher menu'"
       class="absolute -right-3 top-5 flex h-6 w-6 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-100"
       type="button"
@@ -33,7 +34,7 @@
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span v-if="!rail" class="whitespace-nowrap">{{ item.label }}</span>
+        <span v-if="!isCollapsed" class="whitespace-nowrap">{{ item.label }}</span>
       </RouterLink>
     </nav>
 
@@ -48,7 +49,7 @@
         @click="emit('update:activeItem', item.id)"
       >
         <span :class="['mdi text-lg', item.icon]" />
-        <span v-if="!rail" class="whitespace-nowrap">{{ item.label }}</span>
+        <span v-if="!isCollapsed" class="whitespace-nowrap">{{ item.label }}</span>
       </RouterLink>
     </nav>
   </aside>
@@ -56,6 +57,7 @@
 
 <script setup lang="ts">
   import { computed, ref } from 'vue'
+  import { useDisplay } from 'vuetify'
 
   export interface SidebarItem {
     id: string
@@ -89,6 +91,8 @@
   }>()
 
   const rail = ref(false)
+  const { smAndDown } = useDisplay()
+  const isCollapsed = computed(() => smAndDown.value || rail.value)
 
   const publicItems = computed(() => props.items.filter(item => !item.requiresAuth))
   const privateItems = computed(() =>
@@ -98,7 +102,7 @@
   function itemClasses (id: string) {
     return [
       'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-      rail.value && 'justify-center px-0',
+      isCollapsed.value && 'justify-center px-0',
       props.activeItem === id
         ? 'bg-blue-600 text-white'
         : 'text-gray-600 hover:bg-gray-100',

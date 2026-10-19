@@ -2,12 +2,10 @@
 import { computed, onMounted, ref } from "vue";
 import EvaluationProjectCard from "@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue";
 import { EvaluationCriteriaCard } from "@/components/ui/EvaluationCriteriaCard";
-import EvaluationBadge from "@/components/ui/EvaluationBadge";
 import { projects } from "@/data/projects";
 import FinalScoreBar from "@/components/ui/FinalScoreBar";
 import { useRoute } from "vue-router";
 import SucessState from "@/components/ui/SucessState/sucessState.vue";
-import { hackathons } from "@/data/hackathons";
 import router from "@/router";
 type Status = "inscricoes" | "avaliacao" | "andamento" | "finalizado";
 const STATUS_FILTER_CODES: Record<Status, string> = {
@@ -29,9 +27,7 @@ const comment1 = ref("");
 const comment2 = ref("");
 const comment3 = ref("");
 
-const tipo = ref("");
 const status = ref("");
-const ano = ref("");
 
 const loading = ref(false);
 const error = ref(false);
@@ -43,16 +39,26 @@ function extractYear(date: string): string {
 
 const hackaton = route.params.id;
 
-const project = computed(() =>
-  projects.find((p) => p.id === Number(route.params.id)),
-);
+type Project = (typeof projects)[number]
+const project = ref<Project | null>(null)
 
-async function fetchProjects() {
+async function fetchProject() {
   loading.value = true;
   error.value = false;
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 400));
+
+    const foundProject = projects.find(
+      (item) => item.id === Number(route.params.id),
+    );
+
+    if (!foundProject) {
+      error.value = true;
+      return;
+    }
+
+    project.value = foundProject;
   } catch (err) {
     console.error("Erro ao carregar edições para avaliação:", err);
     error.value = true;
@@ -96,11 +102,17 @@ interface Project {
 */
 
 onMounted(() => {
-  fetchProjects();
+  fetchProject();
 });
 </script>
 
 <template>
+  <div v-if="loading">Carregando projeto...</div>
+
+  <div v-else-if="error">
+    Não foi possível carregar o projeto. {{ project?.title }}
+    <button @click="fetchProject">Tentar novamente</button>
+  </div>
   <SucessState
     v-if="sucessState"
     :title="'Avaliação enviada!'"
@@ -110,7 +122,7 @@ onMounted(() => {
     class="mt-[10%]"
   >
   </SucessState>
-  <div v-else class="p-10">
+  <div v-else class="w-full min-w-0 bg-white p-3 sm:p-6 lg:p-10">
     <EvaluationProjectCard
       v-if="project"
       :name="project.title"
@@ -150,15 +162,15 @@ onMounted(() => {
       ></FinalScoreBar>
     </div>
 
-    <v-footer class="d-flex align-center justify-between mt-1 bg-white">
+    <v-footer class="mt-1 flex w-full flex-wrap items-center justify-between gap-2 bg-white !px-0">
       <v-btn
-  
         variant="tonal"
         color="primary"
         :href="`/avaliacao/${route.params.id}`"
+        class="min-w-0 flex-1 whitespace-normal px-2 text-[11px] sm:flex-none sm:px-4 sm:text-sm"
         >Voltar sem avaliar</v-btn
       >
-      <v-btn variant="elevated" color="primary" @click="salvaAvaliacao"
+      <v-btn variant="elevated" color="primary" class="min-w-0 flex-1 whitespace-normal px-2 text-[11px] sm:flex-none sm:px-4 sm:text-sm" @click="salvaAvaliacao"
         >Enviar Avaliacao</v-btn
       >
     </v-footer>
