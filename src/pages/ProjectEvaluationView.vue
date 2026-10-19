@@ -10,7 +10,6 @@ import SucessState from "@/components/ui/SucessState/sucessState.vue";
 import { hackathons } from "@/data/hackathons";
 import router from "@/router";
 type Status = "inscricoes" | "avaliacao" | "andamento" | "finalizado";
-
 const STATUS_FILTER_CODES: Record<Status, string> = {
   inscricoes: "1",
   avaliacao: "2",
@@ -26,9 +25,9 @@ const finalScore = computed(
   () => (score1.value + score2.value + score3.value) / 3,
 );
 
-const comment1 = ref('');
-const comment2 = ref('');
-const comment3 = ref('');
+const comment1 = ref("");
+const comment2 = ref("");
+const comment3 = ref("");
 
 const tipo = ref("");
 const status = ref("");
@@ -42,7 +41,7 @@ function extractYear(date: string): string {
   return parts.length === 3 ? parts[2] : "";
 }
 
-const hackaton = (route.params.id)
+const hackaton = route.params.id;
 
 const project = computed(() =>
   projects.find((p) => p.id === Number(route.params.id)),
@@ -54,7 +53,6 @@ async function fetchProjects() {
 
   try {
     await new Promise((resolve) => setTimeout(resolve, 400));
-    projects.value = [...projects];
   } catch (err) {
     console.error("Erro ao carregar edições para avaliação:", err);
     error.value = true;
@@ -77,11 +75,11 @@ function salvaAvaliacao() {
       comentario3: comment3.value,
     },
     media: finalScore.value,
-    userId: null // coloquei aqui porque imagino que seja util para anexar a um usario no futuro
-  }
+    userId: null, // coloquei aqui porque imagino que seja util para anexar a um usario no futuro
+  };
 
-  console.log(avaliacao)
-  sucessState.value = true
+  console.log(avaliacao);
+  sucessState.value = true;
 }
 /* 
 interface Project {
@@ -103,11 +101,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <SucessState v-if="sucessState"
-  :title="'Avaliação enviada!'"
-  :description="'Sua avaliação foi registrada com sucesso.'"
-  :buttonLabel="'Concluir'" @click="router.push('/avaliacoes')" ></SucessState>
-  <div v-else>
+  <SucessState
+    v-if="sucessState"
+    :title="'Avaliação enviada!'"
+    :description="`Sua nota para o projeto ${project.title} foi registrada. Faltam ${projects.length} projetos pendentes nessa edição.`"
+    :buttonLabel="'Concluir'"
+    @click="router.push('/avaliacao')"
+    class="mt-[10%]"
+  >
+  </SucessState>
+  <div v-else class="p-10">
     <EvaluationProjectCard
       v-if="project"
       :name="project.title"
@@ -117,28 +120,47 @@ onMounted(() => {
       :teamName="project.team"
       :avatar="project.logo"
       :status="project.status"
-      :score="project.score"
+      :score="7.0"
     >
     </EvaluationProjectCard>
-    <EvaluationCriteriaCard
-      :criteriaName="'Criatividade'"
-      v-model:comment="comment1"
-      v-model="score1"
-    ></EvaluationCriteriaCard>
-    <EvaluationCriteriaCard
-      :criteriaName="'Criatividade'"
-      v-model:comment="comment2"
-      v-model="score2"
-    ></EvaluationCriteriaCard>
-    <EvaluationCriteriaCard
-      :criteriaName="'Criatividade'"
-      v-model:comment="comment3"
-      v-model="score3"
-    ></EvaluationCriteriaCard>
-    <FinalScoreBar :score="finalScore" :label="'Nota final (Média)'"></FinalScoreBar>
-  <v-footer class="d-flex align-center justify-between ga-2 py-3 bg-white" >
-    <v-btn variant='tonal' color="primary" :href="`/avaliacao/${route.params.id}`">Voltar sem avaliar</v-btn>
-    <v-btn variant="elevated" color="primary" @click="salvaAvaliacao">Enviar Avaliacao</v-btn>
-  </v-footer>
+    <div>
+      <h2 class="font-semibold text-2xl my-5">Critérios de avaliação</h2>
+      <EvaluationCriteriaCard
+        :criteriaName="'Criatividade'"
+        v-model:comment="comment1"
+        v-model="score1"
+        class="my-5"
+      ></EvaluationCriteriaCard>
+      <EvaluationCriteriaCard
+        :criteriaName="'Criatividade'"
+        v-model:comment="comment2"
+        v-model="score2"
+        class="my-5"
+      ></EvaluationCriteriaCard>
+      <EvaluationCriteriaCard
+        :criteriaName="'Criatividade'"
+        v-model:comment="comment3"
+        v-model="score3"
+        class="my-5"
+      ></EvaluationCriteriaCard>
+      <FinalScoreBar
+        :score="finalScore"
+        :label="'Nota final (Média)'"
+        class="my-5"
+      ></FinalScoreBar>
+    </div>
+
+    <v-footer class="d-flex align-center justify-between mt-1 bg-white">
+      <v-btn
+  
+        variant="tonal"
+        color="primary"
+        :href="`/avaliacao/${route.params.id}`"
+        >Voltar sem avaliar</v-btn
+      >
+      <v-btn variant="elevated" color="primary" @click="salvaAvaliacao"
+        >Enviar Avaliacao</v-btn
+      >
+    </v-footer>
   </div>
 </template>
