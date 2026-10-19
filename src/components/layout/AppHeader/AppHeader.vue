@@ -1,8 +1,8 @@
 <template>
-  <header class="flex w-full h-20 bg-white justify-between items-center px-5 xl:px-10 ">
+  <header class="flex w-full h-20 bg-white justify-between items-center px-2 xl:px-10 ">
 
     <searchBar
-  class="w-full max-w-xl"
+      class="w-full"
       :debounce-ms="props.debounceMs"
       :model-value="props.modelValue"
       :placeholder="props.placeholder"

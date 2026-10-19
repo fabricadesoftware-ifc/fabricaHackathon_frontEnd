@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between bg-blue-300/60 px-4 py-6 rounded-sm">
+  <div class="flex items-center justify-between bg-blue-300/60 px-4 py-6 rounded-lg">
     <p class="text-sm text-blue-600">{{ props.label }}</p>
     <p class="text-xl font-bold text-blue-600">{{ formattedScore }}</p>
   </div>

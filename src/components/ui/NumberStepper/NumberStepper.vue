@@ -1,75 +1,74 @@
-<template>
-
-  <div class="flex items-center gap-4">
-    <div class="h-7 w-7">
-      <button :class="buttonDesign" :style="{ visibility: ShowPlus ? 'visible' : 'hidden' }" @click="incrementar">
-        <span class="mdi mdi-plus" />
-      </button>
-    </div>
-
-    <p class="text-[22px] text-[#2563EB] w-11.25 text-center">{{ value.toFixed(1) }}</p>
-
-    <div class="h-7 w-7">
-      <button :class="buttonDesign" :style="{ visibility: ShowMinus ? 'visible' : 'hidden' }" @click="decrementar">
-        <span class="mdi mdi-minus" />
-      </button>
-    </div>
-  </div>
-
-</template>
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
-  const buttonDesign = 'hover:bg-gray-100 rounded-md flex h-7 w-7 shrink-0 items-center justify-center border-[0.5px] border-solid border-[#CDCDCD] bg-white text-[18px] text-[#111827]'
-
-  interface NumberStepper {
+const props = withDefaults(
+  defineProps<{
     modelValue?: number
     min?: number
     max?: number
     step?: number
-  }
-  const props = withDefaults(
-    defineProps<NumberStepper>(),
-    {
-      modelValue: 0,
-      min: 0,
-      max: 10,
-      step: 0.5,
-    },
-  )
-  const emits = defineEmits<{
-    (e: 'update:modelValue', value: number): void
-  }>()
-  const ShowPlus = computed(() => {
-    if (value.value == props.max) {
-      return false
-    }
-    return true
-  })
-  const ShowMinus = computed(() => {
-    if (value.value == props.min) {
-      return false
-    }
-    return true
-  })
+  }>(),
+  {
+    modelValue: 0,
+    min: 0,
+    max: 10,
+    step: 0.5,
+  },
+)
 
-  const value = ref<number>(props.modelValue)
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: number): void
+}>()
 
-  function incrementar () {
-    if (value.value + props.step >= props.max) {
-      value.value = props.max
-    } else {
-      value.value += props.step
-    }
-    emits('update:modelValue', value.value)
-  }
-  function decrementar () {
-    if (value.value - props.step <= props.min) {
-      value.value = props.min
-    } else {
-      value.value -= props.step
-    }
-    emits('update:modelValue', value.value)
-  }
+const value = computed(() => props.modelValue)
 
+const canIncrement = computed(() => value.value < props.max)
+const canDecrement = computed(() => value.value > props.min)
+
+const buttonDesign =
+  'flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-gray-200 bg-white text-sm text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30'
+
+function incrementar() {
+  if (!canIncrement.value) return
+
+  const newValue = Math.min(value.value + props.step, props.max)
+  emit('update:modelValue', newValue)
+}
+
+function decrementar() {
+  if (!canDecrement.value) return
+
+  const newValue = Math.max(value.value - props.step, props.min)
+  emit('update:modelValue', newValue)
+}
 </script>
+
+<template>
+  <div class="inline-flex shrink-0 items-center gap-2">
+    <button
+      type="button"
+      :class="buttonDesign"
+      :disabled="!canDecrement"
+      aria-label="Diminuir nota"
+      @click="decrementar"
+    >
+      <span class="mdi mdi-minus" />
+    </button>
+
+    <span
+      class="min-w-10 text-center text-lg font-semibold text-blue-600 tabular-nums"
+    >
+      {{ value.toFixed(1) }}
+    </span>
+
+    <button
+      type="button"
+      :class="buttonDesign"
+      :disabled="!canIncrement"
+      aria-label="Aumentar nota"
+      @click="incrementar"
+    >
+      <span class="mdi mdi-plus" />
+    </button>
+  </div>
+</template>

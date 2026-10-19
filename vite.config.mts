@@ -1,26 +1,32 @@
-import { fileURLToPath, URL } from 'node:url'
-import tailwindcss from '@tailwindcss/vite'
-import Vue from '@vitejs/plugin-vue'
-import Fonts from 'unplugin-fonts/vite'
-import { defineConfig } from 'vite'
+import { fileURLToPath, URL } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
+import Vue from "@vitejs/plugin-vue";
+import Fonts from "unplugin-fonts/vite";
+import { defineConfig } from "vite";
+import vueDevTools from "vite-plugin-vue-devtools";
 
 export default defineConfig({
-  plugins: [Vue(), Fonts({
-    fontsource: {
-      families: [
-        {
-          name: 'Roboto',
-          weights: [100, 300, 400, 500, 700, 900],
-          styles: ['normal', 'italic'],
-        },
-      ],
-    },
-  }), tailwindcss()],
+  plugins: [
+    Vue(),
+    vueDevTools(),
+    Fonts({
+      fontsource: {
+        families: [
+          {
+            name: "Roboto",
+            weights: [100, 300, 400, 500, 700, 900],
+            styles: ["normal", "italic"],
+          },
+        ],
+      },
+    }),
+    tailwindcss(),
+  ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('src', import.meta.url)),
+      "@": fileURLToPath(new URL("src", import.meta.url)),
     },
-    extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
+    extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   server: {
     port: 3000,
@@ -29,4 +35,5 @@ export default defineConfig({
       interval: 300,
     },
   },
-})    
+});
+  

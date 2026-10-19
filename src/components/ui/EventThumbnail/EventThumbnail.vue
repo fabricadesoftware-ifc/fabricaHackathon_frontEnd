@@ -15,10 +15,10 @@
   })
 </script>
 <template>
-  <div class="max-w-max max-h-max relative rounded-lg">
+  <div class="relative w-full rounded-lg">
     <img
       :alt="props.title"
-      class="h-max w-max object-cover"
+      class="block w-full h-auto object-cover"
       :src="props.image"
     >
 
