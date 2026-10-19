@@ -157,8 +157,6 @@ onMounted(() => {
         Tentar novamente
       </button>
     </div>
-
-    <!-- Nenhuma edição -->
     <div
       v-else-if="filteredEditions.length === 0"
       class="flex items-center justify-center py-12"
