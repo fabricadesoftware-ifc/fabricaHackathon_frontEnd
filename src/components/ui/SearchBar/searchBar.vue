@@ -75,7 +75,9 @@
       focus-within:border-blue-500
       rounded-full
       h-11.25
-      w-87.5
+      w-55
+      sm:w-65
+      lg:w-87.5
       px-3
     "
     >
