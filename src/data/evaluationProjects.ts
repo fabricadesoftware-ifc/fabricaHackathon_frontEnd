@@ -117,17 +117,12 @@ export const mockEvaluationProjects: EvaluationProject[] = [
  * Busca os projetos para avaliação de uma edição específica.
  * Simula uma chamada assíncrona à API com delay.
  */
-export async function getProjectsByEdition (editionId: number): Promise<EvaluationProject[]> {
+export async function getProjectsByEdition(
+  editionId: number,
+): Promise<EvaluationProject[]> {
   await new Promise(resolve => setTimeout(resolve, 350))
 
-  const editionProjects = mockEvaluationProjects.filter(p => p.editionId === editionId)
-  if (editionProjects.length > 0) {
-    return editionProjects
-  }
-
-  // Fallback para outras edições demonstrarem dados na visualização
-  return mockEvaluationProjects.map(p => ({
-    ...p,
-    editionId,
-  }))
+  return mockEvaluationProjects.filter(
+    project => project.editionId === editionId,
+  )
 }

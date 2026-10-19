@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, onMounted, ref } from 'vue'
+  import { computed, onMounted, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import AppButton from '@/components/ui/AppButton/AppButton.vue'
   import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
@@ -12,10 +12,7 @@
   const route = useRoute()
   const router = useRouter()
 
-  const editionId = computed(() => {
-    const rawId = route.params.editionId
-    return Number(Array.isArray(rawId) ? rawId[0] : rawId) || 1
-  })
+const editionId = computed(() => Number(route.params.editionId))
 
   const edition = computed(() => {
     return hackathons.find(h => h.id === editionId.value)
@@ -71,10 +68,22 @@
   function resetFilter () {
     selectedFilter.value = 'todos'
   }
+  watch(
+  editionId,
+  () => {
+    selectedFilter.value = 'todos'
 
-  onMounted(() => {
+    if (!Number.isInteger(editionId.value) || editionId.value <= 0) {
+      projects.value = []
+      error.value = true
+      loading.value = false
+      return
+    }
+
     fetchProjects()
-  })
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -189,14 +198,14 @@
 
       <!-- Rodapé / Ação de Voltar -->
       <footer class="mt-6 sm:mt-8 flex items-center justify-start">
-        <AppButton
-          icon="←"
-          icon-position="left"
-          label="Voltar para edições"
-          variant="secondary"
-          class="!bg-[#EEF2FF] !text-[#4338CA] hover:!bg-[#E0E7FF] !rounded-xl !py-3 !px-4.5 !h-auto !shadow-none font-medium !text-sm sm:!text-base"
-          @click="handleBackToEditions"
-        />
+       <AppButton
+  icon="←"
+  icon-position="left"
+  label="Voltar para edições"
+  variant="secondary"
+  class="!bg-[#EFF6FF] !text-[#2563EB] hover:!bg-[#DBEAFE] !rounded-xl !py-3 !px-4.5 !h-auto !shadow-none font-medium !text-sm sm:!text-base"
+  @click="handleBackToEditions"
+/>
       </footer>
     </main>
   </div>
