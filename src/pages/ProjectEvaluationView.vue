@@ -114,25 +114,23 @@ onMounted(() => {
     <button @click="fetchProject">Tentar novamente</button>
   </div>
   <SucessState
-    v-if="sucessState"
+    v-else-if="sucessState"
     :title="'Avaliação enviada!'"
-    :description="`Sua nota para o projeto ${project.title} foi registrada. Faltam ${projects.length} projetos pendentes nessa edição.`"
+    :description="`Sua nota para o projeto ${project?.title} foi registrada. Faltam ${projects.length} projetos pendentes nessa edição.`"
     :buttonLabel="'Concluir'"
     @click="router.push('/avaliacao')"
     class="mt-[10%]"
   >
   </SucessState>
-  <div v-else class="w-full min-w-0 bg-white p-3 sm:p-6 lg:p-10">
+  <div v-else-if="project" class="w-full min-w-0 bg-white p-3 sm:p-6 lg:p-10">
     <EvaluationProjectCard
-      v-if="project"
       :name="project.title"
       :description="project.description"
       :projectUrl="'https://google.com'"
       :editionName="project.event"
       :teamName="project.team"
       :avatar="project.logo"
-      :status="project.status"
-      :score="7.0"
+      status="Pendente"
     >
     </EvaluationProjectCard>
     <div>
