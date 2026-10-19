@@ -44,10 +44,11 @@ const router = createRouter({
       name: 'avaliacões',
     },
     {
-      path: '/avaliacao/:id/projeto/:id',
-      component: ProjectEvaluationView,
-      name: 'avaliacõesUnica'
-    }
+  path: '/avaliacao/:editionId/projeto/:projectId',
+  name: 'avaliacao-projeto',
+  component: ProjectEvaluationView,
+  meta: { requiresAuth: true },
+}
   ],
 })
 
