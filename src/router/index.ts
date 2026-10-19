@@ -14,6 +14,7 @@ import InscricaoView from '@/pages/InscricaoView.vue'
 import EvaluationsListView from '@/pages/EvaluationsListView.vue'
 import EventView from '@/pages/EventView.vue'
 import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
+import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -42,6 +43,12 @@ const router = createRouter({
       path: '/avaliacao',
       component: EvaluationsListView,
       name: 'avaliacões',
+    },  
+    {
+      path: '/novo',
+      name: 'projeto-novo',
+      component: ProjectRegistrationView,
+      meta: { requiresAuth: true },
     },
     {
   path: '/avaliacao/:editionId/projeto/:projectId',
