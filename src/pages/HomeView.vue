@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import type { ProjectCardItem } from '@/components/layout/CardGrid'
 import HeroSection from '@/components/ui/HeroSection/heroSection.vue';
 import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue';
 import Section from '@/components/layout/Section/Section.vue';
 import CardGrid from '@/components/layout/CardGrid/CardGrid.vue';
 const selectedFilter = ref('all');
+const search = ref('');
 
 const filters = [
     { label: 'Todos', value: 'all' },

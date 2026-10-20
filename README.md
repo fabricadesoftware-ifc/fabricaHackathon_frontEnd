@@ -53,6 +53,21 @@ npm install
 npm run dev
 ```
 
+## 🔌 API (back-end)
+
+A URL do back vem da variável `VITE_API_URL` (nunca fixa no código).
+
+```bash
+cp .env.example .env   # local: http://localhost:8000/api (back com `pdm run dev`)
+```
+
+Em produção, defina `VITE_API_URL` com o domínio do back no Fabroku.
+
+- `src/services/http.ts` — cliente `fetch` (JSON, Bearer token, `ApiError` padronizado)
+- `src/services/*.ts` — `listarEdicoes`, `obterEdicao`, `listarProjetos`, `listarEquipes`, `listarRanking`…
+- `src/types/` — tipos das respostas
+- `src/composables/useAsync.ts` + `LoadingSkeleton`/`ErrorMessage` — estados de carregamento e erro
+
 ## 🏗️ Build
 
 ```bash

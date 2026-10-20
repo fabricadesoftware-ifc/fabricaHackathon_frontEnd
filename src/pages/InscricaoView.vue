@@ -30,7 +30,7 @@ interface Hackathon {
     statusLabel: string;
     startDate: string;
     endDate: string;
-    teams: number;
+    teamsCounter: number;
     location: string;
     tags: string[];
 }
@@ -44,7 +44,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Em andamento',
         startDate: '01/09/2026',
         endDate: '05/09/2026',
-        teams: 12,
+        teamsCounter: 12,
         location: 'Joinville',
         tags: ['Web', 'IA', 'Mobile'],
     },
@@ -56,7 +56,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Finalizado',
         startDate: '10/03/2025',
         endDate: '14/03/2025',
-        teams: 8,
+        teamsCounter: 8,
         location: 'Joinville',
         tags: ['Backend', 'Dados'],
     },
@@ -68,7 +68,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Inscrição',
         startDate: '01/12/2026',
         endDate: '05/12/2026',
-        teams: 5,
+        teamsCounter: 5,
         location: 'Joinville',
         tags: ['Fullstack'],
     },
@@ -80,7 +80,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Em andamento',
         startDate: '01/09/2026',
         endDate: '05/09/2026',
-        teams: 12,
+        teamsCounter: 12,
         location: 'Joinville',
         tags: ['Web', 'IA', 'Mobile'],
     },
@@ -92,7 +92,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Finalizado',
         startDate: '10/03/2025',
         endDate: '14/03/2025',
-        teams: 8,
+        teamsCounter: 8,
         location: 'Joinville',
         tags: ['Backend', 'Dados'],
     },
@@ -104,7 +104,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Inscrição',
         startDate: '01/12/2026',
         endDate: '05/12/2026',
-        teams: 5,
+        teamsCounter: 5,
         location: 'Joinville',
         tags: ['Fullstack'],
     },
@@ -116,7 +116,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Em andamento',
         startDate: '01/09/2026',
         endDate: '05/09/2026',
-        teams: 12,
+        teamsCounter: 12,
         location: 'Joinville',
         tags: ['Web', 'IA', 'Mobile'],
     },
@@ -128,7 +128,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Finalizado',
         startDate: '10/03/2025',
         endDate: '14/03/2025',
-        teams: 8,
+        teamsCounter: 8,
         location: 'Joinville',
         tags: ['Backend', 'Dados'],
     },
@@ -140,7 +140,7 @@ const hackathons: Hackathon[] = [
         statusLabel: 'Inscrição',
         startDate: '01/12/2026',
         endDate: '05/12/2026',
-        teams: 5,
+        teamsCounter: 5,
         location: 'Joinville',
         tags: ['Fullstack'],
     },

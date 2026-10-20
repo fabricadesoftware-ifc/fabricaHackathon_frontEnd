@@ -26,7 +26,7 @@ interface Hackathon {
   statusLabel: string
   startDate: string
   endDate: string
-  teamsCounter?: number
+  teamsCounter: number
   teams?: ProjectCardItem[]
   sponsor?: image[]
   location: string
