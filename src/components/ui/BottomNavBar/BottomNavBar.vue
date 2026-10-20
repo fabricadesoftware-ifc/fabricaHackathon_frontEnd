@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-
+import { useAuthStore } from '@/stores/auth'
 import {
   navigationItems,
   type NavItem,
@@ -24,13 +24,29 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
-
+const authStore = useAuthStore()
 const visibleItems = computed(() =>
-  props.items.filter(
-    item =>
-      item.showOnMobile !== false &&
-      (!item.requiresAuth || props.isLoggedIn),
-  ),
+  props.items.filter(item => {
+    // Verifica se o item deve aparecer no mobile.
+    if (item.showOnMobile === false) {
+      return false
+    }
+
+    // Verifica se o usuário está autenticado.
+    if (item.requiresAuth && !props.isLoggedIn) {
+      return false
+    }
+
+    // Verifica as permissões do perfil.
+    if (item.roles?.length) {
+      return (
+        authStore.userRole !== null &&
+        item.roles.includes(authStore.userRole)
+      )
+    }
+
+    return true
+  }),
 )
 
 const currentItem = computed(() => {
