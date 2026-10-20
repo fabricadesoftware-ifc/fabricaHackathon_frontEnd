@@ -4,6 +4,7 @@ import HomeView from '@/pages/HomeView.vue'
 import EdicoesView from '@/pages/EdicoesView.vue'
 import MyProjectsView from '@/pages/MyProjectsView.vue'
 import InscricaoView from '@/pages/InscricaoView.vue'
+import ConfiguracoesView from '@/pages/ConfiguracoesView.vue'
 import EvaluationsListView from '@/pages/EvaluationsListView.vue'
 import EventView from '@/pages/EventView.vue'
 import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
@@ -38,6 +39,8 @@ const router = createRouter({
       component: InscricaoView,
     },
     {
+      path: '/configuracoes',
+      component: ConfiguracoesView,
       path: '/avaliacao',
       name: 'avaliacoes',
       component: EvaluationsListView,

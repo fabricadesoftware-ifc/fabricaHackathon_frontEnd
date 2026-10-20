@@ -1,26 +1,26 @@
 <template>
-  <div class="flex flex-col items-center gap-9">
-    <div class="relative">
+  <div class="inline-flex flex-col items-center gap-6">
+    <div class="relative h-[168px] w-[168px] shrink-0">
       <img
         v-if="preview"
         alt="Foto de perfil"
-        class="h-42 w-42 rounded-full object-cover"
+        class="h-[168px] w-[168px] rounded-full object-cover block"
         :src="preview"
       >
 
       <div
         v-else
-        class="flex h-42 w-42 items-center justify-center rounded-full bg-gray-200"
+        class="flex h-[168px] w-[168px] items-center justify-center rounded-full bg-gray-200"
       >
-        <span class="mdi mdi-account text-9xl text-gray-500" />
+        <span class="mdi mdi-account text-[80px] text-gray-500" />
       </div>
 
       <button
-        class="text-[30px] absolute bottom-0 right-0 flex h-14 w-14 items-center justify-center rounded-full bg-white text-black shadow-md"
+        class="absolute bottom-1 right-1 flex h-10 w-10 items-center justify-center rounded-full bg-white text-black shadow-md"
         type="button"
         @click="openFileInput"
       >
-        <span class="mdi mdi-camera-outline" />
+        <span class="mdi mdi-camera-outline text-[20px]" />
       </button>
     </div>
 
@@ -33,12 +33,12 @@
     >
 
     <button
-      class="bg-[#F3F4F6] text-[15px] rounded-lg border-[0.1px] border-solid border-[#b7beca] text-[#111827] flex gap-2 justify-center items-center px-4 py-px"
+      class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg border-[0.1px] border-solid border-[#b7beca] bg-[#F3F4F6] px-4 py-1.5 text-[15px] text-[#111827]"
       type="button"
       @click="openFileInput"
     >
-      <span class="text-[19px] mdi mdi-pencil-outline text-[#111827]" />
-      <p>Editar foto</p>
+      <span class="mdi mdi-pencil-outline text-[19px] text-[#111827]" />
+      <span>Editar foto</span>
     </button>
   </div>
 </template>
