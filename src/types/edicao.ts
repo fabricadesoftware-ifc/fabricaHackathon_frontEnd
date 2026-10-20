@@ -1,4 +1,5 @@
 import type { Equipe } from './equipe'
+import { formatarData } from '@/utils/format'
 
 /** Status como o back-end envia. */
 export type EdicaoStatusApi = 'INSCRICAO' | 'EM_ANDAMENTO' | 'AVALIACAO' | 'FINALIZADO'
@@ -41,8 +42,20 @@ export interface Edicao {
 }
 
 export interface Apoiador {
-  nome?: string
-  logo_apoiador: string | null
+  id?: number
+  nome: string
+  tipo?: string
+  logo_apoiador?: string | null
+}
+
+export interface Criterio {
+  id: number
+  nome: string
+}
+
+export interface Tema {
+  id: number
+  descricao_tema: string
 }
 
 /** Detalhe da edição (GET /edicoes/{id}/). */
@@ -52,8 +65,8 @@ export interface EdicaoDetalhe extends Edicao {
   maximo_participantes: number
   maximo_equipes: number
   apoiadores: Apoiador[]
-  criterios: unknown[]
-  temas: unknown[]
+  criterios: Criterio[]
+  temas: Tema[]
   equipes: Equipe[]
 }
 
@@ -62,12 +75,13 @@ export function edicaoParaCard (e: Edicao) {
   return {
     id: e.id,
     title: e.nome,
+    tags: [e.tipo_edicao, String(e.ano)].filter(Boolean),
     manager: e.responsavel,
-    image: e.imagem_capa ?? '',
+    image: e.imagem_capa ?? '/images/fabricaHackathonThumb.png',
     status: mapearStatus(e.status),
     statusLabel: e.status_label,
-    startDate: e.data_inicio,
-    endDate: e.data_fim,
+    startDate: formatarData(e.data_inicio),
+    endDate: formatarData(e.data_fim),
     teamsCounter: e.total_equipes,
     location: e.local,
   }
