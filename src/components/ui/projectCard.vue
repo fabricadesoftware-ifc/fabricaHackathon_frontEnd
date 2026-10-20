@@ -3,7 +3,8 @@
 
     <div class="flex items-start justify-between">
       <div class="w-12 h-12 rounded-full border border-gray-200 overflow-hidden flex items-center justify-center">
-        <img :alt="title" :src="logo">
+        <img v-if="logo" :alt="title" class="w-full h-full object-cover" :src="logo">
+        <span v-else class="mdi mdi-lightbulb-outline text-2xl text-gray-400" />
       </div>
 
       <statusProject :label="statusLabel" :status="status" />
@@ -22,7 +23,7 @@
       <span>{{ event }}</span>
     </div>
 
-    <button class="mt-[2vw] flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-1 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 w-fit">
+    <button v-if="editavel" class="mt-[2vw] flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-1 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 w-fit">
       <span class="mdi mdi-pencil-outline text-base" />
       Editar
     </button>
@@ -35,7 +36,8 @@
 
   type Status = 'finalizado' | 'ativo'
 
-  defineProps<{
+  withDefaults(defineProps<{
+    editavel?: boolean
     logo: string
     status: Status
     statusLabel: string
@@ -43,6 +45,6 @@
     description: string
     team: string
     event: string
-  }>()
+  }>(), { editavel: false })
 
 </script>

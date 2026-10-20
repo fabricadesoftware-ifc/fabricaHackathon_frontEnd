@@ -1,4 +1,4 @@
-import type { PageParams, Projeto } from '@/types'
+import type { PageParams, Paginated, Projeto } from '@/types'
 import { http } from './http'
 import { listar, listarTodos } from './pagination'
 
@@ -17,3 +17,8 @@ export function listarTodosProjetos (params: RecursoFiltros = {}) {
 }
 
 export const obterProjeto = (id: number | string) => http.get<Projeto>(`/projetos/${id}/`)
+
+/** Uma página de projetos com o total (`count`), para paginação no servidor. */
+export function listarProjetosPaginado (params: RecursoFiltros & PageParams = {}) {
+  return http.get<Paginated<Projeto>>('/projetos/', params)
+}
