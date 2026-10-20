@@ -1,9 +1,12 @@
+import type { TipoUsuario } from '@/types/usuario'
+
 export interface NavItem {
   id: string
   label: string
   icon: string
   route: string
   requiresAuth?: boolean
+  roles?: TipoUsuario[]
   showOnMobile?: boolean
 }
 
@@ -61,4 +64,13 @@ export const navigationItems: NavItem[] = [
     requiresAuth: true,
     showOnMobile: true,
   },
+  {
+  id: 'avaliacoes',
+  label: 'Avaliações',
+  icon: 'mdi-clipboard-check',
+  route: '/avaliacao',
+  requiresAuth: true,
+  roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
+  showOnMobile: false,
+},
 ]

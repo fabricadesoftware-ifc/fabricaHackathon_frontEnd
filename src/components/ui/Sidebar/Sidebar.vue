@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
 import {
   navigationItems,
@@ -25,15 +26,27 @@ const emit = defineEmits<{
 }>()
 
 const rail = ref(false)
+const authStore = useAuthStore()
 
 const publicItems = computed(() =>
   props.items.filter(item => !item.requiresAuth),
 )
 
 const privateItems = computed(() =>
-  props.items.filter(
-    item => item.requiresAuth && props.isLoggedIn,
-  ),
+  props.items.filter(item => {
+    if (!item.requiresAuth || !props.isLoggedIn) {
+      return false
+    }
+
+    if (item.roles?.length) {
+      return (
+        authStore.userRole !== null &&
+        item.roles.includes(authStore.userRole)
+      )
+    }
+
+    return true
+  }),
 )
 
 function itemClasses(id: string) {
