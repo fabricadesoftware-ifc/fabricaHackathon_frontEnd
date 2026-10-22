@@ -77,6 +77,15 @@ export const navigationItems: NavItem[] = [
   showOnMobile: false,
 },
   {
+    id: 'admin',
+    label: 'Administração',
+    icon: 'mdi-shield-crown',
+    route: '/admin',
+    requiresAuth: true,
+    roles: ['ADMIN'],
+    showOnMobile: false,
+  },
+  {
     id: 'solicitacoes',
     label: 'Solicitações',
     icon: 'mdi-account-check',
