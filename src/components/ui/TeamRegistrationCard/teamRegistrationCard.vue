@@ -9,6 +9,9 @@
         maxParticipants: number
         teamName: string
         participants: string[]
+        /** Quem está inscrevendo a equipe: conta como participante 1. */
+        ownerLabel?: string
+        ownerEmail?: string
       }>()
 
     const emit = defineEmits<{
@@ -22,15 +25,19 @@
     const emailInput = ref('')
     const errorMessage = ref('')
 
-    const numParticipantes = computed(() => props.participants.length)
+    // O criador da equipe é sempre o participante 1.
+    const numParticipantes = computed(() => props.participants.length + 1)
+    const faltam = computed(() => Math.max(0, props.minParticipants - numParticipantes.value))
     const canContinue = computed(
-      () => numParticipantes.value >= props.minParticipants,
+      () => !!props.teamName.trim() && numParticipantes.value >= props.minParticipants,
     )
 
-    const progressText = computed(
-      () =>
-        `${numParticipantes.value} de ${props.maxParticipants} vagas preenchidas · mínimo de ${props.minParticipants} para confirmar a inscrição`,
-    )
+    const progressText = computed(() => {
+      const base = `${numParticipantes.value} de ${props.maxParticipants} vagas preenchidas`
+      return faltam.value > 0
+        ? `${base} · adicione mais ${faltam.value} para atingir o mínimo de ${props.minParticipants}`
+        : `${base} · mínimo de ${props.minParticipants} atingido`
+    })
 
     function onTeamNameInput (event: Event) {
       emit('update:teamName', (event.target as HTMLInputElement).value)
@@ -45,6 +52,10 @@
       }
       if (!email.includes('@') || !email.includes('.com')) {
         errorMessage.value = 'E-mail inválido.'
+        return
+      }
+      if (props.ownerEmail && props.ownerEmail.toLowerCase() === email.toLowerCase()) {
+        errorMessage.value = 'Você já é o participante 1 da equipe.'
         return
       }
       if (
@@ -88,7 +99,7 @@
         <h2 class="text-2xl font-medium text-gray-900">Sua equipe  </h2>
         <p class="mt-1 mb-8 text-base text-gray-600">
           Esta edição exige de {{ props.minParticipants }} a
-          {{ props.maxParticipants }} participantes por equipe
+          {{ props.maxParticipants }} participantes por equipe, contando com você
         </p>
 
         <label class="block">
@@ -119,6 +130,13 @@
         <p v-if="errorMessage" class="mt-2 text-red-500 text-xs">{{ errorMessage }}</p>
 
         <div class="flex flex-row flex-wrap gap-3 mt-4">
+  <span
+    class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm text-gray-900"
+    data-testid="participante-1"
+  >
+    {{ props.ownerLabel || 'Você' }}
+    <span class="text-xs text-blue-600">participante 1 · você</span>
+  </span>
   <InviteChip
     v-for="participant in props.participants"
     :key="participant"
@@ -139,7 +157,7 @@
           />
           <AppButton
             :disabled="!canContinue"
-            label="Continuar para o projeto"
+            label="Revisar inscrição"
             variant="primary"
             @click="handleContinue"
             icon-position="right"

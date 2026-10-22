@@ -15,9 +15,9 @@
       <summaryRow label="Edição" :values="edition" />
       <summaryRow label="Nome da equipe" :values="teamName" />
       <summaryRow label="Participantes" :values="participants" />
-      <summaryRow label="Nome do projeto" :values="projectName" />
-      <summaryRow label="Tema" :values="theme" />
-      <summaryRow label="Link do Deploy" :values="deployUrl" />
+      <summaryRow v-if="projectName" label="Nome do projeto" :values="projectName" />
+      <summaryRow v-if="theme" label="Tema" :values="theme" />
+      <summaryRow v-if="deployUrl" label="Link do Deploy" :values="deployUrl" />
     </div>
 
     <div class="flex items-center justify-between pt-2">
@@ -37,13 +37,13 @@ const props = withDefaults(
     edition: string;
     teamName: string;
     participants: string[];
-    projectName: string;
-    theme: string;
-    deployUrl: string;
+    projectName?: string;
+    theme?: string;
+    deployUrl?: string;
   }>(),
   {
     title: "Revisão",
-    subtitle: "Revise as informações do seu projeto e equipe.",
+    subtitle: "Revise as informações da sua equipe. O projeto pode ser preenchido depois, em Meus projetos.",
   },
 );
 

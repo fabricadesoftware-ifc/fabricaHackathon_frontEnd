@@ -31,6 +31,7 @@
 
   <div>
     <AsyncView
+      skeleton="cards"
       :empty="!loading && !error && cards.length === 0"
       empty-message="Nenhuma edição com inscrições abertas no momento."
       :error="error"

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 defineProps<{
   steps: string[]
-  currentStep: 0 | 1 | 2 | 3 | 4
+  currentStep: number
 }>()
 </script>
 
 <template>
   <div class="flex items-center justify-between w-full max-w-2xl px-4 py-2">
-    <template v-for="i in 4" :key="i">
+    <template v-for="i in steps.length" :key="i">
       <div class="flex flex-col items-center">
         <div 
           class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold transition-colors"
@@ -26,7 +26,7 @@ defineProps<{
       </div>
 
       <div 
-        v-if="i !== 4" 
+        v-if="i !== steps.length" 
         class="flex-1 h-1 mx-2 rounded-full mb-5"
         :class="currentStep > i - 1 ? 'bg-[#2B67EB]' : 'bg-[#9D9DA8]'"
       ></div>

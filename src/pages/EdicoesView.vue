@@ -17,6 +17,7 @@
     />
 
     <AsyncView
+      skeleton="cards"
       :empty="!loading && !error && filtradas.length === 0"
       empty-message="Nenhuma edição encontrada."
       :error="error"

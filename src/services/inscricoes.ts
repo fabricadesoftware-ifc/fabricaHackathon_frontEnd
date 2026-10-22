@@ -1,4 +1,5 @@
 import { http } from '@/services/http'
+import { prepararImagem } from '@/utils/imagem'
 
 // Tipos de status das edições
 export type StatusEdicao =
@@ -122,9 +123,9 @@ export function sairDaEquipe(equipeId: number) {
 }
 
 // Envia ou troca a logo do projeto (somente o criador, com a edição em INSCRICAO)
-export function enviarLogoProjeto(equipeId: number, arquivo: File) {
+export async function enviarLogoProjeto(equipeId: number, arquivo: File) {
   const dados = new FormData()
-  dados.append('logo_projeto', arquivo)
+  dados.append('logo_projeto', await prepararImagem(arquivo))
   return http.post<MinhaEquipe>(`/inscricoes/${equipeId}/logo/`, dados)
 }
 

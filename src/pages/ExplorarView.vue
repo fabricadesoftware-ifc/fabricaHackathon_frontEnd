@@ -13,6 +13,7 @@
     />
 
     <AsyncView
+      skeleton="cards"
       :empty="!loading && !error && itens.length === 0"
       empty-message="Nenhum projeto encontrado."
       :error="error"
