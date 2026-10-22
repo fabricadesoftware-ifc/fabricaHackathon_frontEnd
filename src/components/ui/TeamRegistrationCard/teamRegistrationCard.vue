@@ -8,6 +8,7 @@
         minParticipants: number
         maxParticipants: number
         teamName: string
+        projectName: string
         participants: string[]
         /** Quem está inscrevendo a equipe: conta como participante 1. */
         ownerLabel?: string
@@ -16,6 +17,7 @@
 
     const emit = defineEmits<{
       (e: 'update:teamName', value: string): void
+      (e: 'update:projectName', value: string): void
       (e: 'update:participants', value: string[]): void
       (e: 'back'): void
       (e: 'continue'): void
@@ -29,7 +31,7 @@
     const numParticipantes = computed(() => props.participants.length + 1)
     const faltam = computed(() => Math.max(0, props.minParticipants - numParticipantes.value))
     const canContinue = computed(
-      () => !!props.teamName.trim() && numParticipantes.value >= props.minParticipants,
+      () => !!props.teamName.trim() && !!props.projectName.trim() && numParticipantes.value >= props.minParticipants,
     )
 
     const progressText = computed(() => {
@@ -109,8 +111,21 @@
             type="text"
             :value="props.teamName"
             @input="onTeamNameInput"
-            class="w-full bg-gray-50 text-gray-900 placeholder:text-gray-400 rounded-lg border border-gray-100 px-4 py-3 mb-6 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            class="w-full bg-gray-50 text-gray-900 placeholder:text-gray-400 rounded-lg border border-gray-100 px-4 py-3 mb-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
+        </label>
+
+        <label class="block">
+          <p class="text-sm text-gray-700 mb-2">Nome do projeto</p>
+          <input
+            placeholder="Ex: Alugaê App"
+            type="text"
+            maxlength="100"
+            :value="props.projectName"
+            @input="emit('update:projectName', ($event.target as HTMLInputElement).value)"
+            class="w-full bg-gray-50 text-gray-900 placeholder:text-gray-400 rounded-lg border border-gray-100 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          >
+          <span class="mt-1 mb-6 block text-xs text-gray-500">Você pode mudar o nome depois. Descrição, tema e logo também ficam para depois.</span>
         </label>
 
         <div>
