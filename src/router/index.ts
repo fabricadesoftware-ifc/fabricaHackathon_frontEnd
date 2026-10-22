@@ -15,6 +15,8 @@ import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
 import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
+import AdminEdicaoView from '@/pages/admin/AdminEdicaoView.vue'
+import AdminEdicoesView from '@/pages/admin/AdminEdicoesView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
 import TermosView from '@/pages/TermosView.vue'
 import NotFoundView from '@/pages/NotFoundView.vue'
@@ -105,6 +107,18 @@ const router = createRouter({
       },
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: AdminEdicoesView,
+      meta: { requiresAuth: true, roles: ['ADMIN'] },
+    },
+    {
+      path: '/admin/edicoes/:id',
+      name: 'admin-edicao',
+      component: AdminEdicaoView,
+      meta: { requiresAuth: true, roles: ['ADMIN'] },
+    },
+    {
       path: '/admin/solicitacoes',
       name: 'solicitacoes-perfil',
       component: SolicitacoesPerfilView,
@@ -186,6 +200,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/avaliacao/, 'Avaliações'],
   [/^\/novo/, 'Novo projeto'],
   [/^\/admin\/solicitacoes/, 'Solicitações de perfil'],
+  [/^\/admin/, 'Administração'],
   [/^\/login/, 'Entrar'],
   [/^\/registro/, 'Criar conta'],
   [/^\/termos/, 'Termos de Uso'],
