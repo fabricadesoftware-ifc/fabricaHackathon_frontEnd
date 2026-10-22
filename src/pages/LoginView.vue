@@ -47,7 +47,7 @@ async function handleLogin(payload: LoginPayload) {
     <div class="flex min-h-[70vh] items-center justify-center">
         <div class="w-full">
             <LoginCard :is-loading="authStore.isLoading" @submit="handleLogin"
-                @create-account="router.push('/registro')" />
+                @create-account="router.push({ path: '/registro', query: route.query.redirect ? { redirect: route.query.redirect } : {} })" />
 
             <p v-if="error" role="alert" class="mt-4 text-center text-sm text-red-600">
                 {{ error }}
