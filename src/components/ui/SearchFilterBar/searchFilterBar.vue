@@ -42,7 +42,9 @@
 
 <template>
   <div class="flex flex-col sm:flex-row justify-between gap-4 py-3 min-w-full">
-    <searchBar v-model="search" :placeholder="props.placeholder" />
+    <div class="w-full sm:w-72 lg:w-96">
+      <searchBar v-model="search" :placeholder="props.placeholder" />
+    </div>
 
     <div class="flex flex-wrap gap-4">
       <AppSelect

@@ -69,23 +69,26 @@
       class="
       flex
       items-center
-      bg-gray-100
-      border-2
+      bg-white
+      border
       border-[#E5E7EB]
-      focus-within:border-blue-500
+      shadow-sm
+      transition
+      hover:border-blue-300
+      focus-within:border-blue-600
+      focus-within:ring-2
+      focus-within:ring-blue-100
       rounded-full
-      h-11.25
-      w-55
-      sm:w-65
-      lg:w-87.5
-      px-3
+      h-11
+      w-full
+      px-4
     "
     >
 
       <span
         class="
         mdi mdi-magnify
-        text-gray-400
+        text-blue-600
         text-[22px]
         mr-2
       "
@@ -95,7 +98,7 @@
         class="
         bg-transparent
         w-full
-        text-gray-700
+        text-gray-900
         text-sm
         placeholder-gray-400
         outline-none

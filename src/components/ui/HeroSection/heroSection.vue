@@ -25,12 +25,13 @@ const emit = defineEmits<{
       {{ subtitle }}
     </p>
 
-    <searchBar
-      class="w-full max-w-xl"
-      placeholder="Buscar projetos ou equipes..."
-      :model-value="modelValue"
-      @update:model-value="emit('update:modelValue', $event)"
-    />
+    <div class="w-full max-w-xl">
+      <searchBar
+        placeholder="Buscar projetos ou equipes..."
+        :model-value="modelValue"
+        @update:model-value="emit('update:modelValue', $event)"
+      />
+    </div>
   </div>
 </template>
 
