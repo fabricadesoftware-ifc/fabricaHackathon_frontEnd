@@ -23,6 +23,17 @@
       <span>{{ event }}</span>
     </div>
 
+    <p v-if="notaFinal" class="text-sm text-gray-500">
+      Nota final:
+      <span class="font-semibold text-gray-900">{{ notaFinal }}</span>
+    </p>
+
+    <RouterLink v-if="preAvaliacaoTo" :to="preAvaliacaoTo"
+      class="mt-[1vw] flex items-center gap-2 border border-blue-200 rounded-lg px-4 py-1 text-sm text-blue-700 bg-blue-50 hover:bg-blue-100 w-fit">
+      <span class="mdi mdi-clipboard-text-outline text-base" />
+      Pré-avaliação
+    </RouterLink>
+
     <button v-if="editavel"
       class="mt-[2vw] flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-1 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 w-fit"
       @click="emit('edit')">
@@ -40,6 +51,10 @@ type Status = 'finalizado' | 'ativo'
 
 withDefaults(defineProps<{
   editavel?: boolean
+  /** Nota final já publicada (edição finalizada). */
+  notaFinal?: string | null
+  /** Destino do botão "Pré-avaliação"; sem valor, o botão não aparece. */
+  preAvaliacaoTo?: string
   logo: string
   status: Status
   statusLabel: string
@@ -47,7 +62,7 @@ withDefaults(defineProps<{
   description: string
   team: string
   event: string
-}>(), { editavel: false })
+}>(), { editavel: false, notaFinal: null, preAvaliacaoTo: undefined })
 const emit = defineEmits<{
   (e: 'edit'): void
 }>()

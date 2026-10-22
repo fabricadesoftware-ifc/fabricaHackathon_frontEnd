@@ -6,6 +6,8 @@ import HomeView from '@/pages/HomeView.vue'
 import EdicoesView from '@/pages/EdicoesView.vue'
 import MyProjectsView from '@/pages/MyProjectsView.vue'
 import InscricaoView from '@/pages/InscricaoView.vue'
+import EquipesView from '@/pages/EquipesView.vue'
+import ExplorarView from '@/pages/ExplorarView.vue'
 import ConfiguracoesView from '@/pages/ConfiguracoesView.vue'
 import EvaluationsListView from '@/pages/EvaluationsListView.vue'
 import EventView from '@/pages/EventView.vue'
@@ -37,9 +39,18 @@ const router = createRouter({
       component: EventView,
     },
     {
+      path: '/explorar',
+      component: ExplorarView,
+    },
+    {
       path: '/projetos',
       component: MyProjectsView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
+    },
+    {
+      path: '/equipes',
+      component: EquipesView,
+      meta: { requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
     },
     {
       path: '/projetos/:projetoId/pre-avaliacao',
@@ -50,7 +61,7 @@ const router = createRouter({
     {
       path: '/inscricao',
       component: InscricaoView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: ['PARTICIPANTE'] },
     },
     {
       path: '/configuracoes',
@@ -70,7 +81,7 @@ const router = createRouter({
       path: '/novo',
       name: 'projeto-novo',
       component: ProjectRegistrationView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: ['PARTICIPANTE'] },
     },
     {
       path: '/avaliacao/:editionId',

@@ -1,165 +1,49 @@
-<template>
-    <PageHeader title="Inscreva-se em edições" subtitle="Participe de edições e ganhe conhecimento" />
-    <div>
-        <SearchFilterBar />
-        <ResultsBar :total="hackathons.length" :start="startIndex + 1" :end="endIndex" />
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
-            <eventCard v-for="h in paginatedHackathons" :key="h.id" v-bind="h" />
-        </div>
-
-        <AppPagination v-model="currentPage" :length="totalPages" />
-    </div>
-</template>
-
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
-  import PageHeader from '@/components/ui/PageHeader/PageHeader.vue';
-  import ResultsBar from '@/components/ui/ResultsBar/ResultsBar.vue';
-  import SearchFilterBar from '@/components/ui/SearchFilterBar';
-  import eventCard from '@/components/ui/eventCard.vue';
-  import AppPagination from '@/components/layout/AppPagination/AppPagination.vue';
+  import { computed, ref, watch } from 'vue'
+  import AppPagination from '@/components/layout/AppPagination/AppPagination.vue'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import eventCard from '@/components/ui/eventCard.vue'
+  import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
+  import ResultsBar from '@/components/ui/ResultsBar/ResultsBar.vue'
+  import { useAsync } from '@/composables/useAsync'
+  import { listarTodasEdicoes } from '@/services'
+  import { edicaoParaCard } from '@/types'
 
-type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado';
+  const PAGE_SIZE = 8
 
-interface Hackathon {
-    id: number;
-    title: string;
-    image: string;
-    status: Status;
-    statusLabel: string;
-    startDate: string;
-    endDate: string;
-    teamsCounter: number;
-    location: string;
-    tags: string[];
-}
+  // Só edições com inscrições abertas.
+  const { data, loading, error, run } = useAsync(() => listarTodasEdicoes({ status: 'inscricoes' }))
 
-const hackathons: Hackathon[] = [
-    {
-        id: 1,
-        title: 'Hackathon Fábrica',
-        image: '/images/hackifc.png',
-        status: 'andamento',
-        statusLabel: 'Em andamento',
-        startDate: '01/09/2026',
-        endDate: '05/09/2026',
-        teamsCounter: 12,
-        location: 'Joinville',
-        tags: ['Web', 'IA', 'Mobile'],
-    },
-    {
-        id: 2,
-        title: 'Hackathon 2º Ano',
-        image: '/images/hackifc.png',
-        status: 'finalizado',
-        statusLabel: 'Finalizado',
-        startDate: '10/03/2025',
-        endDate: '14/03/2025',
-        teamsCounter: 8,
-        location: 'Joinville',
-        tags: ['Backend', 'Dados'],
-    },
-    {
-        id: 3,
-        title: 'Hackathon 3º Ano',
-        image: '/images/hackifc.png',
-        status: 'inscricoes',
-        statusLabel: 'Inscrição',
-        startDate: '01/12/2026',
-        endDate: '05/12/2026',
-        teamsCounter: 5,
-        location: 'Joinville',
-        tags: ['Fullstack'],
-    },
-    {
-        id: 4,
-        title: 'Hackathon Fábrica',
-        image: '/images/hackifc.png',
-        status: 'andamento',
-        statusLabel: 'Em andamento',
-        startDate: '01/09/2026',
-        endDate: '05/09/2026',
-        teamsCounter: 12,
-        location: 'Joinville',
-        tags: ['Web', 'IA', 'Mobile'],
-    },
-    {
-        id: 5,
-        title: 'Hackathon 2º Ano',
-        image: '/images/hackifc.png',
-        status: 'finalizado',
-        statusLabel: 'Finalizado',
-        startDate: '10/03/2025',
-        endDate: '14/03/2025',
-        teamsCounter: 8,
-        location: 'Joinville',
-        tags: ['Backend', 'Dados'],
-    },
-    {
-        id: 6,
-        title: 'Hackathon 3º Ano',
-        image: '/images/hackifc.png',
-        status: 'inscricoes',
-        statusLabel: 'Inscrição',
-        startDate: '01/12/2026',
-        endDate: '05/12/2026',
-        teamsCounter: 5,
-        location: 'Joinville',
-        tags: ['Fullstack'],
-    },
-    {
-        id: 7,
-        title: 'Hackathon Fábrica',
-        image: '/images/hackifc.png',
-        status: 'andamento',
-        statusLabel: 'Em andamento',
-        startDate: '01/09/2026',
-        endDate: '05/09/2026',
-        teamsCounter: 12,
-        location: 'Joinville',
-        tags: ['Web', 'IA', 'Mobile'],
-    },
-    {
-        id: 8,
-        title: 'Hackathon 2º Ano',
-        image: '/images/hackifc.png',
-        status: 'finalizado',
-        statusLabel: 'Finalizado',
-        startDate: '10/03/2025',
-        endDate: '14/03/2025',
-        teamsCounter: 8,
-        location: 'Joinville',
-        tags: ['Backend', 'Dados'],
-    },
-    {
-        id: 9,
-        title: 'Hackathon 3º Ano',
-        image: '/images/hackifc.png',
-        status: 'inscricoes',
-        statusLabel: 'Inscrição',
-        startDate: '01/12/2026',
-        endDate: '05/12/2026',
-        teamsCounter: 5,
-        location: 'Joinville',
-        tags: ['Fullstack'],
-    },
-];
+  const cards = computed(() => (data.value ?? []).map(e => edicaoParaCard(e)))
+  const currentPage = ref(1)
+  const totalPages = computed(() => Math.max(1, Math.ceil(cards.value.length / PAGE_SIZE)))
+  const startIndex = computed(() => (currentPage.value - 1) * PAGE_SIZE)
+  const paginadas = computed(() => cards.value.slice(startIndex.value, startIndex.value + PAGE_SIZE))
+  const endIndex = computed(() => startIndex.value + paginadas.value.length)
 
-// --- Paginação ---
-const currentPage = ref(1);
-const itemsPerPage = 8;
-
-const totalPages = computed(() =>
-    Math.max(1, Math.ceil(hackathons.length / itemsPerPage))
-);
-
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed(() =>
-    Math.min(startIndex.value + itemsPerPage, hackathons.length)
-);
-
-const paginatedHackathons = computed(() =>
-    hackathons.slice(startIndex.value, endIndex.value)
-);
+  watch(totalPages, v => {
+    if (currentPage.value > v) currentPage.value = v
+  })
 </script>
+
+<template>
+  <PageHeader subtitle="Escolha uma edição com inscrições abertas e abra a página dela para inscrever sua equipe" title="Inscreva-se em edições" />
+
+  <div>
+    <AsyncView
+      :empty="!loading && !error && cards.length === 0"
+      empty-message="Nenhuma edição com inscrições abertas no momento."
+      :error="error"
+      :loading="loading"
+      @retry="run"
+    >
+      <ResultsBar :end="endIndex" :start="cards.length > 0 ? startIndex + 1 : 0" :total="cards.length" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
+        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" />
+      </div>
+
+      <AppPagination v-model="currentPage" :length="totalPages" />
+    </AsyncView>
+  </div>
+</template>

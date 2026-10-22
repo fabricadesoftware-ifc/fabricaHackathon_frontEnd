@@ -12,6 +12,8 @@ import {
   listarMeusProjetos,
   listarMinhasEquipes,
   editarInscricao,
+  enviarLogoProjeto,
+  removerLogoProjeto,
 } from '@/services/inscricoes'
 import { ApiError } from '@/services/http'
 import { listarTodasEdicoes } from '@/services/edicoes'
@@ -127,6 +129,11 @@ const itens = computed(() =>
       editavel:
         projeto.edicao_status === 'INSCRICAO' &&
         equipesCriadas.value.has(projeto.equipe.id),
+      notaFinal: finalizado ? projeto.nota_final : null,
+      preAvaliacaoTo:
+        projeto.edicao_status === 'INSCRICAO'
+          ? undefined
+          : `/projetos/${projeto.id}/pre-avaliacao`,
     }
   }),
 )
@@ -165,6 +172,8 @@ interface DadosEdicao {
   nome_projeto: string
   descricao_projeto: string
   link_deploy_projeto: string
+  logo: File | null
+  removerLogo: boolean
 }
 
 async function salvarEdicao(dados: DadosEdicao) {
@@ -197,6 +206,13 @@ async function salvarEdicao(dados: DadosEdicao) {
         link_deploy_projeto: dados.link_deploy_projeto,
       },
     })
+
+    // A logo tem endpoint próprio.
+    if (dados.logo) {
+      await enviarLogoProjeto(equipe.id, dados.logo)
+    } else if (dados.removerLogo && projeto.logo_projeto) {
+      await removerLogoProjeto(equipe.id)
+    }
 
     // Fecha o modal após salvar com sucesso.
     modalEditarAberto.value = false
@@ -248,6 +264,7 @@ async function salvarEdicao(dados: DadosEdicao) {
   :project-name="projetoSelecionado.nome_projeto"
   :description="projetoSelecionado.descricao_projeto"
   :deploy-url="projetoSelecionado.link_deploy_projeto ?? ''"
+  :logo-url="projetoSelecionado.logo_projeto"
   :loading="salvandoEdicao"
   :error="erroEdicao"
   @save="salvarEdicao"

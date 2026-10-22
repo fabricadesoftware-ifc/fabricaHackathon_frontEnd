@@ -17,7 +17,7 @@
           <div class="flex flex-col items-end gap-6 h-[10vh]">
             <EventDateRange :end-date="formatarData(edicao.data_fim)" :start-date="formatarData(edicao.data_inicio)" />
 
-            <RouterLink v-if="status === 'inscricoes'" :to="{
+            <RouterLink v-if="status === 'inscricoes' && podeInscrever" :to="{
               path: '/novo',
               query: { edicao_id: edicao.id },
             }">
@@ -75,10 +75,14 @@ import InfoCard from '@/components/ui/InfoCard/InfoCard.vue'
 import progressStepper from '@/components/ui/progressStepper.vue'
 import SponsorList from '@/components/ui/SponsorList'
 import { useAsync } from '@/composables/useAsync'
+import { useAuthStore } from '@/stores/auth'
 import { listarRanking, obterEdicao } from '@/services'
 import { equipeParaCard, mapearStatus } from '@/types'
 import { formatarData } from '@/utils/format'
 
+const auth = useAuthStore()
+// Só visitante (que será levado ao login) ou participante vê o botão de inscrição.
+const podeInscrever = computed(() => !auth.isAuthenticated || auth.userRole === 'PARTICIPANTE')
 const route = useRoute()
 const edicaoId = computed(() => route.params.id as string)
 

@@ -3,7 +3,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { obterEdicao } from '@/services/edicoes'
-import { criarInscricao } from '@/services/inscricoes'
+import { criarInscricao, enviarLogoProjeto } from '@/services/inscricoes'
 import { ApiError } from '@/services/http'
 import { useAsync } from '@/composables/useAsync'
 
@@ -101,6 +101,7 @@ const editionTheme = computed(() => {
 // Estados da inscrição
 const isSubmitting = ref(false)
 const submitError = ref('')
+const avisoLogo = ref('')
 const stepError = ref('')
 const currentStep = ref<Step>(0)
 
@@ -223,7 +224,7 @@ async function submitRegistration(): Promise<void> {
     throw new Error('Quantidade de participantes inválida.')
   }
 
-  await criarInscricao({
+  const criada = await criarInscricao({
     edicao: edicaoId.value,
     nome_equipe: form.teamName.trim(),
     tema: form.temaId,
@@ -239,6 +240,17 @@ async function submitRegistration(): Promise<void> {
 
     membros: form.participants.map(email => email.trim()),
   })
+
+  // A logo vai depois, em endpoint próprio. Se falhar, a inscrição já existe:
+  // avisa o usuário para reenviar em "Meus projetos" em vez de perder o cadastro.
+  if (form.logo instanceof File) {
+    try {
+      await enviarLogoProjeto(criada.id, form.logo)
+    } catch {
+      avisoLogo.value =
+        'A inscrição foi feita, mas a logo não foi enviada. Você pode enviá-la em "Meus projetos" > Editar.'
+    }
+  }
 }
 
 // Confirma o cadastro da inscrição
@@ -404,7 +416,7 @@ defineExpose({
       >
         <SuccessState
           button-label="Ver meus projetos"
-          :description="`Sua equipe foi inscrita em ${edition}. Você pode acompanhar tudo em Meus projetos.`"
+          :description="`Sua equipe foi inscrita em ${edition}. Você pode acompanhar tudo em Meus projetos.${avisoLogo ? ' ' + avisoLogo : ''}`"
           title="Inscrição confirmada!"
           @click="onFinish"
         />

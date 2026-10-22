@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import AppButton from '@/components/ui/AppButton/AppButton.vue'
+import LogoUpload from '@/components/ui/LogoUpload/LogoUpload.vue'
+
 interface EditProjectPayload {
     nome_equipe: string
     nome_projeto: string
     descricao_projeto: string
     link_deploy_projeto: string
+    /** Nova logo escolhida (null = manter a atual). */
+    logo: File | null
+    /** true = o criador pediu para remover a logo atual. */
+    removerLogo: boolean
 }
 
 const props = withDefaults(
@@ -15,10 +21,12 @@ const props = withDefaults(
         projectName: string
         description: string
         deployUrl: string
+        logoUrl?: string | null
         loading?: boolean
         error?: string
     }>(),
     {
+        logoUrl: null,
         loading: false,
         error: '',
     },
@@ -34,7 +42,24 @@ const form = reactive<EditProjectPayload>({
     nome_projeto: '',
     descricao_projeto: '',
     link_deploy_projeto: '',
+    logo: null,
+    removerLogo: false,
 })
+const erroLogo = ref('')
+// Troca a chave do preview ao remover a logo atual.
+const logoKey = ref(0)
+
+function removerLogoAtual() {
+    form.logo = null
+    form.removerLogo = true
+    logoKey.value++
+}
+
+function aoEscolherLogo(arquivo: File | null) {
+    form.logo = arquivo
+    form.removerLogo = false
+    erroLogo.value = ''
+}
 
 // Preenche o formulário ao abrir o modal
 watch(
@@ -46,6 +71,10 @@ watch(
         form.nome_projeto = props.projectName
         form.descricao_projeto = props.description
         form.link_deploy_projeto = props.deployUrl
+        form.logo = null
+        form.removerLogo = false
+        erroLogo.value = ''
+        logoKey.value++
     },
     { immediate: true },
 )
@@ -72,6 +101,8 @@ function handleSave() {
         nome_projeto: form.nome_projeto.trim(),
         descricao_projeto: form.descricao_projeto.trim(),
         link_deploy_projeto: form.link_deploy_projeto.trim(),
+        logo: form.logo,
+        removerLogo: form.removerLogo,
     })
 }
 
@@ -153,6 +184,26 @@ function handleKeydown(event: KeyboardEvent) {
                         <p class="mt-1 text-xs text-gray-500">
                             Opcional. Informe uma URL válida.
                         </p>
+                    </div>
+
+                    <!-- Logo -->
+                    <div>
+                        <span class="mb-2 block text-sm font-medium text-gray-700">Logo do projeto</span>
+
+                        <LogoUpload :key="logoKey" :accepted-formats="['image/png', 'image/jpeg', 'image/webp']"
+                            :max-size-mb="5" :model-value="form.removerLogo ? null : logoUrl"
+                            @error="erroLogo = $event" @update:model-value="aoEscolherLogo" />
+
+                        <button v-if="logoUrl && !form.removerLogo && !form.logo" type="button"
+                            class="mt-2 text-sm text-red-600 hover:underline" :disabled="loading"
+                            @click="removerLogoAtual">
+                            Remover logo atual
+                        </button>
+
+                        <p v-if="form.removerLogo" class="mt-2 text-sm text-gray-500">
+                            A logo será removida ao salvar.
+                        </p>
+                        <p v-if="erroLogo" class="mt-1 text-sm text-red-600">{{ erroLogo }}</p>
                     </div>
 
                     <!-- Erro -->

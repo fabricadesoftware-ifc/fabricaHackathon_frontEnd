@@ -98,3 +98,37 @@ export function editarInscricao(
     payload,
   )
 }
+
+// Adiciona um integrante pelo e-mail (somente o criador, com a edição em INSCRICAO)
+export function adicionarMembro(equipeId: number, email: string) {
+  return http.post<MinhaEquipe>(`/inscricoes/${equipeId}/membros/`, {
+    membros: [email],
+  })
+}
+
+// Remove um integrante da equipe (somente o criador)
+export function removerMembro(equipeId: number, usuarioId: number) {
+  return http.delete<MinhaEquipe>(`/inscricoes/${equipeId}/membros/${usuarioId}/`)
+}
+
+// Exclui a inscrição inteira (somente o criador)
+export function excluirInscricao(equipeId: number) {
+  return http.delete<void>(`/inscricoes/${equipeId}/`)
+}
+
+// O próprio integrante sai da equipe
+export function sairDaEquipe(equipeId: number) {
+  return http.post<void>(`/inscricoes/${equipeId}/sair/`, {})
+}
+
+// Envia ou troca a logo do projeto (somente o criador, com a edição em INSCRICAO)
+export function enviarLogoProjeto(equipeId: number, arquivo: File) {
+  const dados = new FormData()
+  dados.append('logo_projeto', arquivo)
+  return http.post<MinhaEquipe>(`/inscricoes/${equipeId}/logo/`, dados)
+}
+
+// Remove a logo do projeto
+export function removerLogoProjeto(equipeId: number) {
+  return http.delete<MinhaEquipe>(`/inscricoes/${equipeId}/logo/`)
+}

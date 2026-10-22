@@ -54,11 +54,9 @@ const emit = defineEmits<{
 
 function handleBack(e: Event){
     emit('back', )
-    console.log("voltar")
 }
 
 function handleConfirmarInscricao(e: Event){
     emit('confirm')
-    console.log("confirmar")
 }
 </script>

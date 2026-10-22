@@ -64,7 +64,7 @@
       @retry="run"
     >
       <div v-for="secao in secoes" :key="secao.tipo" class="p-6">
-        <Section link-text="Ver todos" :title="secao.tipo" to="/projetos">
+        <Section link-text="Ver todos" :title="secao.tipo" to="/explorar">
           <CardGrid :items="secao.itens" />
         </Section>
       </div>
