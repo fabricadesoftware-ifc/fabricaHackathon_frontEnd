@@ -3,7 +3,6 @@ import { computed, ref } from 'vue'
 import { useDisplay } from 'vuetify'
 import {
   VAvatar,
-  VBadge,
   VIcon,
   VList,
   VListItem,
@@ -18,12 +17,6 @@ const size = computed(() => {
   return 45
 })
 
-const badgeClass = computed(() => {
-  if (smAndDown.value) return 'badge-sm'
-  if (mdAndDown.value) return 'badge-md'
-  return 'badge-lg'
-})
-
 const menuClass = computed(() => {
   if (smAndDown.value) return 'menu-sm'
   if (mdAndDown.value) return 'menu-md'
@@ -34,7 +27,6 @@ const menuClass = computed(() => {
 interface Props {
   userAvatar?: string
   userName: string
-  notificationCount: number
 }
 
 const props = defineProps<Props>()
@@ -43,17 +35,11 @@ type MenuOption = 'perfil' | 'configuracoes' | 'sair'
 
 
 const emit = defineEmits<{
-  (e: 'notification-click'): void
   (e: 'menu-option-click', option: MenuOption): void
 }>()
 
 
 const menuOpen = ref(false)
-
-
-function handleNotificationClick() {
-  emit('notification-click')
-}
 
 
 function handleOptionClick(option: MenuOption) {
@@ -67,29 +53,6 @@ function handleOptionClick(option: MenuOption) {
 
 <template>
   <div class="flex items-center gap-8 justify-end">
-
-    <button aria-label="Notificações" class="
-        relative
-        bg-transparent
-        border-none
-        cursor-pointer
-        notification-btn
-      " @click="handleNotificationClick">
-
-      <v-icon
-  icon="mdi-bell-outline"
-  :size="26"
-  color="#374151"
-/>
-
-
-      <v-badge v-if="props.notificationCount > 0" :class="[
-        'simple-badge absolute -top-1 -right-1',
-        badgeClass
-      ]" color="#1455CC" :content="props.notificationCount" overlap />
-
-    </button>
-
 
     <v-menu v-model="menuOpen" location="bottom end">
 
@@ -125,11 +88,6 @@ function handleOptionClick(option: MenuOption) {
 
 
 <style scoped>
-.notification-btn:hover {
-  opacity: 0.7;
-}
-
-
 .avatar {
   transition: opacity 0.15s ease-in-out;
 }
@@ -188,28 +146,4 @@ function handleOptionClick(option: MenuOption) {
   min-width: 160px !important;
 }
 
-
-/* Badge */
-.badge-sm :deep(.v-badge__badge) {
-  width: 14px;
-  height: 14px;
-  font-size: 9px;
-  border-radius: 100%;
-}
-
-
-.badge-md :deep(.v-badge__badge) {
-  width: 16px;
-  height: 16px;
-  font-size: 10px;
-  border-radius: 100%;
-}
-
-
-.badge-lg :deep(.v-badge__badge) {
-  width: 18px;
-  height: 18px;
-  font-size: 11px;
-  border-radius: 100%;
-}
 </style>

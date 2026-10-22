@@ -47,7 +47,7 @@
 <template>
   <HeroSection
     v-model="search"
-    subtitle="Desenvolva, colabore e inove no HackIFC // 24H"
+    subtitle="Explore os projetos das edições e acompanhe a inovação feita por estudantes"
     title="Desenvolva, colabore e inove no HackIFC // 24H"
   />
 

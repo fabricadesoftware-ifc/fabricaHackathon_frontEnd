@@ -37,6 +37,7 @@
 
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
+  import { useRoute } from 'vue-router'
   import AppPagination from '@/components/layout/AppPagination/AppPagination.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
@@ -49,7 +50,10 @@
 
   const PAGE_SIZE = 8
 
-  const search = ref('')
+  const route = useRoute()
+  const search = ref(typeof route.query.q === 'string' ? route.query.q : '')
+  // Busca vinda do campo do topo enquanto já está em /explorar.
+  watch(() => route.query.q, q => { search.value = typeof q === 'string' ? q : '' })
   const edicaoId = ref('')
   const currentPage = ref(1)
 
