@@ -252,7 +252,10 @@ export async function request<T>(
     Accept: 'application/json',
   }
 
-  if (options.body !== undefined) {
+  // FormData (upload): o navegador define o Content-Type com o boundary.
+  const isFormData = options.body instanceof FormData
+
+  if (options.body !== undefined && !isFormData) {
     headers['Content-Type'] = 'application/json'
   }
 
@@ -272,7 +275,7 @@ export async function request<T>(
     body:
       options.body === undefined
         ? undefined
-        : JSON.stringify(options.body),
+        : (isFormData ? (options.body as FormData) : JSON.stringify(options.body)),
     signal: options.signal,
   }
 

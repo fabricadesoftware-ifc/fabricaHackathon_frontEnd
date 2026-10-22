@@ -14,6 +14,7 @@ import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
+import PreAvaliacaoView from '@/pages/PreAvaliacaoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,12 @@ const router = createRouter({
     {
       path: '/projetos',
       component: MyProjectsView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/projetos/:projetoId/pre-avaliacao',
+      name: 'pre-avaliacao',
+      component: PreAvaliacaoView,
       meta: { requiresAuth: true },
     },
     {
