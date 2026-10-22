@@ -23,9 +23,13 @@
   })
 
   // Prioridade da Home: edições com inscrições abertas.
+  const termoBusca = computed(() => search.value.trim().toLowerCase())
+
+  // A busca do topo da Home filtra as edições abertas e os projetos ao mesmo tempo.
   const abertas = computed(() =>
     (data.value?.edicoes ?? [])
       .filter(e => e.status === 'INSCRICAO')
+      .filter(e => !termoBusca.value || `${e.nome} ${e.local} ${e.tipo_edicao} ${e.ano}`.toLowerCase().includes(termoBusca.value))
       .map(e => edicaoParaCard(e)),
   )
 
@@ -39,7 +43,7 @@
 
   const secoes = computed(() => {
     const edicoes = new Map((data.value?.edicoes ?? []).map(e => [e.id, e]))
-    const termo = search.value.trim().toLowerCase()
+    const termo = termoBusca.value
 
     return tipos.value
       .filter(tipo => selectedFilter.value === 'all' || selectedFilter.value === tipo)
@@ -80,7 +84,7 @@
       <eventCard v-for="e in abertas" :key="e.id" v-bind="e" />
     </div>
     <p v-else-if="!error" class="rounded-lg border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-500">
-      Nenhuma edição com inscrições abertas no momento.
+      {{ termoBusca ? `Nenhuma edição aberta combina com “${search.trim()}”.` : 'Nenhuma edição com inscrições abertas no momento.' }}
     </p>
   </section>
 
@@ -93,7 +97,7 @@
 
     <AsyncView
       :empty="!loading && !error && secoes.length === 0"
-      empty-message="Nenhum projeto encontrado."
+      :empty-message="termoBusca ? `Nenhum projeto encontrado para “${search.trim()}”.` : 'Nenhum projeto encontrado.'"
       :error="error"
       :loading="loading"
       skeleton="cards"
