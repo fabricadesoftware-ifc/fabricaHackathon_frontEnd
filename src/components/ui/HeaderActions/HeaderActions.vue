@@ -39,7 +39,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-console.log('Avatar recebido:', props.userAvatar)
 type MenuOption = 'perfil' | 'configuracoes' | 'sair'
 
 

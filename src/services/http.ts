@@ -227,14 +227,25 @@ function extrairErros(
       ? obj.detail
       : null
 
+  // Achata erros aninhados (ex.: { projeto: { nome_projeto: [...] } }).
+  const coletar = (valor: unknown, chave: string) => {
+    if (Array.isArray(valor)) {
+      const textos = valor.flatMap(item =>
+        item && typeof item === 'object'
+          ? Object.values(item).flat().map(String)
+          : [String(item)],
+      )
+      if (textos.length) fields[chave] = [...(fields[chave] ?? []), ...textos]
+    } else if (typeof valor === 'string') {
+      fields[chave] = [...(fields[chave] ?? []), valor]
+    } else if (valor && typeof valor === 'object') {
+      for (const [sub, v] of Object.entries(valor)) coletar(v, sub)
+    }
+  }
+
   for (const [key, value] of Object.entries(obj)) {
     if (key === 'detail') continue
-
-    if (Array.isArray(value)) {
-      fields[key] = value.map(String)
-    } else if (typeof value === 'string') {
-      fields[key] = [value]
-    }
+    coletar(value, key)
   }
 
   return {

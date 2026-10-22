@@ -38,6 +38,7 @@ export const navigationItems: NavItem[] = [
     icon: 'mdi-folder',
     route: '/projetos',
     requiresAuth: true,
+    roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'],
     showOnMobile: true,
   },
   {
@@ -46,6 +47,7 @@ export const navigationItems: NavItem[] = [
     icon: 'mdi-account-group',
     route: '/equipes',
     requiresAuth: true,
+    roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'],
     showOnMobile: true,
   },
   {
@@ -54,6 +56,7 @@ export const navigationItems: NavItem[] = [
     icon: 'mdi-clipboard-text',
     route: '/inscricao',
     requiresAuth: true,
+    roles: ['PARTICIPANTE'],
     showOnMobile: true,
   },
   {
