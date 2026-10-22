@@ -171,9 +171,11 @@ interface RequestOptions {
   signal?: AbortSignal
 }
 
-// URL base configurada pelo .env.
+// URL base: /config.js (gerado pelo container em produção) ou .env (desenvolvimento).
 function baseUrl(): string {
-  const url = import.meta.env.VITE_API_URL
+  const url =
+    (window as unknown as { __APP_CONFIG__?: { API_URL?: string } })
+      .__APP_CONFIG__?.API_URL || import.meta.env.VITE_API_URL
 
   if (!url) {
     throw new Error(
