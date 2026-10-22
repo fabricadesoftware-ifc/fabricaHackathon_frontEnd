@@ -63,7 +63,7 @@ function itemClasses(id: string) {
 <template>
   <aside
     :class="[
-      'relative hidden h-screen shrink-0 flex-col border-r border-gray-200 bg-white transition-all duration-300 md:flex',
+      'sticky top-0 hidden h-screen shrink-0 self-start flex-col border-r border-gray-200 bg-white transition-all duration-300 md:flex',
       rail ? 'w-18' : 'w-60',
     ]"
   >

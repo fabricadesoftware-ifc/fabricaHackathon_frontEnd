@@ -360,6 +360,15 @@ export async function request<T>(
     return data as T
   }
 
+  // Arquivo maior do que o servidor aceita (limite do proxy).
+  if (response.status === 413) {
+    throw new ApiError(
+      'client',
+      'O arquivo é grande demais para o servidor. Escolha uma imagem menor.',
+      413,
+    )
+  }
+
   // Erros internos do servidor.
   if (response.status >= 500) {
     throw new ApiError(

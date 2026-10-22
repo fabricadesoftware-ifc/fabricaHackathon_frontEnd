@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { ApiError } from '@/services/http'
   import ErrorMessage from '../ErrorMessage/ErrorMessage.vue'
+  import CardGridSkeleton from '../LoadingSkeleton/CardGridSkeleton.vue'
   import LoadingSkeleton from '../LoadingSkeleton/LoadingSkeleton.vue'
 
   withDefaults(defineProps<{
@@ -10,7 +11,12 @@
     empty?: boolean
     emptyMessage?: string
     lines?: number
+    /** 'cards' mostra a grade de cartões em esqueleto. */
+    skeleton?: 'lines' | 'cards'
+    skeletonCount?: number
   }>(), {
+    skeleton: 'lines',
+    skeletonCount: 4,
     empty: false,
     emptyMessage: 'Nenhum resultado encontrado.',
     lines: 4,
@@ -21,7 +27,10 @@
 
 <template>
   <ErrorMessage v-if="error" :message="error.message" @retry="$emit('retry')" />
-  <LoadingSkeleton v-else-if="loading" :lines="lines" />
+  <template v-else-if="loading">
+    <CardGridSkeleton v-if="skeleton === 'cards'" :count="skeletonCount" />
+    <LoadingSkeleton v-else :lines="lines" />
+  </template>
   <p v-else-if="empty" class="py-8 text-center text-gray-500">{{ emptyMessage }}</p>
   <slot v-else />
 </template>
