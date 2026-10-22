@@ -23,7 +23,9 @@
       <span>{{ event }}</span>
     </div>
 
-    <button v-if="editavel" class="mt-[2vw] flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-1 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 w-fit">
+    <button v-if="editavel"
+      class="mt-[2vw] flex items-center gap-2 border border-gray-300 rounded-lg px-4 py-1 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 w-fit"
+      @click="emit('edit')">
       <span class="mdi mdi-pencil-outline text-base" />
       Editar
     </button>
@@ -32,19 +34,21 @@
 </template>
 
 <script setup lang="ts">
-  import statusProject from './statusProject.vue'
+import statusProject from './statusProject.vue'
 
-  type Status = 'finalizado' | 'ativo'
+type Status = 'finalizado' | 'ativo'
 
-  withDefaults(defineProps<{
-    editavel?: boolean
-    logo: string
-    status: Status
-    statusLabel: string
-    title: string
-    description: string
-    team: string
-    event: string
-  }>(), { editavel: false })
-
+withDefaults(defineProps<{
+  editavel?: boolean
+  logo: string
+  status: Status
+  statusLabel: string
+  title: string
+  description: string
+  team: string
+  event: string
+}>(), { editavel: false })
+const emit = defineEmits<{
+  (e: 'edit'): void
+}>()
 </script>
