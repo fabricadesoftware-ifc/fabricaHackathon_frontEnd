@@ -121,6 +121,11 @@ const router = createRouter({
   name: 'registro',
   component: RegisterView,
 },
+    // Qualquer endereço inexistente volta para a Home (evita tela em branco).
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/home',
+    },
   ],
 })
 router.beforeEach(async (to) => {
