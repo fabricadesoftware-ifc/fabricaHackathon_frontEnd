@@ -29,6 +29,7 @@
     title: string
     team: string
     event: string
+    deployUrl?: string | null
   }
 
   const props = defineProps<{

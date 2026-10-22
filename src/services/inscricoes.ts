@@ -12,10 +12,11 @@ export type StatusEdicao =
 export interface CriarInscricaoPayload {
   edicao: number
   nome_equipe: string
-  tema: number
+  /** Só o nome do projeto é exigido; tema, descrição, logo e link vêm depois. */
+  tema?: number
   projeto: {
     nome_projeto: string
-    descricao_projeto: string
+    descricao_projeto?: string
     link_deploy_projeto?: string
   }
   membros: string[]
