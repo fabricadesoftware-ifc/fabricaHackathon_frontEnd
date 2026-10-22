@@ -1,209 +1,130 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+  import { computed, ref } from 'vue'
+  import { useRouter } from 'vue-router'
 
-import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
-import SearchFilterBar from '@/components/ui/SearchFilterBar'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
+  import SearchFilterBar from '@/components/ui/SearchFilterBar'
+  import { useAsync } from '@/composables/useAsync'
+  import { listarMinhasAvaliacoes, listarTodasEdicoes } from '@/services'
+  import { useAuthStore } from '@/stores/auth'
+  import { edicaoParaCard, mapearStatus } from '@/types'
+  import { agruparPorEdicao } from '@/utils/avaliacao'
 
-import { hackathons } from '@/data/hackathons'
-import { useEvaluationsStore } from '@/stores/evaluations'
+  const router = useRouter()
+  const auth = useAuthStore()
 
-type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
+  // Avaliador vê só as edições em que está vinculado; professor e admin veem todas, somente leitura.
+  const isAvaliador = computed(() => auth.userRole === 'AVALIADOR')
 
-interface EvaluationEdition {
-  id: number
-  title: string
-  image: string
-  status: Status
-  endDate: string
-  startDate: string
-  currentEvaluations?: number
-  totalProjects?: number
-  progressLabel?: string
-  tags?: string[]
-}
-
-const STATUS_FILTER_CODES: Record<Status, string> = {
-  inscricoes: '1',
-  avaliacao: '2',
-  andamento: '3',
-  finalizado: '4',
-}
-
-const router = useRouter()
-
-// Store responsável pelas avaliações.
-const evaluationsStore = useEvaluationsStore()
-
-// Filtros.
-const searchQuery = ref('')
-const tipo = ref('')
-const status = ref('')
-const ano = ref('')
-
-// Estados da página.
-const loading = ref(false)
-const error = ref(false)
-const editions = ref<EvaluationEdition[]>([])
-
-// Obtém o progresso atualizado de cada edição.
-function getProgress(editionId: number) {
-  return evaluationsStore.getEditionProgress(editionId)
-}
-
-function extractYear(date: string): string {
-  const parts = date.split('/')
-  return parts.length === 3 ? parts[2] ?? '' : ''
-}
-
-// Temporário: identifica o tipo pelo título até a integração com a API.
-function extractType(title: string): string {
-  const normalized = title.toLowerCase()
-
-  if (normalized.includes('fábrica') || normalized.includes('fabrica')) {
-    return '3'
-  }
-
-  if (normalized.includes('2º') || normalized.includes('2 ano')) {
-    return '1'
-  }
-
-  if (normalized.includes('3º') || normalized.includes('3 ano')) {
-    return '2'
-  }
-
-  return ''
-}
-
-// Filtra as edições.
-const filteredEditions = computed(() => {
-  return editions.value.filter((edition) => {
-    const matchesSearch =
-      searchQuery.value === '' ||
-      edition.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-
-    const matchesTipo =
-      tipo.value === '' ||
-      extractType(edition.title) === tipo.value
-
-    const matchesStatus =
-      status.value === '' ||
-      STATUS_FILTER_CODES[edition.status] === status.value
-
-    const matchesAno =
-      ano.value === '' ||
-      extractYear(edition.endDate) === ano.value ||
-      extractYear(edition.startDate) === ano.value
-
-    return matchesSearch && matchesTipo && matchesStatus && matchesAno
+  const { data, loading, error, run } = useAsync(async () => {
+    const [edicoes, avaliacoes] = await Promise.all([
+      listarTodasEdicoes(),
+      isAvaliador.value ? listarMinhasAvaliacoes() : Promise.resolve([]),
+    ])
+    return { edicoes, avaliacoes }
   })
-})
 
-// Navega para os projetos da edição selecionada.
-function navigateToProjects(editionId: number) {
-  router.push(`/avaliacao/${editionId}`)
-}
+  // Filtros.
+  const searchQuery = ref('')
+  const tipo = ref('')
+  const status = ref('')
+  const ano = ref('')
 
-// Busca as edições utilizando os mocks.
-async function fetchEditions() {
-  loading.value = true
-  error.value = false
+  const opcoesStatus = [
+    { label: 'Inscrições', value: 'inscricoes' },
+    { label: 'Andamento', value: 'andamento' },
+    { label: 'Avaliação', value: 'avaliacao' },
+    { label: 'Finalizado', value: 'finalizado' },
+  ]
+  const opcoesTipo = computed(() =>
+    [...new Set((data.value?.edicoes ?? []).map(e => e.tipo_edicao).filter(Boolean))]
+      .map(t => ({ label: t, value: t })),
+  )
+  const opcoesAno = computed(() => {
+    // eslint-disable-next-line unicorn/no-array-sort -- lib do projeto não inclui toSorted
+    const anos = [...new Set((data.value?.edicoes ?? []).map(e => e.ano))].sort((a, b) => b - a)
+    return anos.map(a => ({ label: String(a), value: String(a) }))
+  })
 
-  try {
-    await new Promise(resolve => setTimeout(resolve, 400))
+  // Edições exibidas, já com o progresso do avaliador.
+  const cards = computed(() => {
+    const edicoes = data.value?.edicoes ?? []
+    const progresso = new Map(agruparPorEdicao(data.value?.avaliacoes ?? []).map(p => [p.id, p]))
+    const termo = searchQuery.value.trim().toLowerCase()
 
-    editions.value = [...hackathons]
-  } catch (err) {
-    console.error('Erro ao carregar edições para avaliação:', err)
-    error.value = true
-  } finally {
-    loading.value = false
+    return edicoes
+      .filter(e => !isAvaliador.value || progresso.has(e.id))
+      .filter(e => !termo || e.nome.toLowerCase().includes(termo))
+      .filter(e => !tipo.value || e.tipo_edicao === tipo.value)
+      .filter(e => !status.value || mapearStatus(e.status) === status.value)
+      .filter(e => !ano.value || String(e.ano) === ano.value)
+      .map(e => {
+        const card = edicaoParaCard(e)
+        const p = progresso.get(e.id)
+        return {
+          id: e.id,
+          image: card.image,
+          title: card.title,
+          status: card.status,
+          deadline: card.endDate,
+          current: p?.avaliados,
+          total: p?.total,
+        }
+      })
+  })
+
+  function navigateToProjects (editionId: number) {
+    router.push(`/avaliacao/${editionId}`)
   }
-}
-
-onMounted(() => {
-  fetchEditions()
-})
 </script>
 
 <template>
   <div class="px-4 py-6 sm:px-6 lg:px-8">
-    <!-- Cabeçalho -->
     <h1 class="mb-2 text-xl font-semibold text-gray-900 sm:text-2xl">
       Avaliações
     </h1>
 
     <p class="mb-1 text-sm text-gray-600 sm:text-base">
-      Edições que você foi designado como avaliador.
+      {{ isAvaliador ? 'Edições em que você foi designado como avaliador.' : 'Visão somente leitura de todas as edições.' }}
     </p>
 
     <p class="mb-6 text-sm text-gray-600 sm:text-base">
       Escolha uma para ver os projetos
     </p>
 
-    <!-- Filtros -->
     <SearchFilterBar
       v-model:ano="ano"
       v-model:search="searchQuery"
       v-model:status="status"
       v-model:tipo="tipo"
+      :options-ano="opcoesAno"
+      :options-status="opcoesStatus"
+      :options-tipo="opcoesTipo"
+      placeholder="Buscar edições..."
     />
 
-    <!-- Carregamento -->
-    <div
-      v-if="loading"
-      class="flex items-center justify-center py-12"
+    <AsyncView
+      :empty="!loading && !error && cards.length === 0"
+      :empty-message="isAvaliador ? 'Você ainda não foi vinculado a nenhuma edição como avaliador.' : 'Nenhuma edição encontrada.'"
+      :error="error"
+      :loading="loading"
+      @retry="run"
     >
-      <span class="text-gray-600">
-        Carregando edições...
-      </span>
-    </div>
-
-    <!-- Erro -->
-    <div
-      v-else-if="error"
-      class="flex flex-col items-center justify-center gap-3 py-12"
-    >
-      <span class="text-red-600">
-        Erro ao carregar edições. Tente novamente.
-      </span>
-
-      <button
-        class="text-sm font-medium text-blue-600 underline"
-        type="button"
-        @click="fetchEditions"
-      >
-        Tentar novamente
-      </button>
-    </div>
-
-    <!-- Nenhuma edição -->
-    <div
-      v-else-if="filteredEditions.length === 0"
-      class="flex items-center justify-center py-12"
-    >
-      <span class="text-gray-600">
-        Nenhuma edição disponível para avaliação
-      </span>
-    </div>
-
-    <!-- Lista de edições -->
-    <div
-      v-else
-      class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
-    >
-      <EvaluationCard
-        v-for="edition in filteredEditions"
-        :key="edition.id"
-        :current="getProgress(edition.id).evaluated"
-        :deadline="edition.endDate"
-        :image="edition.image"
-        :progress-label="edition.progressLabel || 'projetos avaliados'"
-        :status="edition.status"
-        :title="edition.title"
-        :total="getProgress(edition.id).total"
-        @click="navigateToProjects(edition.id)"
-      />
-    </div>
+      <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <EvaluationCard
+          v-for="edition in cards"
+          :key="edition.id"
+          :current="edition.current"
+          :deadline="edition.deadline"
+          :image="edition.image"
+          progress-label="projetos avaliados"
+          :status="edition.status"
+          :title="edition.title"
+          :total="edition.total"
+          @click="navigateToProjects(edition.id)"
+        />
+      </div>
+    </AsyncView>
   </div>
 </template>

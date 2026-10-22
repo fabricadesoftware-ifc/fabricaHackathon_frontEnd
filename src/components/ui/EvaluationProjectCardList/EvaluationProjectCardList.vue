@@ -6,6 +6,8 @@ interface BaseProjectProps {
   avatar?: string | null
   name: string
   teamName: string
+  /** Projeto já avaliado continua clicável (ex.: avaliação ainda aberta, para ajustar notas). */
+  editable?: boolean
 }
 
 interface PendingProjectProps extends BaseProjectProps {
@@ -47,8 +49,10 @@ const projectInitial = computed(() => {
   return props.name.trim().charAt(0).toUpperCase()
 })
 
+const isLocked = computed(() => isEvaluated.value && !props.editable)
+
 function handleClick() {
-  if (isEvaluated.value) return
+  if (isLocked.value) return
 
   emit('click')
 }
@@ -61,10 +65,10 @@ function handleImageError() {
 <template>
   <button
     type="button"
-    :disabled="isEvaluated"
+    :disabled="isLocked"
     class="flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all duration-150 sm:p-5"
     :class="
-      isEvaluated
+      isLocked
         ? 'cursor-not-allowed border-gray-200 bg-gray-100 opacity-55'
         : 'cursor-pointer border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
     "

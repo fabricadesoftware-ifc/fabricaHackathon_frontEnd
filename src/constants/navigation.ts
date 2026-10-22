@@ -73,4 +73,13 @@ export const navigationItems: NavItem[] = [
   roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
   showOnMobile: false,
 },
+  {
+    id: 'solicitacoes',
+    label: 'Solicitações',
+    icon: 'mdi-account-check',
+    route: '/admin/solicitacoes',
+    requiresAuth: true,
+    roles: ['ADMIN'],
+    showOnMobile: false,
+  },
 ]

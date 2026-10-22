@@ -1,251 +1,160 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+  import { computed, ref, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
 
-import AppButton from '@/components/ui/AppButton/AppButton.vue'
-import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
-import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
+  import AppButton from '@/components/ui/AppButton/AppButton.vue'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
+  import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
+  import { useAsync } from '@/composables/useAsync'
+  import { listarMinhasAvaliacoes, obterEdicao } from '@/services'
+  import { useAuthStore } from '@/stores/auth'
+  import { equipeParaCard } from '@/types'
+  import { mediaDasNotas } from '@/utils/avaliacao'
 
-import { useEvaluationsStore } from '@/stores/evaluations'
+  type FilterType = 'todos' | 'avaliados' | 'pendentes'
 
-type FilterType = 'todos' | 'avaliados' | 'pendentes'
+  const route = useRoute()
+  const router = useRouter()
+  const auth = useAuthStore()
 
-const route = useRoute()
-const router = useRouter()
-const evaluationsStore = useEvaluationsStore()
+  const editionId = computed(() => Number(route.params.editionId))
+  const isAvaliador = computed(() => auth.userRole === 'AVALIADOR')
+  const selectedFilter = ref<FilterType>('todos')
 
-const editionId = computed(() => Number(route.params.editionId))
-
-// Projetos obtidos diretamente da store Pinia.
-const projects = computed(() =>
-  evaluationsStore.getProjectsByEdition(editionId.value),
-)
-
-const loading = ref(false)
-const error = ref(false)
-const selectedFilter = ref<FilterType>('todos')
-
-// Contadores atualizados automaticamente.
-const totalCount = computed(() => projects.value.length)
-
-const evaluatedCount = computed(() =>
-  projects.value.filter(project => project.status === 'avaliado').length,
-)
-
-const pendingCount = computed(() =>
-  projects.value.filter(project => project.status === 'pendente').length,
-)
-
-// Opções dos filtros.
-const filterOptions = computed(() => [
-  { label: `Todos (${totalCount.value})`, value: 'todos' },
-  { label: `Avaliados (${evaluatedCount.value})`, value: 'avaliados' },
-  { label: `Pendentes (${pendingCount.value})`, value: 'pendentes' },
-])
-
-// Filtra os projetos conforme o status selecionado.
-const filteredProjects = computed(() => {
-  if (selectedFilter.value === 'avaliados') {
-    return projects.value.filter(project => project.status === 'avaliado')
-  }
-
-  if (selectedFilter.value === 'pendentes') {
-    return projects.value.filter(project => project.status === 'pendente')
-  }
-
-  return projects.value
-})
-
-// Valida a edição e simula o carregamento.
-async function fetchProjects() {
-  loading.value = true
-  error.value = false
-
-  try {
+  // Avaliador: seus projetos e progresso. Professor/admin: detalhe público da edição (somente leitura).
+  const { data, loading, error, run } = useAsync(async () => {
     if (!Number.isInteger(editionId.value) || editionId.value <= 0) {
       throw new Error('Edição inválida.')
     }
+    if (isAvaliador.value) {
+      const todas = await listarMinhasAvaliacoes()
+      return { avaliacoes: todas.filter(a => a.edicao === editionId.value), edicao: null }
+    }
+    return { avaliacoes: [], edicao: await obterEdicao(editionId.value) }
+  })
 
-    await new Promise(resolve => setTimeout(resolve, 350))
-  } catch (err) {
-    console.error('Erro ao carregar projetos para avaliação:', err)
-    error.value = true
-  } finally {
-    loading.value = false
+  const projects = computed(() => data.value?.avaliacoes ?? [])
+  const aberta = computed(() => projects.value[0]?.avaliacao_aberta ?? false)
+
+  const totalCount = computed(() => projects.value.length)
+  const evaluatedCount = computed(() => projects.value.filter(p => p.concluido).length)
+  const pendingCount = computed(() => totalCount.value - evaluatedCount.value)
+
+  const filterOptions = computed(() => [
+    { label: `Todos (${totalCount.value})`, value: 'todos' },
+    { label: `Avaliados (${evaluatedCount.value})`, value: 'avaliados' },
+    { label: `Pendentes (${pendingCount.value})`, value: 'pendentes' },
+  ])
+
+  const filteredProjects = computed(() => {
+    if (selectedFilter.value === 'avaliados') {
+      return projects.value.filter(p => p.concluido)
+    }
+    if (selectedFilter.value === 'pendentes') {
+      return projects.value.filter(p => !p.concluido)
+    }
+    return projects.value
+  })
+
+  // Visão do professor/admin: equipes da edição, sem ações.
+  const equipesSomenteLeitura = computed(() => {
+    const e = data.value?.edicao
+    return e ? e.equipes.map(eq => equipeParaCard(eq, { nome: e.nome, status: e.status })) : []
+  })
+
+  // Projeto pendente abre o formulário; avaliado também, enquanto a avaliação estiver aberta (ajuste de notas).
+  function handleProjectClick (projectId: number) {
+    if (!aberta.value) {
+      return
+    }
+    router.push(`/avaliacao/${editionId.value}/projeto/${projectId}`)
   }
-}
 
-// Apenas projetos pendentes podem ser abertos para avaliação.
-function handleProjectClick(projectId: number) {
-  const project = projects.value.find(item => item.id === projectId)
-
-  if (!project || project.status === 'avaliado') return
-
-  router.push(`/avaliacao/${editionId.value}/projeto/${projectId}`)
-}
-
-function handleBackToEditions() {
-  router.push('/avaliacao')
-}
-
-function resetFilter() {
-  selectedFilter.value = 'todos'
-}
-
-// Atualiza a visualização quando a edição mudar.
-watch(
-  editionId,
-  () => {
+  watch(editionId, () => {
     selectedFilter.value = 'todos'
-    fetchProjects()
-  },
-  { immediate: true },
-)
+    run()
+  })
 </script>
 
 <template>
   <div class="mx-auto w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-    <!-- Cabeçalho -->
     <header class="mb-5 sm:mb-6">
       <h1 class="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
-        Projetos para avaliar
+        {{ isAvaliador ? 'Projetos para avaliar' : 'Projetos da edição' }}
       </h1>
 
-      <p class="mt-1 text-sm text-gray-500">
+      <p v-if="isAvaliador" class="mt-1 text-sm text-gray-500">
         {{ evaluatedCount }} de {{ totalCount }} projetos avaliados
+      </p>
+
+      <p v-else class="mt-1 text-sm text-gray-500">
+        Visão somente leitura.
       </p>
     </header>
 
-    <!-- Filtros -->
-    <div class="mb-5 sm:mb-6">
-      <FilterChipGroup
-        v-model="selectedFilter"
-        :options="filterOptions"
-      />
-    </div>
+    <p
+      v-if="isAvaliador && !loading && !error && totalCount > 0 && !aberta"
+      class="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+      role="status"
+    >
+      A avaliação desta edição não está aberta. Você só pode lançar ou alterar notas enquanto a edição estiver em "Avaliação".
+    </p>
 
-    <!-- Conteúdo -->
-    <main>
-      <!-- Carregamento -->
-      <div
-        v-if="loading"
-        class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center"
-      >
-        <span class="mdi mdi-loading animate-spin text-3xl text-blue-600" />
-
-        <p class="mt-3 text-sm font-medium text-gray-600">
-          Carregando projetos para avaliação...
-        </p>
-      </div>
-
-      <!-- Erro -->
-      <div
-        v-else-if="error"
-        class="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-red-50/50 p-8 text-center"
-      >
-        <span class="mdi mdi-alert-circle-outline text-4xl text-red-500" />
-
-        <h3 class="mt-2 text-base font-semibold text-gray-900">
-          Erro ao carregar projetos
-        </h3>
-
-        <p class="mt-1 text-sm text-gray-600">
-          Não foi possível carregar a lista de projetos desta edição.
+    <AsyncView :error="error" :loading="loading" @retry="run">
+      <!-- Professor / admin -->
+      <template v-if="!isAvaliador">
+        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-gray-500">
+          Não há equipes cadastradas nesta edição.
         </p>
 
-        <button
-          class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-red-700"
-          type="button"
-          @click="fetchProjects"
-        >
-          Tentar novamente
-        </button>
-      </div>
+        <CardGrid v-else :items="equipesSomenteLeitura" />
+      </template>
 
-      <!-- Lista vazia -->
-      <div
-        v-else-if="filteredProjects.length === 0"
-        class="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-16 text-center"
-      >
-        <div
-          class="flex size-14 items-center justify-center rounded-full bg-gray-100 text-gray-400"
-        >
-          <span class="mdi mdi-folder-open-outline text-2xl" />
+      <!-- Avaliador -->
+      <template v-else>
+        <div class="mb-5 sm:mb-6">
+          <FilterChipGroup v-model="selectedFilter" :options="filterOptions" />
         </div>
 
-        <h3 class="mt-4 text-base font-semibold text-gray-900">
-          Nenhum projeto encontrado
-        </h3>
-
-        <p class="mt-1 text-sm text-gray-500">
-          <template v-if="selectedFilter === 'avaliados'">
-            Nenhum projeto foi avaliado ainda nesta edição.
-          </template>
-
-          <template v-else-if="selectedFilter === 'pendentes'">
-            Todos os projetos desta edição já foram avaliados!
-          </template>
-
-          <template v-else>
-            Não há projetos cadastrados para esta edição.
-          </template>
+        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-gray-500">
+          {{ totalCount === 0 ? 'Não há projetos nesta edição.' : 'Nenhum projeto neste filtro.' }}
         </p>
 
-        <button
-          v-if="selectedFilter !== 'todos' && totalCount > 0"
-          class="mt-4 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
-          type="button"
-          @click="resetFilter"
-        >
-          Ver todos os projetos
-        </button>
-      </div>
+        <div v-else class="flex flex-col gap-3 sm:gap-4">
+          <template v-for="item in filteredProjects" :key="item.projeto.id">
+            <EvaluationProjectCardList
+              v-if="item.concluido"
+              :editable="aberta"
+              :name="item.projeto.nome_projeto"
+              :score="mediaDasNotas(item)"
+              status="avaliado"
+              :team-name="item.projeto.equipe"
+              @click="handleProjectClick(item.projeto.id)"
+            />
 
-      <!-- Lista de projetos -->
-      <div
-        v-else
-        class="flex flex-col gap-3 sm:gap-4"
-      >
-        <template
-          v-for="project in filteredProjects"
-          :key="project.id"
-        >
-          <!-- Projeto avaliado -->
-          <EvaluationProjectCardList
-            v-if="project.status === 'avaliado'"
-            :avatar="project.avatar"
-            :name="project.name"
-            :score="project.score ?? 0"
-            status="avaliado"
-            :team-name="project.teamName"
-            class="cursor-not-allowed opacity-55"
-            :disabled="true"
-          />
+            <EvaluationProjectCardList
+              v-else
+              :class="aberta ? 'cursor-pointer' : 'opacity-70'"
+              :name="item.projeto.nome_projeto"
+              status="pendente"
+              :team-name="item.projeto.equipe"
+              @click="handleProjectClick(item.projeto.id)"
+            />
+          </template>
+        </div>
+      </template>
+    </AsyncView>
 
-          <!-- Projeto pendente -->
-          <EvaluationProjectCardList
-            v-else
-            :avatar="project.avatar"
-            :name="project.name"
-            status="pendente"
-            :team-name="project.teamName"
-            class="cursor-pointer"
-            @click="handleProjectClick(project.id)"
-          />
-        </template>
-      </div>
-
-      <!-- Rodapé -->
-      <footer class="mt-6 flex items-center justify-start sm:mt-8">
-        <AppButton
-          icon="←"
-          icon-position="left"
-          label="Voltar para edições"
-          variant="secondary"
-          class="!h-auto !rounded-xl !bg-[#EFF6FF] !px-4.5 !py-3 !text-sm font-medium !text-[#2563EB] !shadow-none hover:!bg-[#DBEAFE] sm:!text-base"
-          @click="handleBackToEditions"
-        />
-      </footer>
-    </main>
+    <footer class="mt-6 flex items-center justify-start sm:mt-8">
+      <AppButton
+        icon="←"
+        icon-position="left"
+        label="Voltar para edições"
+        variant="secondary"
+        @click="router.push('/avaliacao')"
+      />
+    </footer>
   </div>
 </template>
