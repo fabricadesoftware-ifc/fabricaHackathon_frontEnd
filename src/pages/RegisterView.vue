@@ -21,6 +21,7 @@ interface RegisterForm {
   password: string
   passwordConfirm: string
   acceptTerms: boolean
+  perfil: 'PARTICIPANTE' | 'AVALIADOR' | 'PROFESSOR'
 }
 
 // Exibe mensagens de validação retornadas pelo Django.
@@ -54,6 +55,7 @@ async function handleRegister(form: RegisterForm) {
       email: form.email,
       username: form.email,
       password: form.password,
+      ...(form.perfil !== 'PARTICIPANTE' && { perfil_solicitado: form.perfil }),
     })
   } catch (err) {
     error.value = getErrorMessage(err)

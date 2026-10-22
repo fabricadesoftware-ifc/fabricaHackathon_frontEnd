@@ -34,6 +34,13 @@ const authStore = useAuthStore()
 
 const isLoggedIn = computed(() => authStore.isAuthenticated)
 
+// Nome exibido no menu do topo (cai para o e-mail se não houver nome).
+const userName = computed(() => {
+  const u = authStore.user
+  if (!u) return ''
+  return `${u.first_name} ${u.last_name}`.trim() || u.email
+})
+
 
 
 const activeItem = computed(() => {
@@ -58,6 +65,8 @@ const activeItem = computed(() => {
       <AppHeader
   v-if="!isAuthPage"
   :is-logged="isLoggedIn"
+  :user-avatar="authStore.user?.foto_perfil ?? undefined"
+  :user-name="userName"
   @menu-option-click="handleMenuOption"
 />
 

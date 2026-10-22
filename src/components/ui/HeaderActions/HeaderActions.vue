@@ -96,7 +96,8 @@ function handleOptionClick(option: MenuOption) {
       <template #activator="{ props: menuProps }">
 
         <v-avatar v-bind="menuProps" class="cursor-pointer avatar" color="#3B82F6" :size="size">
-          <v-icon color="white" icon="mdi-account" />
+          <img v-if="props.userAvatar" :alt="props.userName" class="h-full w-full object-cover" :src="props.userAvatar">
+          <v-icon v-else color="white" icon="mdi-account" />
         </v-avatar>
 
       </template>
