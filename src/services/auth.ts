@@ -27,3 +27,22 @@ export function registrarUsuario(payload: RegistroPayload) {
 export function obterUsuarioAtual() {
   return http.get<Usuario>('/me/')
 }
+// Atualiza o próprio perfil (nome, sobrenome e/ou foto). Com foto, usa multipart.
+export function atualizarPerfil(dados: {
+  first_name?: string
+  last_name?: string
+  foto?: File | null
+}) {
+  const { foto, ...texto } = dados
+
+  if (foto) {
+    const form = new FormData()
+    for (const [chave, valor] of Object.entries(texto)) {
+      if (valor !== undefined) form.append(chave, valor)
+    }
+    form.append('foto_perfil', foto)
+    return http.patch<Usuario>('/me/', form)
+  }
+
+  return http.patch<Usuario>('/me/', texto)
+}

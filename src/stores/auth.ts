@@ -36,6 +36,11 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = await obterUsuarioAtual()
   }
 
+  // Atualiza o usuário em memória (ex.: depois de salvar o perfil)
+  function setUser(novo: Usuario) {
+    user.value = novo
+  }
+
   // Realiza o login
   async function signIn(
     username: string,
@@ -115,6 +120,7 @@ export const useAuthStore = defineStore('auth', () => {
     isInitialized,
     userRole,
     fetchUser,
+    setUser,
     signIn,
     signOut,
     restoreSession,
