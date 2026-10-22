@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import RegisterCard from '@/components/layout/RegisterCard/RegisterCard.vue'
 
@@ -9,6 +9,7 @@ import { ApiError } from '@/services/http'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const isLoading = ref(false)
@@ -76,7 +77,13 @@ async function handleRegister(form: RegisterForm) {
       false,
     )
 
-    await router.push('/home')
+    // Volta ao que a pessoa queria fazer (ex.: inscrever a equipe), se veio de um link com redirect.
+    const redirect = route.query.redirect
+    await router.push(
+      typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')
+        ? redirect
+        : '/home',
+    )
   } catch {
     error.value =
       'Sua conta foi criada, mas não foi possível entrar automaticamente. Acesse a página de login para continuar.'
@@ -92,7 +99,7 @@ async function handleRegister(form: RegisterForm) {
       <RegisterCard
         :is-loading="isLoading"
         @submit="handleRegister"
-        @login-redirect="router.push('/login')"
+        @login-redirect="router.push({ path: '/login', query: route.query.redirect ? { redirect: route.query.redirect } : {} })"
         @open-terms="abrirTermos"
       />
 

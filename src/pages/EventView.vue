@@ -1,20 +1,20 @@
 <template>
-  <section class="px-[5vw] py-[2.5vw] max-h-[90vh] overflow-y-scroll no-scrollbar max-w-screen">
+  <section class="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 md:px-0">
     <AsyncView :error="error" :lines="8" :loading="loading" @retry="run">
       <template v-if="edicao">
-        <EventThumbnail class="mb-[1vw]" :image="edicao.imagem_capa || '/images/fabricaHackathonThumb.png'"
+        <EventThumbnail class="mb-2" :image="edicao.imagem_capa || '/images/fabricaHackathonThumb.png'"
           :status="status" :title="edicao.nome" />
 
-        <div class="flex justify-between items-baseline mb-[3vw]">
+        <div class="mb-8 mt-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
-            <h2 class="text-[30px] text-[#111827]">{{ edicao.nome }}</h2>
+            <h2 class="text-2xl text-[#111827] sm:text-[30px]">{{ edicao.nome }}</h2>
 
             <p class="text-[16px] text-[#4B5563]">
               Gerenciado por: <span class="text-[#111827]">{{ edicao.responsavel }}</span>
             </p>
           </div>
 
-          <div class="flex flex-col items-end gap-6 h-[10vh]">
+          <div class="flex flex-col items-start gap-4 md:items-end">
             <EventDateRange :end-date="formatarData(edicao.data_fim)" :start-date="formatarData(edicao.data_inicio)" />
 
             <RouterLink v-if="status === 'inscricoes' && podeInscrever" :to="{
@@ -26,16 +26,16 @@
           </div>
         </div>
 
-        <SponsorList v-if="patrocinadores.length > 0" class="justify-start mb-[3vw]" :images="patrocinadores" />
+        <SponsorList v-if="patrocinadores.length > 0" class="justify-start mb-8" :images="patrocinadores" />
 
-        <div class="flex justify-center mb-[3vw]">
+        <div class="mb-8 flex justify-center">
           <progressStepper :current-step="step" :steps="['Inscrições', 'Andamento', 'Avaliação', 'Finalizado']" />
         </div>
 
         <InfoCard :criteria="edicao.criterios.map(c => c.nome)" criteria-label="Critérios"
           :description="edicao.descricao" :title="`Sobre o ${edicao.nome}`" />
 
-        <section v-if="status === 'finalizado'" class="mt-[3vw]">
+        <section v-if="status === 'finalizado'" class="mt-8">
           <h3 class="text-[24px] text-[#111827] mb-4">Ranking</h3>
 
           <AsyncView :empty="!ranking.loading.value && !ranking.error.value && (ranking.data.value?.length ?? 0) === 0"
@@ -57,7 +57,7 @@
           </AsyncView>
         </section>
 
-        <TeamsSection class="max-w-max mt-[3vw]" :items="equipes" title="Equipes Participantes" />
+        <TeamsSection class="mt-8" :items="equipes" title="Equipes Participantes" />
       </template>
     </AsyncView>
   </section>

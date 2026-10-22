@@ -1,8 +1,8 @@
 <template>
-  <div class="text-[14px] flex gap-3.5 bg-[#F3F4F6] w-fit h-min items-center rounded-full px-7">
+  <div class="text-[14px] flex gap-3.5 bg-[#F3F4F6] w-fit max-w-full h-min items-center rounded-full px-5 py-2 sm:px-7">
     <span class="mdi mdi-calendar text-[25px] text-[#111827] " />
 
-    <div class="flex gap-3">
+    <div class="flex flex-wrap gap-x-3">
       <span>{{ props.startDate ? formatDate(props.startDate) : '--' }}</span>
       <span>{{ '-' }}</span>
       <span>{{ props.endDate ? formatDate(props.endDate) : '--' }}</span>

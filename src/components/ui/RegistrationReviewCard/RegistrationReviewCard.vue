@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full max-w-3xl mx-auto my-8 p-9 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col gap-6"
+    class="w-full max-w-3xl mx-auto my-4 p-5 sm:my-8 sm:p-9 bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col gap-6"
   >
     <!-- Cabeçalho -->
     <div class="flex flex-col gap-1">
@@ -20,7 +20,7 @@
       <summaryRow v-if="deployUrl" label="Link do Deploy" :values="deployUrl" />
     </div>
 
-    <div class="flex items-center justify-between pt-2">
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
       <AppButton variant="secondary" label="Voltar" icon="←" icon-position="left" @click="emit('back')" />
       <AppButton variant="primary" label="Confirmar Inscrição"  @click="emit('confirm')" />
     </div>

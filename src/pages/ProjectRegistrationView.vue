@@ -102,6 +102,7 @@ watch(
   ],
   () => {
     stepError.value = ''
+    submitError.value = ''
   },
 )
 
@@ -207,12 +208,18 @@ async function onConfirm() {
       submitError.value = mensagens.length
         ? mensagens.join(' ')
         : error.message
+
+      // Erro de equipe/membros: volta ao passo do formulário para a pessoa corrigir.
+      if (error.fields.membros || error.fields.nome_equipe || error.fields.nome_projeto) {
+        currentStep.value = 0
+      }
     } else {
       submitError.value =
         error instanceof Error
           ? error.message
           : 'Não foi possível concluir a inscrição.'
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   } finally {
     isSubmitting.value = false
   }

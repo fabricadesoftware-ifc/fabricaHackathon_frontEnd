@@ -129,7 +129,8 @@
         </label>
 
         <div>
-          <p class="text-sm text-gray-700 mb-2">Participantes (e-mail)</p>
+          <p class="text-sm text-gray-700 mb-1">Participantes (e-mail)</p>
+          <p class="mb-2 text-xs text-gray-500">Seus colegas precisam ter criado a conta na plataforma antes. Use o e-mail do cadastro de cada um.</p>
           <div class="flex items-stretch gap-4">
             <input
               v-model="emailInput"
