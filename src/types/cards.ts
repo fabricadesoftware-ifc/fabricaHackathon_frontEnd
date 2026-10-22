@@ -22,6 +22,7 @@ export function projetoParaCard (
     title: p.nome_projeto,
     team: p.nome_equipe,
     event: edicao?.nome ?? '',
+    deployUrl: p.link_deploy_projeto,
   }
 }
 
@@ -39,5 +40,6 @@ export function equipeParaCard (
     title: projeto?.nome_projeto ?? e.nome_equipe,
     team: e.nome_equipe,
     event: edicao.nome,
+    deployUrl: projeto?.link_deploy_projeto ?? null,
   }
 }

@@ -17,6 +17,7 @@ import SuccessState from '@/components/ui/SucessState/sucessState.vue'
 // Dados do formulário de inscrição
 interface RegistrationForm {
   teamName: string
+  projectName: string
   participants: string[]
 }
 
@@ -28,8 +29,6 @@ const STEPS = [
   'Confirmação',
 ]
 
-// O projeto (nome, tema, logo) é preenchido depois, em Meus projetos.
-const PROJETO_A_DEFINIR = 'A definir'
 
 const router = useRouter()
 const route = useRoute()
@@ -75,6 +74,7 @@ const TEAM_LIMITS = computed(() => ({
 // Dados preenchidos pelo participante
 const form = reactive<RegistrationForm>({
   teamName: '',
+  projectName: '',
   participants: [],
 })
 
@@ -97,6 +97,7 @@ function goToStep(step: Step) {
 watch(
   () => [
     form.teamName,
+    form.projectName,
     form.participants,
   ],
   () => {
@@ -133,6 +134,12 @@ function onTeamContinue() {
     return
   }
 
+  if (!form.projectName.trim()) {
+    stepError.value =
+      'Informe o nome do projeto antes de continuar.'
+    return
+  }
+
   if (totalParticipantes.value < TEAM_LIMITS.value.min) {
     stepError.value =
       `A equipe precisa de pelo menos ${TEAM_LIMITS.value.min} participantes (contando com você). Faltam ${TEAM_LIMITS.value.min - totalParticipantes.value}.`
@@ -162,6 +169,10 @@ async function submitRegistration(): Promise<void> {
     throw new Error('Informe o nome da equipe.')
   }
 
+  if (!form.projectName.trim()) {
+    throw new Error('Informe o nome do projeto.')
+  }
+
   if (
     totalParticipantes.value < TEAM_LIMITS.value.min ||
     totalParticipantes.value > TEAM_LIMITS.value.max
@@ -169,22 +180,10 @@ async function submitRegistration(): Promise<void> {
     throw new Error('Quantidade de participantes inválida.')
   }
 
-  // O servidor ainda exige tema e projeto: vão com valores provisórios,
-  // que a equipe completa depois em "Meus projetos" > Editar.
-  const tema = edicao.value.temas[0]
-
-  if (!tema) {
-    throw new Error('Esta edição ainda não tem temas cadastrados. Avise a organização.')
-  }
-
   await criarInscricao({
     edicao: edicaoId.value,
     nome_equipe: form.teamName.trim(),
-    tema: tema.id,
-    projeto: {
-      nome_projeto: form.teamName.trim(),
-      descricao_projeto: PROJETO_A_DEFINIR,
-    },
+    projeto: { nome_projeto: form.projectName.trim() },
     membros: form.participants.map(email => email.trim()),
   })
 }
@@ -276,6 +275,7 @@ defineExpose({
       <TeamRegistrationCard
         v-if="currentStep === 0"
         v-model:participants="form.participants"
+        v-model:project-name="form.projectName"
         v-model:team-name="form.teamName"
         :max-participants="TEAM_LIMITS.max"
         :min-participants="TEAM_LIMITS.min"
@@ -290,6 +290,7 @@ defineExpose({
         v-else-if="currentStep === 1"
         :edition="edition"
         :participants="[`${ownerLabel} (você)`, ...form.participants]"
+        :project-name="form.projectName"
         :team-name="form.teamName"
         @back="goToStep(0)"
         @confirm="onConfirm"
@@ -302,7 +303,7 @@ defineExpose({
       >
         <SuccessState
           button-label="Ver meus projetos"
-          :description="`Sua equipe foi inscrita em ${edition}. Agora complete o projeto (nome, tema e logo) em Meus projetos.`"
+          :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você completa descrição, tema e logo, e a pré-avaliação (com o link do sistema) fica por lá também.`"
           title="Inscrição confirmada!"
           @click="onFinish"
         />

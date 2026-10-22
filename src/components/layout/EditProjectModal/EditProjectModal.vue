@@ -7,7 +7,6 @@ interface EditProjectPayload {
     nome_equipe: string
     nome_projeto: string
     descricao_projeto: string
-    link_deploy_projeto: string
     tema: number | null
     /** Nova logo escolhida (null = manter a atual). */
     logo: File | null
@@ -21,7 +20,8 @@ const props = withDefaults(
         teamName: string
         projectName: string
         description: string
-        deployUrl: string
+        /** Nome da equipe só muda enquanto as inscrições estão abertas. */
+        teamNameLocked?: boolean
         temas?: { id: number, descricao_tema: string }[]
         temaId?: number | null
         logoUrl?: string | null
@@ -46,7 +46,6 @@ const form = reactive<EditProjectPayload>({
     nome_equipe: '',
     nome_projeto: '',
     descricao_projeto: '',
-    link_deploy_projeto: '',
     tema: null,
     logo: null,
     removerLogo: false,
@@ -76,7 +75,6 @@ watch(
         form.nome_equipe = props.teamName
         form.nome_projeto = props.projectName
         form.descricao_projeto = props.description
-        form.link_deploy_projeto = props.deployUrl
         form.tema = props.temaId
         form.logo = null
         form.removerLogo = false
@@ -97,8 +95,7 @@ function handleSave() {
 
     if (
         !form.nome_equipe.trim() ||
-        !form.nome_projeto.trim() ||
-        !form.descricao_projeto.trim()
+        !form.nome_projeto.trim()
     ) {
         return
     }
@@ -107,7 +104,6 @@ function handleSave() {
         nome_equipe: form.nome_equipe.trim(),
         nome_projeto: form.nome_projeto.trim(),
         descricao_projeto: form.descricao_projeto.trim(),
-        link_deploy_projeto: form.link_deploy_projeto.trim(),
         tema: form.tema,
         logo: form.logo,
         removerLogo: form.removerLogo,
@@ -153,7 +149,7 @@ function handleKeydown(event: KeyboardEvent) {
                             Nome da equipe
                         </label>
 
-                        <input id="edit-team-name" v-model="form.nome_equipe" type="text" required :disabled="loading"
+                        <input id="edit-team-name" v-model="form.nome_equipe" type="text" required :disabled="loading || teamNameLocked"
                             class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500">
                     </div>
 
@@ -176,6 +172,7 @@ function handleKeydown(event: KeyboardEvent) {
 
                         <select id="edit-tema" v-model="form.tema" :disabled="loading"
                             class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500">
+                            <option :value="null" disabled>Selecione um tema</option>
                             <option v-for="t in temas" :key="t.id" :value="t.id">{{ t.descricao_tema }}</option>
                         </select>
                     </div>
@@ -186,25 +183,14 @@ function handleKeydown(event: KeyboardEvent) {
                             Descrição do projeto
                         </label>
 
-                        <textarea id="edit-description" v-model="form.descricao_projeto" rows="4" required
+                        <textarea id="edit-description" v-model="form.descricao_projeto" rows="4" placeholder="Conte o que o sistema faz e para quem."
                             :disabled="loading"
                             class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500" />
                     </div>
 
-                    <!-- Link do deploy -->
-                    <div>
-                        <label for="edit-deploy" class="mb-2 block text-sm font-medium text-gray-700">
-                            Link do deploy
-                        </label>
-
-                        <input id="edit-deploy" v-model="form.link_deploy_projeto" type="url"
-                            placeholder="https://meuprojeto.vercel.app" :disabled="loading"
-                            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500">
-
-                        <p class="mt-1 text-xs text-gray-500">
-                            Opcional. Informe uma URL válida.
-                        </p>
-                    </div>
+                    <p class="rounded-lg bg-blue-50 px-4 py-3 text-xs text-blue-800">
+                        O link do sistema é informado na <strong>pré-avaliação</strong> e aparece automaticamente no projeto.
+                    </p>
 
                     <!-- Logo -->
                     <div>

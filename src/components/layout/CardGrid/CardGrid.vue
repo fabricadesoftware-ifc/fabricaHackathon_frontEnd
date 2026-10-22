@@ -3,6 +3,7 @@
     <ProjectCard
       v-for="item in items"
       :key="item.id"
+      :deploy-url="item.deployUrl"
       :description="item.description"
       :event="item.event"
       :logo="item.logo"
@@ -26,6 +27,8 @@
     title: string
     team: string
     event: string
+    /** Link público do sistema (vem da pré-avaliação). */
+    deployUrl?: string | null
   }
 
   defineProps<{

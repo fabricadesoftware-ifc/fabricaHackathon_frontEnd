@@ -12,7 +12,8 @@
 
     <h2 class="font-semibold text-base text-gray-900">{{ title }}</h2>
 
-    <p class="text-sm text-gray-500">{{ description }}</p>
+    <p v-if="description" class="text-sm text-gray-500">{{ description }}</p>
+    <p v-else class="text-sm italic text-gray-400">Descrição ainda não informada.</p>
 
     <p class="text-sm text-gray-500">
       Equipe: <span class="font-medium text-gray-900">{{ team }}</span>
@@ -22,6 +23,12 @@
       <span class="mdi mdi-trophy-outline text-lg" />
       <span>{{ event }}</span>
     </div>
+
+    <a v-if="deployUrl" :href="deployUrl" target="_blank" rel="noopener noreferrer"
+      class="flex w-fit items-center gap-2 rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-700">
+      <span class="mdi mdi-open-in-new text-base" />
+      Acessar sistema
+    </a>
 
     <p v-if="notaFinal" class="text-sm text-gray-500">
       Nota final:
@@ -55,6 +62,8 @@ withDefaults(defineProps<{
   notaFinal?: string | null
   /** Destino do botão "Pré-avaliação"; sem valor, o botão não aparece. */
   preAvaliacaoTo?: string
+  /** Link público do sistema (preenchido pela pré-avaliação). */
+  deployUrl?: string | null
   logo: string
   status: Status
   statusLabel: string
@@ -62,7 +71,7 @@ withDefaults(defineProps<{
   description: string
   team: string
   event: string
-}>(), { editavel: false, notaFinal: null, preAvaliacaoTo: undefined })
+}>(), { editavel: false, notaFinal: null, preAvaliacaoTo: undefined, deployUrl: null })
 const emit = defineEmits<{
   (e: 'edit'): void
 }>()

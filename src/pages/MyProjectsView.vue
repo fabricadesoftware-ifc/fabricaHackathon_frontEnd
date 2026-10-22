@@ -126,8 +126,9 @@ const itens = computed(() =>
       event: edicao?.nome ?? `Edição ${projeto.edicao}`,
       status: finalizado ? 'finalizado' as const : 'ativo' as const,
       statusLabel: finalizado ? 'Concluído' : 'Em andamento',
+      deployUrl: projeto.link_deploy_projeto,
       editavel:
-        projeto.edicao_status === 'INSCRICAO' &&
+        (projeto.edicao_status === 'INSCRICAO' || projeto.edicao_status === 'EM_ANDAMENTO') &&
         equipesCriadas.value.has(projeto.equipe.id),
       notaFinal: finalizado ? projeto.nota_final : null,
       preAvaliacaoTo:
@@ -164,7 +165,7 @@ function abrirEdicao(projetoId: number) {
   if (!projeto) return
 
   const podeEditar =
-    projeto.edicao_status === 'INSCRICAO' &&
+    (projeto.edicao_status === 'INSCRICAO' || projeto.edicao_status === 'EM_ANDAMENTO') &&
     equipesCriadas.value.has(projeto.equipe.id)
 
   if (!podeEditar) return
@@ -181,7 +182,6 @@ interface DadosEdicao {
   nome_equipe: string
   nome_projeto: string
   descricao_projeto: string
-  link_deploy_projeto: string
   tema: number | null
   logo: File | null
   removerLogo: boolean
@@ -198,7 +198,7 @@ async function salvarEdicao(dados: DadosEdicao) {
 
   if (
     !equipe?.sou_criador ||
-    equipe.edicao_status !== 'INSCRICAO'
+    !['INSCRICAO', 'EM_ANDAMENTO'].includes(equipe.edicao_status)
   ) {
     erroEdicao.value = 'Você não tem permissão para editar este projeto.'
     return
@@ -209,13 +209,13 @@ async function salvarEdicao(dados: DadosEdicao) {
 
   try {
     await editarInscricao(equipe.id, {
-      nome_equipe: dados.nome_equipe,
+      // O nome da equipe só pode mudar enquanto as inscrições estão abertas.
+      ...(equipe.edicao_status === 'INSCRICAO' && { nome_equipe: dados.nome_equipe }),
       ...(dados.tema !== null && dados.tema !== temaAtual.value && { tema: dados.tema }),
 
       projeto: {
         nome_projeto: dados.nome_projeto,
         descricao_projeto: dados.descricao_projeto,
-        link_deploy_projeto: dados.link_deploy_projeto,
       },
     })
 
@@ -276,7 +276,7 @@ async function salvarEdicao(dados: DadosEdicao) {
   :team-name="projetoSelecionado.equipe.nome_equipe"
   :project-name="projetoSelecionado.nome_projeto"
   :description="projetoSelecionado.descricao_projeto"
-  :deploy-url="projetoSelecionado.link_deploy_projeto ?? ''"
+  :team-name-locked="projetoSelecionado.edicao_status !== 'INSCRICAO'"
   :logo-url="projetoSelecionado.logo_projeto"
   :tema-id="temaAtual"
   :temas="temasEdicao"
