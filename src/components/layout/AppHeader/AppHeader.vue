@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import AppButton from '@/components/ui/AppButton'
+import HeaderSearch from '@/components/ui/HeaderSearch/HeaderSearch.vue'
 import HeaderActions from '@/components/ui/HeaderActions/HeaderActions.vue'
 
 const router = useRouter()
@@ -35,10 +36,12 @@ const emit = defineEmits<{
       // 24H
     </span>
 
+    <!-- Lupa: abre o campo ao passar o mouse ou focar -->
+    <HeaderSearch class="ml-auto mr-3" />
+
     <!-- Usuário logado -->
     <HeaderActions
       v-if="props.isLogged"
-      class="ml-auto"
       :user-avatar="props.userAvatar"
       :user-name="props.userName"
       @menu-option-click="emit('menu-option-click', $event)"
@@ -47,7 +50,7 @@ const emit = defineEmits<{
     <!-- Usuário deslogado -->
     <div
       v-else
-      class="ml-auto flex items-center gap-2"
+      class="flex items-center gap-2"
     >
       <AppButton
         label="Entrar"
