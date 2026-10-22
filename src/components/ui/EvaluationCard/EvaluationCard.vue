@@ -21,8 +21,9 @@
 
     <div class="flex flex-col gap-1">
       <ProgressBar
-        :current="props.current"
-        :label="props.progressLabel"
+        v-if="props.total !== undefined"
+        :current="props.current ?? 0"
+        :label="props.progressLabel ?? ''"
         :total="props.total"
       />
 
@@ -45,9 +46,10 @@
     image: string
     title: string
     deadline: string
-    current: number
-    total: number
-    progressLabel: string
+    /** Sem `total`, a barra de progresso some (visão do professor). */
+    current?: number
+    total?: number
+    progressLabel?: string
     status: Status
   }>()
 

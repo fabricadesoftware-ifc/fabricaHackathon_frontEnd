@@ -1,4 +1,5 @@
 export * from './api'
+export * from './avaliacao'
 export * from './cards'
 export * from './edicao'
 export * from './equipe'

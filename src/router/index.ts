@@ -13,6 +13,7 @@ import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
 import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
+import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,9 +78,19 @@ const router = createRouter({
       path: '/avaliacao/:editionId/projeto/:projectId',
       name: 'avaliacao-projeto',
       component: ProjectEvaluationView,
+      // Só o avaliador lança notas; professor e admin não têm ações de escrita aqui.
       meta: {
         requiresAuth: true,
-        roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
+        roles: ['AVALIADOR'],
+      },
+    },
+    {
+      path: '/admin/solicitacoes',
+      name: 'solicitacoes-perfil',
+      component: SolicitacoesPerfilView,
+      meta: {
+        requiresAuth: true,
+        roles: ['ADMIN'],
       },
     },
     {

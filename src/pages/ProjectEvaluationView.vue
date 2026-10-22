@@ -1,334 +1,247 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+  import type { MinhaAvaliacao } from '@/types'
+  import { computed, ref, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import AppButton from '@/components/ui/AppButton/AppButton.vue'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import EvaluationCriteriaCard from '@/components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue'
+  import EvaluationProjectCard from '@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue'
+  import FinalScoreBar from '@/components/ui/FinalScoreBar/FinalScoreBar.vue'
+  import SuccessState from '@/components/ui/SucessState/sucessState.vue'
+  import { useAsync } from '@/composables/useAsync'
+  import { ApiError, atualizarNota, lancarNotasLote, listarMinhasAvaliacoes } from '@/services'
 
-import EvaluationProjectCard from '@/components/ui/EvaluationProjectCard/EvaluationProjectCard.vue'
-import EvaluationCriteriaCard from '@/components/ui/EvaluationCriteriaCard/EvaluationCriteriaCard.vue'
-import FinalScoreBar from '@/components/ui/FinalScoreBar/FinalScoreBar.vue'
-import AppButton from '@/components/ui/AppButton/AppButton.vue'
-import SuccessState from '@/components/ui/SucessState/sucessState.vue'
+  interface Criterion {
+    id: number
+    name: string
+    score: number | null
+    comment: string
+    /** Nota já lançada no back (PATCH); ausente = critério ainda pendente (POST em lote). */
+    notaId?: number
+    original?: number
+  }
 
-import {
-  useEvaluationsStore,
-  MOCK_EVALUATOR_ID,
-} from '@/stores/evaluations'
+  const route = useRoute()
+  const router = useRouter()
 
-import type { EvaluationProject } from '@/data/evaluationProjects'
-import { hackathons } from '@/data/hackathons'
+  const editionId = computed(() => Number(route.params.editionId))
+  const projectId = computed(() => Number(route.params.projectId))
 
-interface Criterion {
-  id: number
-  name: string
-  score: number | null
-  comment: string
-}
+  const criteria = ref<Criterion[]>([])
+  const isSubmitting = ref(false)
+  const isSubmitted = ref(false)
+  const submitError = ref('')
 
-const route = useRoute()
-const router = useRouter()
-const evaluationsStore = useEvaluationsStore()
+  const { data: avaliacao, loading, error, run } = useAsync(async (): Promise<MinhaAvaliacao> => {
+    if (!Number.isInteger(editionId.value) || !Number.isInteger(projectId.value)) {
+      throw new TypeError('Edição ou projeto inválido.')
+    }
+    const item = (await listarMinhasAvaliacoes())
+      .find(a => a.edicao === editionId.value && a.projeto.id === projectId.value)
+    if (!item) {
+      throw new ApiError('client', 'Projeto não encontrado entre as suas avaliações.', 404)
+    }
+    return item
+  })
 
-// Identificação da edição e do projeto pela URL.
-const editionId = computed(() => Number(route.params.editionId))
-const projectId = computed(() => Number(route.params.projectId))
+  // Todos os critérios da edição = já avaliados + pendentes (ordem estável por id).
+  watch(avaliacao, item => {
+    isSubmitted.value = false
+    submitError.value = ''
+    if (!item) {
+      criteria.value = []
+      return
+    }
+    const todos: Criterion[] = [
+      ...item.criterios_avaliados.map(c => ({
+        id: c.criterio_id,
+        name: c.criterio,
+        score: Number(c.nota),
+        original: Number(c.nota),
+        comment: '',
+        notaId: c.nota_id,
+      })),
+      ...item.criterios_pendentes.map(c => ({
+        id: c.criterio_id,
+        name: c.criterio,
+        score: null,
+        comment: '',
+      })),
+    ]
+    // eslint-disable-next-line unicorn/no-array-sort -- lib do projeto não inclui toSorted
+    criteria.value = todos.sort((a, b) => a.id - b.id)
+  })
 
-// Dados compartilhados.
-const project = ref<EvaluationProject | null>(null)
+  const aberta = computed(() => avaliacao.value?.avaliacao_aberta ?? false)
 
-const edition = computed(() =>
-  hackathons.find(item => item.id === editionId.value),
-)
-
-// Critérios da avaliação.
-const criteria = ref<Criterion[]>([])
-
-// Estados da página.
-const loading = ref(false)
-const error = ref(false)
-const isSubmitting = ref(false)
-const isSubmitted = ref(false)
-const submitError = ref('')
-
-// Critérios mockados até a integração com a API.
-const mockCriteria = [
-  { id: 1, name: 'Criatividade' },
-  { id: 2, name: 'Inovação' },
-  { id: 3, name: 'Viabilidade' },
-]
-
-// Verifica se todos os critérios foram avaliados.
-const allCriteriaEvaluated = computed(() =>
-  criteria.value.length > 0 &&
-  criteria.value.every(
-    criterion =>
-      criterion.score !== null &&
-      Number.isFinite(criterion.score) &&
-      criterion.score >= 0 &&
-      criterion.score <= 10,
-  ),
-)
-
-// Calcula a média simples das notas.
-const finalScore = computed(() => {
-  const evaluated = criteria.value.filter(
-    criterion => criterion.score !== null,
+  const pendentes = computed(() => criteria.value.filter(c => c.notaId === undefined))
+  const alterados = computed(() =>
+    criteria.value.filter(c => c.notaId !== undefined && (c.score !== c.original || c.comment.trim() !== '')),
   )
 
-  if (evaluated.length === 0) return 0
-
-  const sum = evaluated.reduce(
-    (total, criterion) => total + (criterion.score ?? 0),
-    0,
+  // Todos os critérios pendentes precisam de nota entre 0 e 10 (a API exige todos).
+  const allPendingScored = computed(() =>
+    pendentes.value.every(c => c.score !== null && c.score >= 0 && c.score <= 10),
   )
+  const hasChanges = computed(() => pendentes.value.length > 0 || alterados.value.length > 0)
 
-  return sum / evaluated.length
-})
+  const finalScore = computed(() => {
+    const avaliados = criteria.value.filter(c => c.score !== null)
+    return avaliados.length === 0
+      ? 0
+      : avaliados.reduce((soma, c) => soma + (c.score ?? 0), 0) / avaliados.length
+  })
 
-// Busca o projeto utilizando a store Pinia.
-async function fetchProject() {
-  loading.value = true
-  error.value = false
-  isSubmitted.value = false
-  submitError.value = ''
-  project.value = null
-  criteria.value = []
+  function updateScore (criterion: Criterion, score: number) {
+    criterion.score = score
+    submitError.value = ''
+  }
 
-  try {
-    // Simulação de carregamento da API.
-    await new Promise(resolve => setTimeout(resolve, 350))
+  function updateComment (criterion: Criterion, comment: string) {
+    criterion.comment = comment
+  }
 
-    if (
-      !Number.isInteger(editionId.value) ||
-      !Number.isInteger(projectId.value) ||
-      editionId.value <= 0 ||
-      projectId.value <= 0
-    ) {
-      throw new Error('Edição ou projeto inválido.')
+  function voltar () {
+    router.push(`/avaliacao/${editionId.value}`)
+  }
+
+  function mensagemDoErro (err: unknown): string {
+    if (err instanceof ApiError) {
+      const campos = Object.values(err.fields).flat()
+      return campos.length > 0 ? campos.join(' ') : err.message
     }
+    return 'Não foi possível enviar a avaliação. Tente novamente.'
+  }
 
-    const foundProject = evaluationsStore.getProject(
-      editionId.value,
-      projectId.value,
-    )
-
-    if (!foundProject) {
-      throw new Error('Projeto não encontrado nesta edição.')
+  async function salvarAvaliacao () {
+    if (isSubmitting.value || isSubmitted.value || !avaliacao.value) {
+      return
     }
-
-    // Verifica se o avaliador já avaliou o projeto.
-    const previousEvaluation = evaluationsStore.getEvaluation(
-      editionId.value,
-      projectId.value,
-      MOCK_EVALUATOR_ID,
-    )
-
-    // Impede avaliar novamente um projeto já avaliado.
-    if (
-      foundProject.status === 'avaliado' ||
-      previousEvaluation
-    ) {
-      await router.replace(`/avaliacao/${editionId.value}`)
+    if (!allPendingScored.value) {
+      submitError.value = 'Avalie todos os critérios antes de enviar.'
       return
     }
 
-    project.value = foundProject
+    isSubmitting.value = true
+    submitError.value = ''
 
-    // Inicializa os critérios sem notas.
-    criteria.value = mockCriteria.map(criterion => ({
-      ...criterion,
-      score: null,
-      comment: '',
-    }))
-  } catch (err) {
-    console.error('Erro ao carregar projeto:', err)
-    error.value = true
-  } finally {
-    loading.value = false
+    try {
+      // Notas novas: uma chamada atômica. Notas já lançadas: ajuste individual.
+      if (pendentes.value.length > 0) {
+        await lancarNotasLote(avaliacao.value.projeto.id, pendentes.value.map(c => ({
+          criterio: c.id,
+          nota: c.score as number,
+          ...(c.comment.trim() && { comentario_nota: c.comment.trim() }),
+        })))
+      }
+      for (const c of alterados.value) {
+        await atualizarNota(
+          c.notaId as number,
+          c.score as number,
+          c.comment.trim() || undefined,
+        )
+      }
+      isSubmitted.value = true
+    } catch (error_) {
+      submitError.value = mensagemDoErro(error_)
+    } finally {
+      isSubmitting.value = false
+    }
   }
-}
-
-// Atualiza a nota de um critério.
-function updateScore(criterion: Criterion, score: number) {
-  criterion.score = score
-  submitError.value = ''
-}
-
-// Atualiza o comentário de um critério.
-function updateComment(criterion: Criterion, comment: string) {
-  criterion.comment = comment
-}
-
-// Volta para a lista de projetos.
-function voltarSemAvaliar() {
-  router.push(`/avaliacao/${editionId.value}`)
-}
-
-// Salva a avaliação na store Pinia.
-async function salvarAvaliacao() {
-  if (isSubmitting.value || isSubmitted.value) return
-
-  if (!project.value || !allCriteriaEvaluated.value) {
-    submitError.value = 'Avalie todos os critérios antes de enviar.'
-    return
-  }
-
-  isSubmitting.value = true
-  submitError.value = ''
-
-  try {
-    // Simulação de envio para a API.
-    await new Promise(resolve => setTimeout(resolve, 600))
-
-    // Registra a avaliação no Pinia e no localStorage.
-    evaluationsStore.submitEvaluation({
-      editionId: editionId.value,
-      projectId: projectId.value,
-      evaluatorId: MOCK_EVALUATOR_ID,
-
-      criteria: criteria.value.map(criterion => ({
-        criterionId: criterion.id,
-        score: criterion.score!,
-        comment: criterion.comment,
-      })),
-    })
-
-    // Exibe a mensagem de sucesso.
-    isSubmitted.value = true
-  } catch (err) {
-    console.error('Erro ao enviar avaliação:', err)
-
-    submitError.value =
-      err instanceof Error
-        ? err.message
-        : 'Não foi possível enviar a avaliação. Tente novamente.'
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-// Atualiza os dados quando mudar a edição ou o projeto.
-watch(
-  [editionId, projectId],
-  fetchProject,
-  { immediate: true },
-)
 </script>
 
 <template>
   <div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-
-    <!-- Carregamento -->
-    <div
-      v-if="loading"
-      class="flex min-h-64 items-center justify-center"
-    >
-      <p class="text-gray-500">
-        Carregando projeto...
-      </p>
-    </div>
-
-    <!-- Erro ao carregar -->
-    <div
-      v-else-if="error"
-      class="flex min-h-64 flex-col items-center justify-center gap-4"
-    >
-      <p class="text-center text-gray-600">
-        Não foi possível carregar o projeto.
-      </p>
-
-      <AppButton
-        label="Tentar novamente"
-        variant="primary"
-        @click="fetchProject"
+    <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
+      <SuccessState
+        v-if="isSubmitted"
+        button-label="Voltar às avaliações"
+        class="mt-12"
+        :description="`Sua avaliação do projeto ${avaliacao?.projeto.nome_projeto} foi registrada.`"
+        title="Avaliação enviada!"
+        @click="voltar"
       />
 
-      <AppButton
-        label="Voltar para projetos"
-        variant="secondary"
-        @click="voltarSemAvaliar"
-      />
-    </div>
+      <div v-else-if="avaliacao" class="flex flex-col gap-6">
+        <EvaluationProjectCard
+          avatar=""
+          :description="avaliacao.projeto.descricao_projeto || 'Projeto participante da edição.'"
+          :edition-name="avaliacao.edicao_nome"
+          :name="avaliacao.projeto.nome_projeto"
+          :project-url="avaliacao.projeto.link_deploy_projeto ?? ''"
+          :score="avaliacao.concluido ? finalScore : 0"
+          :status="avaliacao.concluido ? 'Avaliado' : 'Pendente'"
+          :team-name="avaliacao.projeto.equipe"
+        />
 
-    <!-- Avaliação enviada -->
-    <SuccessState
-      v-else-if="isSubmitted"
-      title="Avaliação enviada!"
-      :description="`Sua avaliação do projeto ${project?.name} foi registrada.`"
-      button-label="Voltar às avaliações"
-      class="mt-12"
-      @click="voltarSemAvaliar"
-    />
+        <p
+          v-if="!aberta"
+          class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          role="status"
+        >
+          A avaliação desta edição não está aberta: as notas abaixo são somente leitura.
+        </p>
 
-    <!-- Formulário de avaliação -->
-    <div
-      v-else-if="project"
-      class="flex flex-col gap-6"
-    >
-      <!-- Informações do projeto -->
-      <EvaluationProjectCard
-        :name="project.name"
-        description="Projeto participante da edição."
-        project-url=""
-        :edition-name="edition?.title ?? 'Hackathon'"
-        :team-name="project.teamName"
-        :avatar="project.avatar ?? ''"
-        status="Pendente"
-        :score="0"
-      />
+        <section>
+          <h2 class="mb-5 text-xl font-semibold text-gray-900 sm:text-2xl">
+            Critérios de avaliação
+          </h2>
 
-      <!-- Critérios -->
-      <section>
-        <h2 class="mb-5 text-xl font-semibold text-gray-900 sm:text-2xl">
-          Critérios de avaliação
-        </h2>
+          <p v-if="criteria.length === 0" class="text-gray-500">
+            Esta edição ainda não tem critérios cadastrados.
+          </p>
 
-        <div class="flex flex-col gap-3">
-          <EvaluationCriteriaCard
-            v-for="criterion in criteria"
-            :key="criterion.id"
-            :criteria-name="criterion.name"
-            :model-value="criterion.score ?? 0"
-            :comment="criterion.comment"
-            :min="0"
-            :max="10"
-            :step="0.5"
-            @update:model-value="updateScore(criterion, $event)"
-            @update:comment="updateComment(criterion, $event)"
+          <div v-else-if="aberta" class="flex flex-col gap-3">
+            <EvaluationCriteriaCard
+              v-for="criterion in criteria"
+              :key="criterion.id"
+              :comment="criterion.comment"
+              :criteria-name="criterion.name"
+              :max="10"
+              :min="0"
+              :model-value="criterion.score ?? 0"
+              :step="0.5"
+              @update:comment="updateComment(criterion, $event)"
+              @update:model-value="updateScore(criterion, $event)"
+            />
+          </div>
+
+          <ul v-else class="flex flex-col gap-3">
+            <li
+              v-for="criterion in criteria"
+              :key="criterion.id"
+              class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+            >
+              <span class="font-semibold text-gray-800">{{ criterion.name }}</span>
+              <span class="text-gray-700">{{ criterion.score === null ? 'Sem nota' : criterion.score.toFixed(1) }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <FinalScoreBar label="Média desta avaliação" :score="finalScore" />
+
+        <p v-if="submitError" class="text-sm text-red-600" role="alert">
+          {{ submitError }}
+        </p>
+
+        <footer class="flex w-full items-center justify-between gap-3">
+          <AppButton
+            :disabled="isSubmitting"
+            :label="aberta ? 'Voltar sem salvar' : 'Voltar'"
+            variant="secondary"
+            @click="voltar"
           />
-        </div>
-      </section>
 
-      <!-- Média final -->
-      <FinalScoreBar
-        label="Média desta avaliação"
-        :score="finalScore"
-      />
-
-      <!-- Mensagem de erro -->
-      <p
-        v-if="submitError"
-        class="text-sm text-red-600"
-        role="alert"
-      >
-        {{ submitError }}
-      </p>
-
-      <!-- Botões -->
-      <footer class="flex w-full items-center justify-between gap-3">
-        <AppButton
-          label="Voltar sem avaliar"
-          variant="secondary"
-          :disabled="isSubmitting"
-          @click="voltarSemAvaliar"
-        />
-
-        <AppButton
-          :label="isSubmitting ? 'Enviando...' : 'Enviar avaliação'"
-          variant="primary"
-          :disabled="isSubmitting || !allCriteriaEvaluated"
-          :loading="isSubmitting"
-          @click="salvarAvaliacao"
-        />
-      </footer>
-    </div>
+          <AppButton
+            v-if="aberta"
+            :disabled="isSubmitting || !hasChanges || !allPendingScored"
+            :label="isSubmitting ? 'Enviando...' : (avaliacao.concluido ? 'Salvar alterações' : 'Enviar avaliação')"
+            :loading="isSubmitting"
+            variant="primary"
+            @click="salvarAvaliacao"
+          />
+        </footer>
+      </div>
+    </AsyncView>
   </div>
 </template>

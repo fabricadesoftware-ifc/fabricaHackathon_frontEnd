@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 
-interface Props {
+export interface Props {
   submitText?: string
   isLoading?: boolean
 }
