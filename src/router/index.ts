@@ -16,6 +16,7 @@ import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
+import TermosView from '@/pages/TermosView.vue'
 import NotFoundView from '@/pages/NotFoundView.vue'
 import PreAvaliacaoView from '@/pages/PreAvaliacaoView.vue'
 
@@ -122,6 +123,11 @@ const router = createRouter({
   name: 'registro',
   component: RegisterView,
 },
+    {
+      path: '/termos',
+      name: 'termos',
+      component: TermosView,
+    },
     // Endereço inexistente: página 404 em vez de tela em branco.
     {
       path: '/:pathMatch(.*)*',
@@ -182,6 +188,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/admin\/solicitacoes/, 'Solicitações de perfil'],
   [/^\/login/, 'Entrar'],
   [/^\/registro/, 'Criar conta'],
+  [/^\/termos/, 'Termos de Uso'],
 ]
 
 router.afterEach((to) => {

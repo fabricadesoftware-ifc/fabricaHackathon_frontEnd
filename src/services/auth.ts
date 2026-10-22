@@ -1,3 +1,4 @@
+import { prepararImagem } from '@/utils/imagem'
 import { http } from '@/services/http'
 
 import type {
@@ -28,7 +29,7 @@ export function obterUsuarioAtual() {
   return http.get<Usuario>('/me/')
 }
 // Atualiza o próprio perfil (nome, sobrenome e/ou foto). Com foto, usa multipart.
-export function atualizarPerfil(dados: {
+export async function atualizarPerfil(dados: {
   first_name?: string
   last_name?: string
   foto?: File | null
@@ -40,7 +41,7 @@ export function atualizarPerfil(dados: {
     for (const [chave, valor] of Object.entries(texto)) {
       if (valor !== undefined) form.append(chave, valor)
     }
-    form.append('foto_perfil', foto)
+    form.append('foto_perfil', await prepararImagem(foto))
     return http.patch<Usuario>('/me/', form)
   }
 

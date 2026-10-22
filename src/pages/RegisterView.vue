@@ -41,6 +41,11 @@ function getErrorMessage(err: unknown): string {
     : 'Não foi possível criar sua conta.'
 }
 
+// Abre os termos em outra aba para não perder o que já foi preenchido.
+function abrirTermos() {
+  window.open(router.resolve('/termos').href, '_blank', 'noopener')
+}
+
 async function handleRegister(form: RegisterForm) {
   if (isLoading.value) return
 
@@ -88,6 +93,7 @@ async function handleRegister(form: RegisterForm) {
         :is-loading="isLoading"
         @submit="handleRegister"
         @login-redirect="router.push('/login')"
+        @open-terms="abrirTermos"
       />
 
       <p

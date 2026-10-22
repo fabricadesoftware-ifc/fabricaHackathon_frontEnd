@@ -8,6 +8,7 @@ interface EditProjectPayload {
     nome_projeto: string
     descricao_projeto: string
     link_deploy_projeto: string
+    tema: number | null
     /** Nova logo escolhida (null = manter a atual). */
     logo: File | null
     /** true = o criador pediu para remover a logo atual. */
@@ -21,12 +22,16 @@ const props = withDefaults(
         projectName: string
         description: string
         deployUrl: string
+        temas?: { id: number, descricao_tema: string }[]
+        temaId?: number | null
         logoUrl?: string | null
         loading?: boolean
         error?: string
     }>(),
     {
         logoUrl: null,
+        temas: () => [],
+        temaId: null,
         loading: false,
         error: '',
     },
@@ -42,6 +47,7 @@ const form = reactive<EditProjectPayload>({
     nome_projeto: '',
     descricao_projeto: '',
     link_deploy_projeto: '',
+    tema: null,
     logo: null,
     removerLogo: false,
 })
@@ -71,6 +77,7 @@ watch(
         form.nome_projeto = props.projectName
         form.descricao_projeto = props.description
         form.link_deploy_projeto = props.deployUrl
+        form.tema = props.temaId
         form.logo = null
         form.removerLogo = false
         erroLogo.value = ''
@@ -101,6 +108,7 @@ function handleSave() {
         nome_projeto: form.nome_projeto.trim(),
         descricao_projeto: form.descricao_projeto.trim(),
         link_deploy_projeto: form.link_deploy_projeto.trim(),
+        tema: form.tema,
         logo: form.logo,
         removerLogo: form.removerLogo,
     })
@@ -118,7 +126,7 @@ function handleKeydown(event: KeyboardEvent) {
         <div v-if="modelValue" class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4"
             @click.self="closeModal" @keydown="handleKeydown">
             <div role="dialog" aria-modal="true" aria-labelledby="edit-project-title" tabindex="-1"
-                class="w-full max-w-xl rounded-xl bg-white p-6 shadow-xl">
+                class="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl">
                 <!-- Cabeçalho -->
                 <div class="mb-6 flex items-start justify-between">
                     <div>
@@ -158,6 +166,18 @@ function handleKeydown(event: KeyboardEvent) {
                         <input id="edit-project-name" v-model="form.nome_projeto" type="text" required
                             :disabled="loading"
                             class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500">
+                    </div>
+
+                    <!-- Tema -->
+                    <div v-if="temas.length">
+                        <label for="edit-tema" class="mb-2 block text-sm font-medium text-gray-700">
+                            Tema do projeto
+                        </label>
+
+                        <select id="edit-tema" v-model="form.tema" :disabled="loading"
+                            class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500">
+                            <option v-for="t in temas" :key="t.id" :value="t.id">{{ t.descricao_tema }}</option>
+                        </select>
                     </div>
 
                     <!-- Descrição -->

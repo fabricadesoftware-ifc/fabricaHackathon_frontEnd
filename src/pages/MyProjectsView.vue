@@ -16,7 +16,7 @@ import {
   removerLogoProjeto,
 } from '@/services/inscricoes'
 import { ApiError } from '@/services/http'
-import { listarTodasEdicoes } from '@/services/edicoes'
+import { listarTodasEdicoes, obterEdicao } from '@/services/edicoes'
 const PAGE_SIZE = 8
 
 const search = ref('')
@@ -150,6 +150,12 @@ watch(totalPages, value => {
   }
 })
 
+// Temas da edição do projeto em edição (para escolher o tema depois da inscrição).
+const temasEdicao = ref<{ id: number, descricao_tema: string }[]>([])
+const temaAtual = computed(() =>
+  equipes.value?.find(e => e.id === projetoSelecionado.value?.equipe.id)?.tema_id ?? null,
+)
+
 function abrirEdicao(projetoId: number) {
   const projeto = projetos.value?.find(
     p => p.id === projetoId,
@@ -165,13 +171,18 @@ function abrirEdicao(projetoId: number) {
 
   projetoSelecionadoId.value = projetoId
   erroEdicao.value = ''
+  temasEdicao.value = []
   modalEditarAberto.value = true
+  obterEdicao(projeto.edicao)
+    .then(e => { temasEdicao.value = e.temas })
+    .catch(() => { /* sem lista de temas, o campo some */ })
 }
 interface DadosEdicao {
   nome_equipe: string
   nome_projeto: string
   descricao_projeto: string
   link_deploy_projeto: string
+  tema: number | null
   logo: File | null
   removerLogo: boolean
 }
@@ -199,6 +210,7 @@ async function salvarEdicao(dados: DadosEdicao) {
   try {
     await editarInscricao(equipe.id, {
       nome_equipe: dados.nome_equipe,
+      ...(dados.tema !== null && dados.tema !== temaAtual.value && { tema: dados.tema }),
 
       projeto: {
         nome_projeto: dados.nome_projeto,
@@ -246,7 +258,8 @@ async function salvarEdicao(dados: DadosEdicao) {
     <SearchFilterBar v-model:search="search" v-model:tipo="edicaoId" :options-tipo="opcoesEdicao"
       placeholder="Buscar meus projetos..." />
 
-    <AsyncView :empty="!loading && !error && itens.length === 0" empty-message="Nenhum projeto encontrado."
+    <AsyncView
+      skeleton="cards" :empty="!loading && !error && itens.length === 0" empty-message="Nenhum projeto encontrado."
       :error="error" :loading="loading" @retry="run">
       <ResultsBar :end="endIndex" label="projeto(s)" :start="total ? startIndex + 1 : 0" :total="total" />
 
@@ -265,6 +278,8 @@ async function salvarEdicao(dados: DadosEdicao) {
   :description="projetoSelecionado.descricao_projeto"
   :deploy-url="projetoSelecionado.link_deploy_projeto ?? ''"
   :logo-url="projetoSelecionado.logo_projeto"
+  :tema-id="temaAtual"
+  :temas="temasEdicao"
   :loading="salvandoEdicao"
   :error="erroEdicao"
   @save="salvarEdicao"
