@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, watch, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
 import settingSectionHeader from '@/components/ui/SettingSectionHeader/settingSectionHeader.vue'
@@ -8,35 +9,32 @@ import ProfileForm from '@/components/layout/ProfileForm/ProfileForm.vue'
 import DangerZoneSection from '@/components/layout/DangerZoneSection/DangerZoneSection.vue'
 import DangerActionItem from '@/components/layout/DangerActionItem/DangerActionItem.vue'
 import UnsavedChangesBar from '@/components/layout/UnsavedChangesBar/UnsavedChangesBar.vue'
+import { atualizarPerfil } from '@/services/auth'
+import { ApiError } from '@/services/http'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const router = useRouter()
 
 interface ProfileData {
   nome: string
   sobrenome: string
-  username: string
-  email: string
-  bio: string
 }
 
-// Dados iniciais do usuário.
-// Futuramente serão carregados do backend.
-const initialState = ref<ProfileData>({
-  nome: '',
-  sobrenome: '',
-  username: '',
-  email: '',
-  bio: '',
-})
+// Dados salvos (vêm da conta logada).
+const initialState = ref<ProfileData>({ nome: '', sobrenome: '' })
 
 // Campos editáveis.
-const nome = ref(initialState.value.nome)
-const sobrenome = ref(initialState.value.sobrenome)
-const username = ref(initialState.value.username)
-const email = ref(initialState.value.email)
-const bio = ref(initialState.value.bio)
+const nome = ref('')
+const sobrenome = ref('')
+
+// Somente leitura: o e-mail é o login e o usuário não muda aqui.
+const username = computed(() => auth.user?.username ?? '')
+const email = computed(() => auth.user?.email ?? '')
 
 // Foto de perfil.
 const savedPhotoUrl = ref<string | undefined>(undefined)
-const currentPhotoUrl = ref<string | undefined>(savedPhotoUrl.value)
+const currentPhotoUrl = ref<string | undefined>(undefined)
 
 const selectedFile = ref<File | null>(null)
 const previewUrl = ref<string | null>(null)
@@ -44,31 +42,38 @@ const previewUrl = ref<string | null>(null)
 // Estados.
 const isSaving = ref(false)
 const saveError = ref('')
+const saveOk = ref(false)
 
-// Retorna os dados atuais do formulário.
-function getFormData(): ProfileData {
-  return {
-    nome: nome.value,
-    sobrenome: sobrenome.value,
-    username: username.value,
-    email: email.value,
-    bio: bio.value,
-  }
-}
+// Preenche o formulário com os dados da conta (também quando ela termina de carregar).
+watch(
+  () => auth.user,
+  user => {
+    if (!user) return
+    initialState.value = { nome: user.first_name, sobrenome: user.last_name }
+    nome.value = user.first_name
+    sobrenome.value = user.last_name
+    savedPhotoUrl.value = user.foto_perfil ?? undefined
+    if (!selectedFile.value) currentPhotoUrl.value = savedPhotoUrl.value
+  },
+  { immediate: true },
+)
+
+// Situação do pedido de perfil de Avaliador/Professor.
+const avisoSolicitacao = computed(() => {
+  const s = auth.user?.solicitacao_perfil
+  if (!s) return null
+  const perfil = s.perfil_solicitado === 'AVALIADOR' ? 'Avaliador' : 'Professor'
+  if (s.status === 'PENDENTE') return { tom: 'amber', texto: `Seu pedido de perfil ${perfil} aguarda aprovação de um administrador.` }
+  if (s.status === 'RECUSADA') return { tom: 'red', texto: `Seu pedido de perfil ${perfil} foi recusado.` }
+  return null
+})
 
 // Identifica alterações nos dados ou no avatar.
-const hasChanges = computed(() => {
-  const initial = initialState.value
-
-  const profileChanged =
-    nome.value !== initial.nome ||
-    sobrenome.value !== initial.sobrenome ||
-    username.value !== initial.username ||
-    email.value !== initial.email ||
-    bio.value !== initial.bio
-
-  return profileChanged || selectedFile.value !== null
-})
+const hasChanges = computed(() =>
+  nome.value.trim() !== initialState.value.nome ||
+  sobrenome.value.trim() !== initialState.value.sobrenome ||
+  selectedFile.value !== null,
+)
 
 // Remove uma prévia anterior da memória.
 function clearPreview() {
@@ -93,14 +98,8 @@ function handleFileUpdate(file: File) {
 function handleCancel() {
   if (isSaving.value) return
 
-  const initial = initialState.value
-
-  nome.value = initial.nome
-  sobrenome.value = initial.sobrenome
-  username.value = initial.username
-  email.value = initial.email
-  bio.value = initial.bio
-
+  nome.value = initialState.value.nome
+  sobrenome.value = initialState.value.sobrenome
   selectedFile.value = null
 
   clearPreview()
@@ -109,53 +108,51 @@ function handleCancel() {
   saveError.value = ''
 }
 
-// Simula o salvamento das alterações.
+// Salva nome, sobrenome e foto no back-end.
 async function handleSave() {
   if (!hasChanges.value || isSaving.value) return
 
+  if (!nome.value.trim() || !sobrenome.value.trim()) {
+    saveError.value = 'Informe nome e sobrenome.'
+    return
+  }
+
   isSaving.value = true
   saveError.value = ''
+  saveOk.value = false
 
   try {
-    // Simulação de uma requisição ao backend.
-    await new Promise(resolve => setTimeout(resolve, 500))
+    const atualizado = await atualizarPerfil({
+      first_name: nome.value.trim(),
+      last_name: sobrenome.value.trim(),
+      foto: selectedFile.value,
+    })
 
-    const updatedProfile = getFormData()
-
-    // Atualiza os dados considerados salvos.
-    initialState.value = { ...updatedProfile }
-
-    // Mantém a foto selecionada após salvar.
-    if (selectedFile.value) {
-      const previousSavedPhotoUrl = savedPhotoUrl.value
-
-      savedPhotoUrl.value = URL.createObjectURL(selectedFile.value)
-      currentPhotoUrl.value = savedPhotoUrl.value
-
-      if (previousSavedPhotoUrl?.startsWith('blob:')) {
-        URL.revokeObjectURL(previousSavedPhotoUrl)
-      }
-
-      selectedFile.value = null
-      clearPreview()
-    }
-
-    console.log('Perfil salvo (mock):', updatedProfile)
+    selectedFile.value = null
+    clearPreview()
+    auth.setUser(atualizado)
+    saveOk.value = true
   } catch (error) {
-    console.error('Erro ao salvar perfil:', error)
-    saveError.value = 'Não foi possível salvar as alterações.'
+    if (error instanceof ApiError) {
+      const mensagens = Object.values(error.fields).flat()
+      saveError.value = mensagens.length ? mensagens.join(' ') : error.message
+    } else {
+      saveError.value = 'Não foi possível salvar as alterações.'
+    }
   } finally {
     isSaving.value = false
   }
 }
 
+// Encerra a sessão neste dispositivo.
+function sair() {
+  auth.signOut()
+  void router.push('/login')
+}
+
 // Libera as URLs temporárias.
 onUnmounted(() => {
   clearPreview()
-
-  if (savedPhotoUrl.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(savedPhotoUrl.value)
-  }
 })
 </script>
 
@@ -164,6 +161,15 @@ onUnmounted(() => {
     title="Configurações"
     subtitle="Atualize suas informações pessoais"
   />
+
+  <p
+    v-if="avisoSolicitacao"
+    class="mb-4 rounded-lg px-4 py-3 text-sm"
+    :class="avisoSolicitacao.tom === 'amber' ? 'bg-amber-50 text-amber-800' : 'bg-red-50 text-red-700'"
+    role="status"
+  >
+    {{ avisoSolicitacao.texto }}
+  </p>
 
   <!-- Meu perfil -->
   <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -188,9 +194,10 @@ onUnmounted(() => {
         <ProfileForm
           v-model:nome="nome"
           v-model:sobrenome="sobrenome"
-          v-model:username="username"
-          v-model:email="email"
-          v-model:bio="bio"
+          :email="email"
+          identity-readonly
+          :show-bio="false"
+          :username="username"
         />
       </div>
     </div>
@@ -204,22 +211,21 @@ onUnmounted(() => {
       </div>
 
       <div class="min-w-0 flex-1">
-        <DangerActionItem
-          icon="mdi mdi-logout"
-          title="Sair"
-          subtitle="Encerrar sessão neste dispositivo"
-          variant="sair"
-        />
-
-        <DangerActionItem
-          icon="mdi mdi-delete-outline"
-          title="Excluir conta"
-          subtitle="Essa ação não pode ser desfeita"
-          variant="excluir"
-        />
+        <button class="text-left" type="button" @click="sair">
+          <DangerActionItem
+            icon="mdi mdi-logout"
+            title="Sair"
+            subtitle="Encerrar sessão neste dispositivo"
+            variant="sair"
+          />
+        </button>
       </div>
     </div>
   </div>
+
+  <p v-if="saveOk && !hasChanges" class="mt-4 text-sm text-green-700" role="status">
+    Perfil atualizado.
+  </p>
 
   <!-- Mensagem de erro -->
   <p

@@ -16,6 +16,7 @@ import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
 import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
+import NotFoundView from '@/pages/NotFoundView.vue'
 import PreAvaliacaoView from '@/pages/PreAvaliacaoView.vue'
 
 const router = createRouter({
@@ -121,6 +122,12 @@ const router = createRouter({
   name: 'registro',
   component: RegisterView,
 },
+    // Endereço inexistente: página 404 em vez de tela em branco.
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'nao-encontrada',
+      component: NotFoundView,
+    },
   ],
 })
 router.beforeEach(async (to) => {
@@ -156,4 +163,32 @@ router.beforeEach(async (to) => {
 
   return true
 })
+
+// Título da aba conforme a página.
+const TITULOS: Array<[RegExp, string]> = [
+  [/^\/home/, 'Home'],
+  [/^\/edicoes\/.+/, 'Edição'],
+  [/^\/edicoes/, 'Edições'],
+  [/^\/explorar/, 'Explorar projetos'],
+  [/^\/projetos\/.+\/pre-avaliacao/, 'Pré-avaliação'],
+  [/^\/projetos/, 'Meus projetos'],
+  [/^\/equipes/, 'Equipes'],
+  [/^\/inscricao/, 'Inscrição'],
+  [/^\/configuracoes/, 'Configurações'],
+  [/^\/avaliacao\/.+\/projeto/, 'Avaliar projeto'],
+  [/^\/avaliacao\/.+/, 'Projetos para avaliar'],
+  [/^\/avaliacao/, 'Avaliações'],
+  [/^\/novo/, 'Novo projeto'],
+  [/^\/admin\/solicitacoes/, 'Solicitações de perfil'],
+  [/^\/login/, 'Entrar'],
+  [/^\/registro/, 'Criar conta'],
+]
+
+router.afterEach((to) => {
+  const titulo = to.name === 'nao-encontrada'
+    ? 'Página não encontrada'
+    : TITULOS.find(([re]) => re.test(to.path))?.[1]
+  document.title = titulo ? `${titulo} · HackIFC // 24H` : 'HackIFC // 24H'
+})
+
 export default router

@@ -18,9 +18,11 @@ interface RegisterPayload {
   password: string
   passwordConfirm: string
   acceptTerms: boolean
+  /** Perfil pretendido; AVALIADOR e PROFESSOR passam por aprovação de um administrador. */
+  perfil: 'PARTICIPANTE' | 'AVALIADOR' | 'PROFESSOR'
 }
 
-type FieldName = keyof RegisterPayload
+type FieldName = Exclude<keyof RegisterPayload, 'perfil'>
 
 const emit = defineEmits<{
   (e: 'submit', payload: RegisterPayload): void
@@ -38,6 +40,7 @@ const form = reactive<RegisterPayload>({
   password: '',
   passwordConfirm: '',
   acceptTerms: false,
+  perfil: 'PARTICIPANTE',
 })
 
 const errors = reactive<Record<FieldName, string>>({
@@ -107,6 +110,7 @@ function handleSubmit() {
     password: form.password,
     passwordConfirm: form.passwordConfirm,
     acceptTerms: form.acceptTerms,
+    perfil: form.perfil,
   })
 }
 
@@ -211,6 +215,34 @@ function inputClass(field: FieldName) {
             {{ errors.surname }}
           </span>
         </div>
+      </div>
+
+      <!-- Perfil pretendido -->
+      <div class="text-start">
+        <label
+          for="register-perfil"
+          class="mb-1 block pl-2 text-xs tracking-wide text-gray-600 sm:text-sm"
+        >
+          Quero me cadastrar como
+        </label>
+
+        <select
+          id="register-perfil"
+          v-model="form.perfil"
+          :disabled="isLoading"
+          class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 hover:border-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-base"
+        >
+          <option value="PARTICIPANTE">Participante</option>
+          <option value="AVALIADOR">Avaliador</option>
+          <option value="PROFESSOR">Professor</option>
+        </select>
+
+        <span
+          v-if="form.perfil !== 'PARTICIPANTE'"
+          class="mt-1 block pl-2 text-xs text-gray-500"
+        >
+          Você entra como participante e o perfil é liberado depois da aprovação de um administrador.
+        </span>
       </div>
 
       <!-- E-mail -->

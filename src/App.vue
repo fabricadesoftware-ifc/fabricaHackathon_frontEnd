@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
@@ -26,6 +26,14 @@ function handleMenuOption(option: 'perfil' | 'configuracoes' | 'sair') {
   }
 }
 
+// Busca do topo: leva o termo para a página Explorar.
+const busca = ref('')
+watch(() => route.query.q, q => { busca.value = typeof q === 'string' ? q : '' }, { immediate: true })
+function buscar(termo: string) {
+  const q = termo.trim()
+  void router.push({ path: '/explorar', query: q ? { q } : {} })
+}
+
 const isAuthPage = computed(() =>
   ['/login', '/registro'].includes(route.path)
 )
@@ -33,6 +41,13 @@ const isAuthPage = computed(() =>
 const authStore = useAuthStore()
 
 const isLoggedIn = computed(() => authStore.isAuthenticated)
+
+// Nome exibido no menu do topo (cai para o e-mail se não houver nome).
+const userName = computed(() => {
+  const u = authStore.user
+  if (!u) return ''
+  return `${u.first_name} ${u.last_name}`.trim() || u.email
+})
 
 
 
@@ -57,7 +72,12 @@ const activeItem = computed(() => {
     <div class="flex min-w-0 flex-1 flex-col">
       <AppHeader
   v-if="!isAuthPage"
+  v-model="busca"
   :is-logged="isLoggedIn"
+  placeholder="Buscar projetos..."
+  @search="buscar"
+  :user-avatar="authStore.user?.foto_perfil ?? undefined"
+  :user-name="userName"
   @menu-option-click="handleMenuOption"
 />
 

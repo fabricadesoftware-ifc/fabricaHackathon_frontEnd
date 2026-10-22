@@ -23,7 +23,7 @@
     <div class="flex flex-col gap-1.5">
       <label class="text-sm font-medium text-gray-500" for="profile-username">Username</label>
 
-      <Input.Root id="profile-username" v-model="username" :rules="requiredRule">
+      <Input.Root id="profile-username" v-model="username" :disabled="props.identityReadonly" :readonly="props.identityReadonly" :rules="requiredRule">
         <Input.Control
            class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
         />
@@ -36,6 +36,8 @@
       <Input.Root
         id="profile-email"
         v-model="email"
+        :disabled="props.identityReadonly"
+        :readonly="props.identityReadonly"
         :rules="emailRules"
         type="email"
       >
@@ -45,7 +47,7 @@
       </Input.Root>
     </div>
 
-    <div class="flex flex-col gap-1.5 md:col-span-2">
+    <div v-if="props.showBio" class="flex flex-col gap-1.5 md:col-span-2">
       <label class="text-sm font-medium text-gray-500" for="profile-bio">Bio</label>
 
       <Input.Root id="profile-bio" v-model="bio">
@@ -72,12 +74,19 @@
     sobrenome: string
     username: string
     email: string
-    bio: string
+    bio?: string
     bioMaxLength?: number
+    /** Mostra o campo de bio (o back ainda não guarda esse dado). */
+    showBio?: boolean
+    /** Username e e-mail somente leitura (o e-mail é o login). */
+    identityReadonly?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
+    bio: '',
     bioMaxLength: 150,
+    showBio: true,
+    identityReadonly: false,
   })
 
   const emit = defineEmits<{
