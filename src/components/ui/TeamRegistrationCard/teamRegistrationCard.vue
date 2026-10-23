@@ -30,14 +30,13 @@
     // O criador da equipe é sempre o participante 1.
     const numParticipantes = computed(() => props.participants.length + 1)
     const faltam = computed(() => Math.max(0, props.minParticipants - numParticipantes.value))
-    const canContinue = computed(
-      () => !!props.teamName.trim() && !!props.projectName.trim() && numParticipantes.value >= props.minParticipants,
-    )
+    // O mínimo só vale ao fechar as inscrições: dá para inscrever agora e convidar depois.
+    const canContinue = computed(() => !!props.teamName.trim() && !!props.projectName.trim())
 
     const progressText = computed(() => {
       const base = `${numParticipantes.value} de ${props.maxParticipants} vagas preenchidas`
       return faltam.value > 0
-        ? `${base} · adicione mais ${faltam.value} para atingir o mínimo de ${props.minParticipants}`
+        ? `${base} · a equipe precisa de ${props.minParticipants} participantes até o fim das inscrições (faltam ${faltam.value})`
         : `${base} · mínimo de ${props.minParticipants} atingido`
     })
 
@@ -100,8 +99,8 @@
       <div class="w-full max-w-2xl bg-white px-8 py-8 border border-gray-300 rounded-xl">
         <h2 class="text-2xl font-medium text-gray-900">Sua equipe  </h2>
         <p class="mt-1 mb-8 text-base text-gray-600">
-          Esta edição exige de {{ props.minParticipants }} a
-          {{ props.maxParticipants }} participantes por equipe, contando com você
+          Esta edição aceita de {{ props.minParticipants }} a
+          {{ props.maxParticipants }} participantes por equipe, contando com você. Você pode convidar os colegas agora ou depois.
         </p>
 
         <label class="block">
@@ -130,7 +129,7 @@
 
         <div>
           <p class="text-sm text-gray-700 mb-1">Participantes (e-mail)</p>
-          <p class="mb-2 text-xs text-gray-500">Seus colegas precisam ter criado a conta na plataforma antes. Use o e-mail do cadastro de cada um.</p>
+          <p class="mb-2 text-xs text-gray-500">Quem ainda não tem conta recebe um convite por e-mail para entrar na equipe. Depois da inscrição você também pode compartilhar um link.</p>
           <div class="flex items-stretch gap-4">
             <input
               v-model="emailInput"

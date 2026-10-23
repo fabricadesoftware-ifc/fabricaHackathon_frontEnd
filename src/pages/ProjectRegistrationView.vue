@@ -141,12 +141,6 @@ function onTeamContinue() {
     return
   }
 
-  if (totalParticipantes.value < TEAM_LIMITS.value.min) {
-    stepError.value =
-      `A equipe precisa de pelo menos ${TEAM_LIMITS.value.min} participantes (contando com você). Faltam ${TEAM_LIMITS.value.min - totalParticipantes.value}.`
-    return
-  }
-
   if (totalParticipantes.value > TEAM_LIMITS.value.max) {
     stepError.value =
       `O limite é de ${TEAM_LIMITS.value.max} participantes por equipe.`
@@ -174,10 +168,8 @@ async function submitRegistration(): Promise<void> {
     throw new Error('Informe o nome do projeto.')
   }
 
-  if (
-    totalParticipantes.value < TEAM_LIMITS.value.min ||
-    totalParticipantes.value > TEAM_LIMITS.value.max
-  ) {
+  // O mínimo só vale ao fechar as inscrições; aqui só o máximo barra.
+  if (totalParticipantes.value > TEAM_LIMITS.value.max) {
     throw new Error('Quantidade de participantes inválida.')
   }
 

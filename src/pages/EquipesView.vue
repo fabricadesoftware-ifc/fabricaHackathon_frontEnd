@@ -6,10 +6,14 @@
   import { ApiError } from '@/services/http'
   import {
     adicionarMembro,
+    cancelarConvite,
     excluirInscricao,
+    gerarLinkConvite,
     listarMinhasEquipes,
     type MinhaEquipe,
     removerMembro,
+    reenviarConvite,
+    revogarLinkConvite,
     sairDaEquipe,
   } from '@/services/inscricoes'
 
@@ -69,6 +73,20 @@
       emails.value[e.id] = ''
     })
   }
+
+  const copiado = ref<number | null>(null)
+  async function copiarLink (e: MinhaEquipe) {
+    if (!e.link_convite) return
+    try {
+      await navigator.clipboard.writeText(e.link_convite.url)
+      copiado.value = e.id
+      setTimeout(() => { if (copiado.value === e.id) copiado.value = null }, 2500)
+    } catch {
+      erros.value[e.id] = 'Não consegui copiar. Selecione o link e copie manualmente.'
+    }
+  }
+
+  const faltam = (e: MinhaEquipe) => Math.max(0, e.minimo_participantes - e.membros.length - e.convites.length)
 
   // Primeiro clique pede confirmação; o segundo executa.
   function pedir (chave: string) {
@@ -146,6 +164,40 @@
           </li>
         </ul>
 
+        <!-- Convites por e-mail pendentes: aparecem junto dos membros como "convite enviado" -->
+        <ul v-if="e.convites.length > 0" class="divide-y divide-[#E5E7EB] border-t border-[#E5E7EB]">
+          <li v-for="c in e.convites" :key="c.id" class="flex flex-wrap items-center justify-between gap-2 py-2" data-testid="convite-pendente">
+            <div>
+              <p class="text-sm font-medium text-[#111827]">{{ c.email }}</p>
+              <p class="text-xs" :class="c.email_enviado ? 'text-amber-600' : 'text-red-600'">
+                {{ c.email_enviado ? 'Convite enviado · aguardando entrar' : 'Não foi possível enviar o e-mail · use o link abaixo' }}
+              </p>
+            </div>
+            <span v-if="podeGerenciar(e)" class="flex items-center gap-3 text-sm">
+              <button class="text-blue-600 hover:underline" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => reenviarConvite(e.id, c.id))">Reenviar</button>
+              <button class="text-red-600 hover:underline" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => cancelarConvite(e.id, c.id))">Cancelar</button>
+            </span>
+          </li>
+        </ul>
+
+        <p v-if="faltam(e) > 0 && e.edicao_status === 'INSCRICAO'" class="mt-3 rounded-lg bg-amber-50 px-4 py-2 text-sm text-amber-800">
+          Equipe incompleta: faltam {{ faltam(e) }} participante(s) para o mínimo de {{ e.minimo_participantes }} até o fim das inscrições.
+        </p>
+
+        <!-- Link de convite reutilizável (só o criador) -->
+        <div v-if="podeGerenciar(e)" class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <p class="text-sm font-medium text-[#111827]">Link de convite</p>
+          <template v-if="e.link_convite">
+            <p class="mt-1 text-xs text-[#4B5563]">Qualquer pessoa com conta que abrir o link entra na equipe, até lotar as vagas.</p>
+            <div class="mt-2 flex flex-wrap items-center gap-2">
+              <input aria-label="Link de convite" class="min-w-[14rem] flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs" readonly :value="e.link_convite.url" @focus="($event.target as HTMLInputElement).select()">
+              <button class="rounded-lg bg-[#2563EB] px-3 py-2 text-sm font-medium text-white hover:bg-[#2054C6]" data-testid="copiar-link" type="button" @click="copiarLink(e)">{{ copiado === e.id ? 'Copiado!' : 'Copiar' }}</button>
+              <button class="text-sm text-red-600 hover:underline" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => revogarLinkConvite(e.id))">Desativar link</button>
+            </div>
+          </template>
+          <button v-else class="mt-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm hover:bg-gray-100" data-testid="gerar-link" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => gerarLinkConvite(e.id))">Gerar link de convite</button>
+        </div>
+
         <form
           v-if="podeGerenciar(e)"
           class="mt-4 flex flex-wrap items-center gap-2"
@@ -153,7 +205,7 @@
         >
           <input
             v-model="emails[e.id]"
-            aria-label="E-mail do novo integrante"
+            aria-label="E-mail do novo integrante (quem não tem conta recebe convite)"
             class="min-w-[16rem] flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500"
             placeholder="email@exemplo.com"
             type="email"
@@ -163,7 +215,7 @@
             class="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#2054C6] disabled:opacity-50"
             :disabled="ocupada !== null"
             type="submit"
-          >Adicionar integrante</button>
+          >Convidar por e-mail</button>
         </form>
 
         <p v-if="erros[e.id]" class="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600" role="alert">
