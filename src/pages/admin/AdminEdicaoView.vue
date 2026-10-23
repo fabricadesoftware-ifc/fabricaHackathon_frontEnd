@@ -221,7 +221,7 @@
             <li v-for="e in equipes.data.value" :key="e.id" :class="card">
               <div class="flex flex-wrap items-start justify-between gap-2">
                 <div class="min-w-0">
-                  <p class="font-semibold">{{ e.nome_equipe }}</p>
+                  <p class="font-semibold">{{ e.nome_equipe }} <span v-if="e.abaixo_do_minimo" class="ml-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-normal text-amber-800">abaixo do mínimo</span></p>
                   <p class="text-sm text-gray-600">Projeto: {{ e.projeto.nome_projeto }}<template v-if="e.tema"> · Tema: {{ e.tema }}</template></p>
                 </div>
 
@@ -234,7 +234,6 @@
               <ul class="mt-2 flex flex-wrap gap-2 text-xs">
                 <li v-for="m in e.membros" :key="m.id" class="rounded-full bg-gray-100 px-2 py-1" :title="m.email">{{ m.nome }}</li>
               </ul>
-
               <a
                 v-if="e.projeto.link_deploy_projeto"
                 class="mt-2 inline-block text-sm text-blue-600 hover:underline"

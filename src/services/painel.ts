@@ -52,6 +52,7 @@ export interface PainelEdicaoResumo extends PainelEdicaoLista {
 export interface PainelEquipe {
   id: number
   nome_equipe: string
+  abaixo_do_minimo?: boolean
   tema: string | null
   criador: string | null
   membros: { id: number, nome: string, email: string }[]

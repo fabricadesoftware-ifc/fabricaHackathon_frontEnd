@@ -5,19 +5,19 @@
   import { useAsync } from '@/composables/useAsync'
   import { ApiError } from '@/services/http'
   import {
-    adicionarMembro,
     excluirInscricao,
+    gerarLinkConvite,
     listarMinhasEquipes,
     type MinhaEquipe,
     removerMembro,
+    revogarLinkConvite,
     sairDaEquipe,
   } from '@/services/inscricoes'
 
   const { data, loading, error, run } = useAsync(() => listarMinhasEquipes())
   const equipes = computed(() => data.value ?? [])
 
-  // Estado por equipe (e-mail digitado, erro, ocupado) e ação aguardando confirmação.
-  const emails = ref<Record<number, string>>({})
+  // Estado por equipe (erro, ocupado) e ação aguardando confirmação.
   const erros = ref<Record<number, string>>({})
   const ocupada = ref<number | null>(null)
   const confirmando = ref<string | null>(null)
@@ -59,16 +59,19 @@
     }
   }
 
-  function adicionar (e: MinhaEquipe) {
-    const email = (emails.value[e.id] ?? '').trim()
-    if (!email) {
-      erros.value[e.id] = 'Informe o e-mail do integrante.'
-      return
+  const copiado = ref<number | null>(null)
+  async function copiarLink (e: MinhaEquipe) {
+    if (!e.link_convite) return
+    try {
+      await navigator.clipboard.writeText(e.link_convite.url)
+      copiado.value = e.id
+      setTimeout(() => { if (copiado.value === e.id) copiado.value = null }, 2500)
+    } catch {
+      erros.value[e.id] = 'Não consegui copiar. Selecione o link e copie manualmente.'
     }
-    executar(e.id, () => adicionarMembro(e.id, email), () => {
-      emails.value[e.id] = ''
-    })
   }
+
+  const faltam = (e: MinhaEquipe) => Math.max(0, e.minimo_participantes - e.membros.length)
 
   // Primeiro clique pede confirmação; o segundo executa.
   function pedir (chave: string) {
@@ -146,25 +149,23 @@
           </li>
         </ul>
 
-        <form
-          v-if="podeGerenciar(e)"
-          class="mt-4 flex flex-wrap items-center gap-2"
-          @submit.prevent="adicionar(e)"
-        >
-          <input
-            v-model="emails[e.id]"
-            aria-label="E-mail do novo integrante"
-            class="min-w-[16rem] flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500"
-            placeholder="email@exemplo.com"
-            type="email"
-          >
+        <p v-if="faltam(e) > 0 && e.edicao_status === 'INSCRICAO'" class="mt-3 rounded-lg bg-amber-50 px-4 py-2 text-sm text-amber-800">
+          Equipe incompleta: faltam {{ faltam(e) }} participante(s) para o mínimo de {{ e.minimo_participantes }} até o fim das inscrições.
+        </p>
 
-          <button
-            class="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#2054C6] disabled:opacity-50"
-            :disabled="ocupada !== null"
-            type="submit"
-          >Adicionar integrante</button>
-        </form>
+        <!-- Link de convite reutilizável (só o criador) -->
+        <div v-if="podeGerenciar(e)" class="mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3">
+          <p class="text-sm font-medium text-[#111827]">Link de convite</p>
+          <template v-if="e.link_convite">
+            <p class="mt-1 text-xs text-[#4B5563]">Mande este link para quem vai participar: qualquer pessoa com conta que abrir entra na equipe, até lotar as vagas ({{ e.membros.length }}/{{ e.maximo_participantes }}).</p>
+            <div class="mt-2 flex flex-wrap items-center gap-2">
+              <input aria-label="Link de convite" class="min-w-[14rem] flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs" readonly :value="e.link_convite.url" @focus="($event.target as HTMLInputElement).select()">
+              <button class="rounded-lg bg-[#2563EB] px-3 py-2 text-sm font-medium text-white hover:bg-[#2054C6]" data-testid="copiar-link" type="button" @click="copiarLink(e)">{{ copiado === e.id ? 'Copiado!' : 'Copiar' }}</button>
+              <button class="text-sm text-red-600 hover:underline" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => revogarLinkConvite(e.id))">Desativar link</button>
+            </div>
+          </template>
+          <button v-else class="mt-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm hover:bg-gray-100" data-testid="gerar-link" :disabled="ocupada !== null" type="button" @click="executar(e.id, () => gerarLinkConvite(e.id))">Gerar link de convite</button>
+        </div>
 
         <p v-if="erros[e.id]" class="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600" role="alert">
           {{ erros[e.id] }}

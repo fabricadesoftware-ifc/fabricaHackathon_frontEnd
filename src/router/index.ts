@@ -17,6 +17,7 @@ import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
 import AdminEdicaoView from '@/pages/admin/AdminEdicaoView.vue'
 import AdminEdicoesView from '@/pages/admin/AdminEdicoesView.vue'
+import ConviteView from '@/pages/ConviteView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
 import TermosView from '@/pages/TermosView.vue'
 import NotFoundView from '@/pages/NotFoundView.vue'
@@ -138,6 +139,11 @@ const router = createRouter({
   component: RegisterView,
 },
     {
+      path: '/convite/:token',
+      name: 'convite',
+      component: ConviteView,
+    },
+    {
       path: '/termos',
       name: 'termos',
       component: TermosView,
@@ -204,6 +210,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/login/, 'Entrar'],
   [/^\/registro/, 'Criar conta'],
   [/^\/termos/, 'Termos de Uso'],
+  [/^\/convite/, 'Convite para equipe'],
 ]
 
 router.afterEach((to) => {

@@ -30,14 +30,13 @@
     // O criador da equipe é sempre o participante 1.
     const numParticipantes = computed(() => props.participants.length + 1)
     const faltam = computed(() => Math.max(0, props.minParticipants - numParticipantes.value))
-    const canContinue = computed(
-      () => !!props.teamName.trim() && !!props.projectName.trim() && numParticipantes.value >= props.minParticipants,
-    )
+    // O mínimo só vale ao fechar as inscrições: dá para inscrever agora e convidar depois.
+    const canContinue = computed(() => !!props.teamName.trim() && !!props.projectName.trim())
 
     const progressText = computed(() => {
       const base = `${numParticipantes.value} de ${props.maxParticipants} vagas preenchidas`
       return faltam.value > 0
-        ? `${base} · adicione mais ${faltam.value} para atingir o mínimo de ${props.minParticipants}`
+        ? `${base} · a equipe precisa de ${props.minParticipants} participantes até o fim das inscrições (faltam ${faltam.value})`
         : `${base} · mínimo de ${props.minParticipants} atingido`
     })
 
@@ -100,8 +99,8 @@
       <div class="w-full max-w-2xl bg-white px-8 py-8 border border-gray-300 rounded-xl">
         <h2 class="text-2xl font-medium text-gray-900">Sua equipe  </h2>
         <p class="mt-1 mb-8 text-base text-gray-600">
-          Esta edição exige de {{ props.minParticipants }} a
-          {{ props.maxParticipants }} participantes por equipe, contando com você
+          Esta edição aceita de {{ props.minParticipants }} a
+          {{ props.maxParticipants }} participantes por equipe, contando com você. Você pode convidar os colegas agora ou depois.
         </p>
 
         <label class="block">
@@ -128,39 +127,11 @@
           <span class="mt-1 mb-6 block text-xs text-gray-500">Você pode mudar o nome depois. Descrição, tema e logo também ficam para depois.</span>
         </label>
 
-        <div>
-          <p class="text-sm text-gray-700 mb-1">Participantes (e-mail)</p>
-          <p class="mb-2 text-xs text-gray-500">Seus colegas precisam ter criado a conta na plataforma antes. Use o e-mail do cadastro de cada um.</p>
-          <div class="flex items-stretch gap-4">
-            <input
-              v-model="emailInput"
-              placeholder="Ex: João@gmail.com"
-              type="email"
-              @keyup.enter="addParticipante"
-              class="flex-1 min-w-0 bg-gray-50 text-gray-900 placeholder:text-gray-400 rounded-lg border border-gray-100 px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            >
-            <AppButton label="+ Adicionar" variant="primary" @click="addParticipante" />
-          </div>
+        <div class="rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-gray-700" data-testid="aviso-convite">
+          <p class="font-medium text-gray-900">Você é o participante 1 ({{ props.ownerLabel || 'você' }}).</p>
+          <p class="mt-1">Depois de inscrever a equipe, você recebe um <strong>link de convite</strong> para mandar aos colegas — quem abrir o link e tiver conta entra na equipe.</p>
         </div>
 
-        <p v-if="errorMessage" class="mt-2 text-red-500 text-xs">{{ errorMessage }}</p>
-
-        <div class="flex flex-row flex-wrap gap-3 mt-4">
-  <span
-    class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm text-gray-900"
-    data-testid="participante-1"
-  >
-    {{ props.ownerLabel || 'Você' }}
-    <span class="text-xs text-blue-600">participante 1 · você</span>
-  </span>
-  <InviteChip
-    v-for="participant in props.participants"
-    :key="participant"
-    :email="participant"
-    status="Convidado"
-    @remove="removeParticipante(participant)"
-  />  
-</div>  
         <p class="mt-4 text-xs text-gray-600">{{ progressText }}</p>
 
         <div class="flex justify-between items-center mt-8">
