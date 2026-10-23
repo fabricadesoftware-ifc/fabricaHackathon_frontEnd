@@ -217,9 +217,9 @@ async function onConfirm() {
   }
 }
 
-// Redireciona para Meus projetos
+// Leva para Minhas equipes, onde o criador gera o link de convite
 function onFinish() {
-  router.push('/projetos')
+  router.push('/equipes')
 }
 
 defineExpose({
@@ -301,8 +301,8 @@ defineExpose({
         class="flex min-h-[60vh] items-center justify-center"
       >
         <SuccessState
-          button-label="Ver meus projetos"
-          :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você completa descrição, tema e logo, e a pré-avaliação (com o link do sistema) fica por lá também.`"
+          button-label="Convidar minha equipe"
+          :description="`Sua equipe foi inscrita em ${edition}. Agora gere o link de convite em Minhas equipes e mande para os colegas. Descrição, tema, logo e pré-avaliação ficam em Meus projetos.`"
           title="Inscrição confirmada!"
           @click="onFinish"
         />

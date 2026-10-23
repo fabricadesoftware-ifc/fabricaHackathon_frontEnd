@@ -51,7 +51,7 @@
           <p v-if="!data.valido" class="mt-5 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800" role="alert">{{ data.motivo }}</p>
 
           <template v-else-if="!auth.isAuthenticated">
-            <p class="mt-5 text-sm text-gray-700">Entre ou crie uma conta{{ data.email_convidado ? ` (use o e-mail ${data.email_convidado})` : '' }} para aceitar o convite.</p>
+            <p class="mt-5 text-sm text-gray-700">Entre ou crie uma conta para aceitar o convite.</p>
 
             <div class="mt-4 flex flex-wrap gap-3">
               <router-link class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700" :to="{ path: '/login', query: destino }">Entrar</router-link>

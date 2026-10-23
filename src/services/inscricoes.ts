@@ -59,19 +59,10 @@ export interface MinhaEquipe {
   sou_criador: boolean
   membros: MembroEquipe[]
   projeto: MeuProjeto | null
-  /** Convites por e-mail ainda pendentes ("convite enviado"). */
-  convites: ConviteEquipe[]
   /** Link reutilizável da equipe; só o criador o recebe. */
   link_convite: { id: number, token: string, url: string } | null
   minimo_participantes: number
   maximo_participantes: number
-}
-
-export interface ConviteEquipe {
-  id: number
-  email: string
-  status: 'PENDENTE' | 'ACEITO' | 'CANCELADO'
-  email_enviado: boolean
 }
 
 export interface ConviteInfo {
@@ -80,7 +71,6 @@ export interface ConviteInfo {
   equipe: string
   edicao: string
   criador: string | null
-  email_convidado: string | null
 }
 
 // Resposta da inscrição criada
@@ -165,16 +155,6 @@ export function gerarLinkConvite (equipeId: number) {
 // Revoga o link de convite da equipe
 export function revogarLinkConvite (equipeId: number) {
   return http.delete<MinhaEquipe>(`/inscricoes/${equipeId}/link-convite/`)
-}
-
-// Cancela um convite por e-mail
-export function cancelarConvite (equipeId: number, conviteId: number) {
-  return http.delete<MinhaEquipe>(`/inscricoes/${equipeId}/convites/${conviteId}/`)
-}
-
-// Reenvia o e-mail de um convite
-export function reenviarConvite (equipeId: number, conviteId: number) {
-  return http.post<MinhaEquipe>(`/inscricoes/${equipeId}/convites/${conviteId}/reenviar/`, {})
 }
 
 // Dados públicos de um convite (tela aberta pelo link)

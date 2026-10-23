@@ -234,8 +234,6 @@
               <ul class="mt-2 flex flex-wrap gap-2 text-xs">
                 <li v-for="m in e.membros" :key="m.id" class="rounded-full bg-gray-100 px-2 py-1" :title="m.email">{{ m.nome }}</li>
               </ul>
-
-              <p v-if="e.convites_pendentes?.length" class="mt-1 text-xs text-gray-500">Convites pendentes: {{ e.convites_pendentes.join(', ') }}</p>
               <a
                 v-if="e.projeto.link_deploy_projeto"
                 class="mt-2 inline-block text-sm text-blue-600 hover:underline"
