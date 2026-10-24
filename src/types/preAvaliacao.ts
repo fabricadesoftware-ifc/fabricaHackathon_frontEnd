@@ -13,26 +13,10 @@ export interface Responsabilidade {
   area: string
 }
 
-export interface ItemPontuacao {
-  id: string
-  descricao: string
-  maximo: string
-  pontos: string
-  motivo: string
-}
-
-export interface SecaoPontuacao {
-  id: number
-  titulo: string
-  maximo: string
-  pontos: string
-  itens: ItemPontuacao[]
-}
-
 /** `detalhe_pontuacao`: vem vazio ({}) até a primeira gravação. */
 export interface DetalhePontuacao {
-  secoes?: SecaoPontuacao[]
   total?: string
+  respondeu?: boolean
 }
 
 /** Resposta de GET/PATCH /me/projetos/{id}/pre-avaliacao/. */
@@ -49,7 +33,6 @@ export interface PreAvaliacao {
     organizacao_metodo: OpcaoPreAvaliacao[]
     hospedagem_plataforma: OpcaoPreAvaliacao[]
     banco_plataforma: OpcaoPreAvaliacao[]
-    minimo_caracteres_textos: number
   }
   responsabilidades: Responsabilidade[]
   organizacao_metodo: string

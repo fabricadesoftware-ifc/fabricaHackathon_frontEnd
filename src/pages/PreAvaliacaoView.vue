@@ -52,7 +52,6 @@
 
   // Só participantes editam; avaliador/professor/admin apenas visualizam. Formulário fechado também é leitura.
   const somenteLeitura = computed(() => !data.value?.aberta || auth.userRole !== 'PARTICIPANTE')
-  const minimo = computed(() => data.value?.opcoes.minimo_caracteres_textos ?? 30)
 
   const TEXTOS_PROBLEMA: { campo: CampoTexto, rotulo: string }[] = [
     { campo: 'problema_entendido', rotulo: 'Qual problema vocês entenderam que precisavam resolver?' },
@@ -118,7 +117,7 @@
 
     try {
       data.value = await salvarPreAvaliacao(projetoId.value, payload)
-      sucesso.value = 'Respostas salvas. A pontuação foi atualizada.'
+      sucesso.value = 'Respostas salvas. Sua pré-avaliação está registrada.'
     } catch (error_) {
       if (error_ instanceof ApiError) {
         erros.value = error_.fields
@@ -140,7 +139,7 @@
 <template>
   <div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
     <PageHeader
-      subtitle="Responda antes da avaliação. Vale 10% da nota final e é pontuado automaticamente."
+      subtitle="Responda antes da avaliação. Vale 10% da nota final: 10 pontos se a equipe responder, 0 se não responder."
       title="Pré-avaliação"
     />
 
@@ -207,7 +206,7 @@
           <!-- 2. Entendimento do problema -->
           <section :class="CARTAO">
             <h2 class="mb-1 text-lg font-semibold text-gray-900">2. Entendimento do problema</h2>
-            <p class="mb-4 text-sm text-gray-500">Mínimo de {{ minimo }} caracteres por resposta para pontuar.</p>
+            <p class="mb-4 text-sm text-gray-500">Conte com suas palavras; não há mínimo de caracteres.</p>
 
             <div class="flex flex-col gap-4">
               <div v-for="p in TEXTOS_PROBLEMA" :key="p.campo" class="flex flex-col gap-1">
@@ -222,9 +221,6 @@
                 />
 
                 <div class="flex justify-between text-xs">
-                  <span :class="texto[p.campo].trim().length >= minimo ? 'text-green-700' : 'text-amber-700'">
-                    {{ texto[p.campo].trim().length }}/{{ minimo }}
-                  </span>
 
                   <span v-for="m in errosDe(p.campo)" :key="m" class="text-red-600">{{ m }}</span>
                 </div>
@@ -331,10 +327,6 @@
                 <textarea v-model="texto.hospedagem_justificativa" :class="INPUT" :disabled="somenteLeitura" rows="3" />
               </label>
 
-              <p class="text-xs" :class="texto.hospedagem_justificativa.trim().length >= minimo ? 'text-green-700' : 'text-amber-700'">
-                {{ texto.hospedagem_justificativa.trim().length }}/{{ minimo }}
-              </p>
-
               <p v-for="m in errosDe('hospedagem_justificativa')" :key="m" class="text-sm text-red-600">{{ m }}</p>
             </div>
           </section>
@@ -362,10 +354,6 @@
                 Por que essa escolha?
                 <textarea v-model="texto.banco_justificativa" :class="INPUT" :disabled="somenteLeitura" rows="3" />
               </label>
-
-              <p class="text-xs" :class="texto.banco_justificativa.trim().length >= minimo ? 'text-green-700' : 'text-amber-700'">
-                {{ texto.banco_justificativa.trim().length }}/{{ minimo }}
-              </p>
 
               <p v-for="m in errosDe('banco_justificativa')" :key="m" class="text-sm text-red-600">{{ m }}</p>
             </div>
@@ -396,24 +384,9 @@
         <!-- Painel de pontuação -->
         <aside aria-label="Pontuação" class="h-fit rounded-xl border border-gray-200 bg-white p-5 lg:sticky lg:top-4">
           <h2 class="text-lg font-semibold text-gray-900">Pontuação</h2>
-          <p class="mt-1 text-3xl font-bold text-blue-600">{{ Number(data.nota).toFixed(2) }}<span class="text-base font-medium text-gray-500"> / 10</span></p>
-          <p v-if="!data.preenchida" class="mt-2 text-sm text-gray-500">Salve suas respostas para ver o detalhe da pontuação.</p>
-
-          <ul v-if="data.detalhe_pontuacao.secoes" class="mt-4 flex flex-col gap-4">
-            <li v-for="secao in data.detalhe_pontuacao.secoes" :key="secao.id">
-              <p class="flex justify-between text-sm font-semibold text-gray-800">
-                <span>{{ secao.titulo }}</span>
-                <span>{{ secao.pontos }}/{{ secao.maximo }}</span>
-              </p>
-
-              <ul class="mt-1 flex flex-col gap-1">
-                <li v-for="item in secao.itens" :key="item.id" class="text-xs text-gray-600">
-                  {{ item.descricao }}: <strong>{{ item.pontos }}/{{ item.maximo }}</strong>
-                  <span :class="item.motivo === 'ok' ? 'text-green-700' : 'text-amber-700'"> · {{ item.motivo }}</span>
-                </li>
-              </ul>
-            </li>
-          </ul>
+          <p class="mt-1 text-3xl font-bold text-blue-600" data-testid="nota-pre">{{ Number(data.nota).toFixed(0) }}<span class="text-base font-medium text-gray-500"> / 10</span></p>
+          <p v-if="Number(data.nota) > 0" class="mt-2 text-sm text-green-700">Pré-avaliação respondida: vale os 10 pontos.</p>
+          <p v-else class="mt-2 text-sm text-gray-500">Responda e salve ao menos uma parte do formulário para receber os 10 pontos. Sem resposta, a nota é 0.</p>
         </aside>
       </div>
     </AsyncView>
