@@ -51,7 +51,7 @@
   }, { immediate: true })
 
   // Só participantes editam; avaliador/professor/admin apenas visualizam. Formulário fechado também é leitura.
-  const somenteLeitura = computed(() => !data.value?.aberta || auth.userRole !== 'PARTICIPANTE')
+  const somenteLeitura = computed(() => !data.value?.aberta || auth.userRole !== 'PARTICIPANTE' || !data.value?.pode_editar)
 
   const TEXTOS_PROBLEMA: { campo: CampoTexto, rotulo: string }[] = [
     { campo: 'problema_entendido', rotulo: 'Qual problema vocês entenderam que precisavam resolver?' },
@@ -156,6 +156,7 @@
             <span v-if="data.prazo">Prazo: {{ formatarDataHora(data.prazo) }}</span>
             <span v-if="!data.aberta && data.motivo_fechada">{{ data.motivo_fechada }}</span>
             <span v-else-if="auth.userRole !== 'PARTICIPANTE'">Visualização somente leitura.</span>
+            <span v-else-if="!data.pode_editar" data-testid="aviso-so-criador">Só o criador da equipe responde a pré-avaliação. Você pode acompanhar as respostas aqui.</span>
           </div>
 
           <!-- 1. Equipe e organização -->

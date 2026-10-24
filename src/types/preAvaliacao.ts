@@ -26,6 +26,8 @@ export interface PreAvaliacao {
   aberta: boolean
   motivo_fechada: string
   liberada: boolean
+  /** Só o criador da equipe responde; os demais integrantes apenas visualizam. */
+  pode_editar: boolean
   prazo: string | null
   preenchida: boolean
   integrantes: Integrante[]
