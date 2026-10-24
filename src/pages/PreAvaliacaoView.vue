@@ -132,7 +132,7 @@
 
   const errosDe = (campo: string) => erros.value[campo] ?? []
 
-  const INPUT = 'w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 disabled:bg-gray-100 disabled:text-gray-500'
+  const INPUT = 'w-full rounded-lg border-2 border-solid border-gray-400 bg-white px-3 py-2 text-gray-900 outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-200 disabled:border-gray-300 disabled:bg-gray-100 disabled:text-gray-500'
   const CARTAO = 'rounded-xl border border-gray-200 bg-white p-5'
 </script>
 
