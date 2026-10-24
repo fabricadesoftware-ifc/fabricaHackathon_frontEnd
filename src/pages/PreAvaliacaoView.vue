@@ -10,6 +10,7 @@
   import { useAuthStore } from '@/stores/auth'
   import { CAMPOS_TEXTO } from '@/types'
   import { formatarDataHora, pareceLocal } from '@/utils/format'
+  import { prepararImagem } from '@/utils/imagem'
 
   const route = useRoute()
   const router = useRouter()
@@ -65,8 +66,17 @@
   )
   const bancoLocal = computed(() => texto.banco_plataforma === 'LOCAL')
 
-  function escolherArquivo (campo: CampoArquivo, evento: Event) {
-    const arquivo = (evento.target as HTMLInputElement).files?.[0]
+  const LIMITE_ENVIO = 1024 * 1024
+  const avisoArquivo = reactive<Partial<Record<CampoArquivo, string>>>({})
+
+  // Imagens grandes são reduzidas antes do envio: o proxy do servidor corta uploads acima de ~1 MB.
+  async function escolherArquivo (campo: CampoArquivo, evento: Event) {
+    const original = (evento.target as HTMLInputElement).files?.[0]
+    avisoArquivo[campo] = undefined
+    const arquivo = original ? await prepararImagem(original) : undefined
+    if (arquivo && arquivo.size > LIMITE_ENVIO) {
+      avisoArquivo[campo] = 'Este arquivo passa de 1 MB e pode falhar no envio. Reduza o arquivo (ou envie como imagem) ou informe um link.'
+    }
     arquivos[campo] = arquivo
   }
 
@@ -254,6 +264,7 @@
                   @change="escolherArquivo('arquivo_rfs_rnfs', $event)"
                 >
 
+                <p v-if="avisoArquivo.arquivo_rfs_rnfs" class="text-amber-700" data-testid="aviso-arquivo_rfs_rnfs">{{ avisoArquivo.arquivo_rfs_rnfs }}</p>
                 <p v-for="m in errosDe('arquivo_rfs_rnfs')" :key="m" class="text-red-600">{{ m }}</p>
               </div>
 
@@ -276,6 +287,7 @@
                   @change="escolherArquivo('arquitetura_arquivo', $event)"
                 >
 
+                <p v-if="avisoArquivo.arquitetura_arquivo" class="text-amber-700" data-testid="aviso-arquitetura_arquivo">{{ avisoArquivo.arquitetura_arquivo }}</p>
                 <p v-for="m in errosDe('arquitetura_arquivo')" :key="m" class="text-red-600">{{ m }}</p>
 
                 <input
