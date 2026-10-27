@@ -1,27 +1,36 @@
-<template>
-    <span :class="badgeClasses">
-        {{ label }}
-    </span>
-</template>
-
 <script setup lang="ts">
-  import { computed } from 'vue'
-  type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
-  const props = defineProps<{
-    status: Status
-    label: string
-  }>()
+import { computed } from 'vue'
 
-  const badgeClasses = computed(() => {
-    const base = 'px-3 py-1 rounded-full text-sm font-medium text-white'
+type Status = 'inscricoes' | 'avaliacao' | 'andamento' | 'finalizado'
 
-    const variants: Record<Status, string> = {
-      inscricoes: 'bg-[#1DA422]',
-      avaliacao: 'bg-[#6238CF]',
-      andamento: 'bg-[#1C74FB]',
-      finalizado: 'bg-[#161B22]',
-    }
+const props = defineProps<{
+  status: Status
+  label: string
+}>()
 
-    return `${base} ${variants[props.status]}`
-  })
+const badgeClasses = computed(() => {
+  const base =
+    'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shadow-sm'
+
+  const variants: Record<Status, string> = {
+    inscricoes: 'bg-[#1DA422]',
+    avaliacao: 'bg-[#6238CF]',
+    andamento: 'bg-[#1C74FB]',
+    finalizado: 'bg-[#161B22]',
+  }
+
+  return `${base} ${variants[props.status]}`
+})
 </script>
+
+<template>
+  <span :class="badgeClasses">
+    <!-- Indicador de status -->
+    <span
+      class="h-1.5 w-1.5 shrink-0 rounded-full bg-white"
+      aria-hidden="true"
+    />
+
+    {{ label }}
+  </span>
+</template>

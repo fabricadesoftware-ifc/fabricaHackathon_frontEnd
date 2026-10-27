@@ -1,113 +1,381 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue'
-  import { RouterLink } from 'vue-router'
-  import CardGridSkeleton from '@/components/ui/LoadingSkeleton/CardGridSkeleton.vue'
-  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
-  import Section from '@/components/layout/Section/Section.vue'
-  import { AsyncView } from '@/components/ui/AsyncView'
-  import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
-  import HeroSection from '@/components/ui/HeroSection/heroSection.vue'
-  import { useAsync } from '@/composables/useAsync'
-  import eventCard from '@/components/ui/eventCard.vue'
-  import { listarTodasEdicoes, listarTodosProjetos } from '@/services'
-  import { edicaoParaCard, projetoParaCard } from '@/types'
+import { computed, ref } from 'vue'
 
-  const PROJETOS_POR_SECAO = 4
+// Componentes
+import HeroSection from '@/components/ui/HeroSection/heroSection.vue'
+import EventCard from '@/components/ui/eventCard.vue'
+import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
 
-  const selectedFilter = ref('all')
-  const search = ref('')
+import HomeSectionHeader from '@/components/layout/HomeSectionHeader/HomeSectionHeader.vue'
+import HomeParticipantSection from '@/components/layout/HomeParticipantSection/HomeParticipantSection.vue'
+import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
 
-  const { data, loading, error, run } = useAsync(async () => {
-    const [edicoes, projetos] = await Promise.all([listarTodasEdicoes(), listarTodosProjetos()])
-    return { edicoes, projetos }
-  })
+import { AsyncView } from '@/components/ui/AsyncView'
 
-  // Prioridade da Home: edições com inscrições abertas.
-  const termoBusca = computed(() => search.value.trim().toLowerCase())
+// Composables
+import { useAsync } from '@/composables/useAsync'
 
-  // A busca do topo da Home filtra as edições abertas e os projetos ao mesmo tempo.
-  const abertas = computed(() =>
-    (data.value?.edicoes ?? [])
-      .filter(e => e.status === 'INSCRICAO')
-      .filter(e => !termoBusca.value || `${e.nome} ${e.local} ${e.tipo_edicao} ${e.ano}`.toLowerCase().includes(termoBusca.value))
-      .map(e => edicaoParaCard(e)),
-  )
+// Serviços
+import {
+  listarTodasEdicoes,
+  listarTodosProjetos,
+} from '@/services'
 
-  // Uma seção por tipo de edição (ex.: "2º Ano"), alimentada pelos projetos reais.
-  const tipos = computed(() => [...new Set((data.value?.edicoes ?? []).map(e => e.tipo_edicao).filter(Boolean))])
+// Tipos e mapeadores
+import {
+  edicaoParaCard,
+  projetoParaCard,
+} from '@/types'
 
-  const filters = computed(() => [
-    { label: 'Todos', value: 'all' },
-    ...tipos.value.map(t => ({ label: t, value: t })),
+import type { EdicaoStatusApi } from '@/types'
+
+// Quantidade de itens nas seções de destaque
+const EDICOES_EM_DESTAQUE = 3
+const PROJETOS_EM_DESTAQUE = 3
+
+// Filtros
+const selectedFilter = ref('all')
+const search = ref('')
+
+// Busca os dados públicos da Home
+const {
+  data,
+  loading,
+  error,
+  run,
+} = useAsync(async () => {
+  const [edicoes, projetos] = await Promise.all([
+    listarTodasEdicoes(),
+    listarTodosProjetos(),
   ])
 
-  const secoes = computed(() => {
-    const edicoes = new Map((data.value?.edicoes ?? []).map(e => [e.id, e]))
-    const termo = termoBusca.value
+  return {
+    edicoes,
+    projetos,
+  }
+})
 
-    return tipos.value
-      .filter(tipo => selectedFilter.value === 'all' || selectedFilter.value === tipo)
-      .map(tipo => {
-        const itens = (data.value?.projetos ?? [])
-          .filter(p => edicoes.get(p.edicao)?.tipo_edicao === tipo)
-          .filter(p => !termo || `${p.nome_projeto} ${p.nome_equipe}`.toLowerCase().includes(termo))
-          .map(p => projetoParaCard(p, edicoes.get(p.edicao)))
-        return { tipo, itens: itens.slice(0, PROJETOS_POR_SECAO) }
-      })
-      .filter(secao => secao.itens.length > 0)
-  })
+// Busca do HeroSection
+const termoBusca = computed(() =>
+  search.value.trim().toLowerCase(),
+)
+
+// Índice das edições para associar aos projetos
+const edicaoPorId = computed(() =>
+  new Map(
+    (data.value?.edicoes ?? []).map(edicao => [
+      edicao.id,
+      edicao,
+    ]),
+  ),
+)
+
+// Prioridade para exibição das edições
+const prioridadeStatus: Record<EdicaoStatusApi, number> = {
+  INSCRICAO: 0,
+  EM_ANDAMENTO: 1,
+  AVALIACAO: 2,
+  FINALIZADO: 3,
+}
+
+// Verifica se a edição corresponde à busca
+function correspondeBuscaEdicao(edicao: {
+  nome: string
+  local: string
+  tipo_edicao: string
+  ano: number
+}) {
+  const termo = termoBusca.value
+
+  if (!termo) return true
+
+  return [
+    edicao.nome,
+    edicao.local,
+    edicao.tipo_edicao,
+    edicao.ano,
+  ]
+    .join(' ')
+    .toLowerCase()
+    .includes(termo)
+}
+
+// ==============================
+// INSCRIÇÕES ABERTAS
+// ==============================
+
+// Recupera somente edições com inscrições abertas
+const edicoesAbertas = computed(() =>
+  (data.value?.edicoes ?? [])
+    .filter(edicao => edicao.status === 'INSCRICAO')
+    .filter(correspondeBuscaEdicao)
+    .sort((a, b) =>
+      a.data_inicio.localeCompare(b.data_inicio),
+    )
+    .map(edicao => edicaoParaCard(edicao)),
+)
+
+// ==============================
+// EDIÇÕES EM DESTAQUE
+// ==============================
+
+// Outras edições, sem repetir as inscrições abertas
+const edicoesDestaque = computed(() =>
+  [...(data.value?.edicoes ?? [])]
+    .filter(edicao => edicao.status !== 'INSCRICAO')
+    .filter(correspondeBuscaEdicao)
+    .sort((a, b) => {
+      const prioridade =
+        prioridadeStatus[a.status] -
+        prioridadeStatus[b.status]
+
+      if (prioridade !== 0) {
+        return prioridade
+      }
+
+      return b.data_inicio.localeCompare(a.data_inicio)
+    })
+    .slice(0, EDICOES_EM_DESTAQUE)
+    .map(edicao => edicaoParaCard(edicao)),
+)
+
+// ==============================
+// FILTROS DOS PROJETOS
+// ==============================
+
+// Tipos de edição disponíveis
+const tipos = computed(() =>
+  [
+    ...new Set(
+      (data.value?.edicoes ?? [])
+        .map(edicao => edicao.tipo_edicao)
+        .filter(Boolean),
+    ),
+  ],
+)
+
+// Opções apresentadas nos chips
+const filters = computed(() => [
+  {
+    label: 'Todos',
+    value: 'all',
+  },
+  ...tipos.value.map(tipo => ({
+    label: tipo,
+    value: tipo,
+  })),
+])
+
+// ==============================
+// PROJETOS DA COMUNIDADE
+// ==============================
+
+const projetosComunidade = computed(() => {
+  const termo = termoBusca.value
+
+  return (data.value?.projetos ?? [])
+    .filter(projeto => {
+      const edicao = edicaoPorId.value.get(projeto.edicao)
+
+      // Filtro por tipo de edição
+      const correspondeTipo =
+        selectedFilter.value === 'all' ||
+        edicao?.tipo_edicao === selectedFilter.value
+
+      // Busca por projeto, equipe ou edição
+      const correspondeBusca =
+        !termo ||
+        [
+          projeto.nome_projeto,
+          projeto.descricao_projeto,
+          projeto.nome_equipe,
+          edicao?.nome ?? '',
+        ]
+          .join(' ')
+          .toLowerCase()
+          .includes(termo)
+
+      return correspondeTipo && correspondeBusca
+    })
+    .slice(0, PROJETOS_EM_DESTAQUE)
+    .map(projeto => {
+      const edicao = edicaoPorId.value.get(projeto.edicao)
+
+      return {
+        ...projetoParaCard(projeto, edicao),
+
+        // Capa da edição utilizada no ProjectCard
+        cover: edicao?.imagem_capa ?? null,
+      }
+    })
+})
 </script>
 
 <template>
-  <HeroSection
-    v-model="search"
-    highlight="HackIFC // 24H"
-    subtitle="Acompanhe as edições, inscreva sua equipe e conheça os projetos feitos por estudantes."
-    title="Desenvolva, colabore e inove no"
-  />
+  <div class="pb-10">
 
-  <!-- Inscrições abertas: o que mais importa para quem chega -->
-  <section aria-labelledby="titulo-abertas" class="px-1 sm:px-6">
-    <div class="mb-3 flex items-center justify-between">
-      <h2 id="titulo-abertas" class="flex items-center gap-2 text-lg font-semibold text-gray-900">
-        <span class="relative flex h-2.5 w-2.5">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-          <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500" />
-        </span>
-        Inscrições abertas
-      </h2>
-      <RouterLink class="text-sm font-medium text-blue-600 hover:underline" to="/edicoes">Ver todas as edições</RouterLink>
+    <!-- ================================== -->
+    <!-- HERO SECTION ORIGINAL              -->
+    <!-- ================================== -->
+
+    <HeroSection
+      v-model="search"
+      highlight="HackIFC // 24H"
+      subtitle="Acompanhe as edições, inscreva sua equipe e conheça os projetos feitos por estudantes."
+      title="Desenvolva, colabore e inove no"
+    />
+
+    <!-- Conteúdo principal -->
+    <div class="mt-8 space-y-12 px-1 sm:px-6">
+
+      <!-- ================================== -->
+      <!-- MINHAS EDIÇÕES E PROJETOS           -->
+      <!-- ================================== -->
+
+      <HomeParticipantSection
+        :edicoes="data?.edicoes ?? []"
+      />
+
+      <!-- ================================== -->
+      <!-- INSCRIÇÕES ABERTAS                 -->
+      <!-- ================================== -->
+
+      <section aria-label="Inscrições abertas">
+
+        <HomeSectionHeader
+          title="Inscrições abertas"
+          subtitle="Encontre uma edição para participar com sua equipe."
+          to="/edicoes"
+          link-text="Ver todas as edições"
+        />
+
+        <AsyncView
+          :loading="loading"
+          :error="error"
+          :empty="
+            !loading &&
+            !error &&
+            edicoesAbertas.length === 0
+          "
+          :empty-message="
+            termoBusca
+              ? 'Nenhuma inscrição aberta corresponde à sua busca.'
+              : 'Nenhuma edição com inscrições abertas no momento.'
+          "
+          skeleton="cards"
+          :skeleton-count="3"
+          @retry="run"
+        >
+          <div
+            class="grid grid-cols-1 gap-5
+                   sm:grid-cols-2 xl:grid-cols-3"
+          >
+            <EventCard
+              v-for="edicao in edicoesAbertas"
+              :key="edicao.id"
+              v-bind="edicao"
+            />
+          </div>
+        </AsyncView>
+
+      </section>
+
+      <!-- ================================== -->
+      <!-- EDIÇÕES EM DESTAQUE                -->
+      <!-- ================================== -->
+
+      <section
+        v-if="loading || error || edicoesDestaque.length > 0"
+        aria-label="Edições em destaque"
+      >
+
+        <HomeSectionHeader
+          title="Edições em destaque"
+          subtitle="Acompanhe os hackathons em andamento e outras edições."
+          to="/edicoes"
+          link-text="Ver todas as edições"
+        />
+
+        <AsyncView
+          :loading="loading"
+          :error="error"
+          :empty="
+            !loading &&
+            !error &&
+            edicoesDestaque.length === 0
+          "
+          empty-message="Nenhuma edição encontrada."
+          skeleton="cards"
+          :skeleton-count="3"
+          @retry="run"
+        >
+          <div
+            class="grid grid-cols-1 gap-5
+                   sm:grid-cols-2 xl:grid-cols-3"
+          >
+            <EventCard
+              v-for="edicao in edicoesDestaque"
+              :key="edicao.id"
+              v-bind="edicao"
+            />
+          </div>
+        </AsyncView>
+
+      </section>
+
+      <!-- Separador -->
+      <div
+        class="border-t border-slate-200"
+        aria-hidden="true"
+      />
+
+      <!-- ================================== -->
+      <!-- PROJETOS DA COMUNIDADE             -->
+      <!-- ================================== -->
+
+      <section aria-label="Projetos da comunidade">
+
+        <HomeSectionHeader
+          title="Projetos da comunidade"
+          subtitle="Conheça as soluções desenvolvidas nas edições do HackIFC."
+          to="/explorar"
+          link-text="Ver todos os projetos"
+        />
+
+        <!-- Filtros -->
+        <div class="mb-5">
+          <FilterChipGroup
+            v-model="selectedFilter"
+            :options="filters"
+          />
+        </div>
+
+        <!-- Projetos -->
+        <AsyncView
+          :loading="loading"
+          :error="error"
+          :empty="
+            !loading &&
+            !error &&
+            projetosComunidade.length === 0
+          "
+          :empty-message="
+            termoBusca
+              ? 'Nenhum projeto encontrado para sua busca.'
+              : 'Nenhum projeto encontrado.'
+          "
+          skeleton="cards"
+          :skeleton-count="3"
+          @retry="run"
+        >
+          <CardGrid
+            :items="projetosComunidade"
+            :columns="3"
+          />
+        </AsyncView>
+
+      </section>
+
     </div>
-
-    <CardGridSkeleton v-if="loading" :count="3" />
-    <div v-else-if="abertas.length" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      <eventCard v-for="e in abertas" :key="e.id" v-bind="e" />
-    </div>
-    <p v-else-if="!error" class="rounded-lg border border-dashed border-gray-300 px-4 py-6 text-center text-sm text-gray-500">
-      {{ termoBusca ? `Nenhuma edição aberta combina com “${search.trim()}”.` : 'Nenhuma edição com inscrições abertas no momento.' }}
-    </p>
-  </section>
-
-  <!-- Projetos -->
-  <div class="mt-8 px-1 sm:px-6">
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <h2 class="text-lg font-semibold text-gray-900">Projetos das edições</h2>
-      <FilterChipGroup v-model="selectedFilter" :options="filters" />
-    </div>
-
-    <AsyncView
-      :empty="!loading && !error && secoes.length === 0"
-      :empty-message="termoBusca ? `Nenhum projeto encontrado para “${search.trim()}”.` : 'Nenhum projeto encontrado.'"
-      :error="error"
-      :loading="loading"
-      skeleton="cards"
-      @retry="run"
-    >
-      <div v-for="secao in secoes" :key="secao.tipo" class="mb-8">
-        <Section link-text="Ver todos" :title="secao.tipo" to="/explorar">
-          <CardGrid :items="secao.itens" />
-        </Section>
-      </div>
-    </AsyncView>
   </div>
 </template>
