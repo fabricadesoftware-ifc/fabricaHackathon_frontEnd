@@ -219,11 +219,10 @@ const projetosComunidade = computed(() => {
     <!-- ================================== -->
 
     <HeroSection
-      v-model="search"
-      highlight="HackIFC // 24H"
-      subtitle="Acompanhe as edições, inscreva sua equipe e conheça os projetos feitos por estudantes."
-      title="Desenvolva, colabore e inove no"
-    />
+  v-model="search"
+  title="HackIFC // 24H"
+  subtitle="Explore edições, acompanhe projetos e participe de hackathons."
+/>
 
     <!-- Conteúdo principal -->
     <div class="mt-8 space-y-12 px-1 sm:px-6">
