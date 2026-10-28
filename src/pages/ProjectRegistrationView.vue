@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onUnmounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { obterEdicao } from '@/services/edicoes'
-import { criarInscricao } from '@/services/inscricoes'
+import { criarInscricao, enviarLogoProjeto } from '@/services/inscricoes'
 import { useAuthStore } from '@/stores/auth'
 import { ApiError } from '@/services/http'
 import { useAsync } from '@/composables/useAsync'
 
 import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
-import ProgressStepper from '@/components/ui/progressStepper.vue'
 import TeamRegistrationCard from '@/components/ui/TeamRegistrationCard/teamRegistrationCard.vue'
 import RegistrationReviewCard from '@/components/ui/RegistrationReviewCard/RegistrationReviewCard.vue'
 import SuccessState from '@/components/ui/SucessState/sucessState.vue'
@@ -77,6 +76,17 @@ const form = reactive<RegistrationForm>({
   projectName: '',
   participants: [],
 })
+const logoFile = ref<File | null>(null)
+const logoPreview = ref('')
+const logoWarning = ref('')
+
+watch(logoFile, file => {
+  if (logoPreview.value) URL.revokeObjectURL(logoPreview.value)
+  logoPreview.value = file ? URL.createObjectURL(file) : ''
+})
+onUnmounted(() => {
+  if (logoPreview.value) URL.revokeObjectURL(logoPreview.value)
+})
 
 // Total de participantes (convidados + criador)
 const totalParticipantes = computed(() => form.participants.length + 1)
@@ -99,6 +109,7 @@ watch(
     form.teamName,
     form.projectName,
     form.participants,
+    logoFile.value,
   ],
   () => {
     stepError.value = ''
@@ -181,12 +192,21 @@ async function submitRegistration(): Promise<void> {
     throw new Error('Quantidade de participantes inválida.')
   }
 
-  await criarInscricao({
+  const inscricao = await criarInscricao({
     edicao: edicaoId.value,
     nome_equipe: form.teamName.trim(),
     projeto: { nome_projeto: form.projectName.trim() },
     membros: form.participants.map(email => email.trim()),
   })
+
+  // A logo tem um endpoint próprio e só pode ser enviada depois da criação da equipe.
+  if (logoFile.value) {
+    try {
+      await enviarLogoProjeto(inscricao.id, logoFile.value)
+    } catch {
+      logoWarning.value = 'A inscrição foi confirmada, mas não foi possível enviar a imagem. Você pode adicioná-la em Meus projetos.'
+    }
+  }
 }
 
 // Confirma o cadastro da inscrição
@@ -195,6 +215,7 @@ async function onConfirm() {
 
   isSubmitting.value = true
   submitError.value = ''
+  logoWarning.value = ''
 
   try {
     await submitRegistration()
@@ -238,39 +259,55 @@ defineExpose({
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6">
+  <div class="w-full min-w-0 py-5">
 
-    <!-- Cabeçalho e etapas -->
-    <template v-if="currentStep < 2">
-      <PageHeader
-        subtitle="Monte sua equipe para concluir a inscrição. O projeto você completa depois."
-        title="Inscrição na edição"
-      />
+    <button
+      v-if="currentStep < 2"
+      type="button"
+      class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600"
+      @click="currentStep === 0 ? onTeamBack() : goToStep(0)"
+    >
+      <span class="mdi mdi-arrow-left text-lg" aria-hidden="true" />
+      {{ currentStep === 0 ? 'Voltar para a edição' : 'Voltar para sua equipe' }}
+    </button>
+    <PageHeader
+      :subtitle="currentStep === 2 ? 'Sua equipe foi inscrita com sucesso.' : 'Monte sua equipe para concluir a inscrição. O projeto você completa depois.'"
+      title="Inscrição na edição"
+    />
 
-      <div class="mt-6 flex justify-center">
-        <ProgressStepper
-          :current-step="currentStep"
-          :steps="STEPS"
-        />
-      </div>
-    </template>
+    <nav class="relative my-7 w-full min-w-0" aria-label="Etapas da inscrição">
+      <div class="pointer-events-none absolute left-[16.666%] right-[16.666%] top-5 border-t border-dashed border-slate-300" aria-hidden="true" />
+      <div class="pointer-events-none absolute left-[16.666%] top-5 border-t-2 border-blue-600" :style="{ width: `${currentStep * 33.333}%` }" aria-hidden="true" />
+      <ol class="relative grid grid-cols-3">
+        <li v-for="(step, index) in STEPS" :key="step" class="flex min-w-0 flex-col items-center text-center" :aria-current="currentStep === index ? 'step' : undefined">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold"
+            :class="index === currentStep ? 'border-blue-600 bg-blue-600 text-white' : index < currentStep ? 'border-blue-300 bg-blue-50 text-blue-600' : 'border-slate-300 bg-white text-slate-500'"
+          >{{ index + 1 }}</span>
+          <span class="mt-2 text-xs font-semibold sm:text-sm" :class="currentStep === index ? 'text-blue-600' : 'text-slate-600'">{{ step }}</span>
+          <span class="mt-0.5 hidden text-xs text-slate-500 sm:block">{{ index < currentStep ? 'Etapa concluída' : index === currentStep ? ['Monte sua equipe', 'Confirme suas informações', 'Inscrição confirmada'][index] : ['Monte sua equipe', 'Confirme suas informações', 'Finalize sua inscrição'][index] }}</span>
+        </li>
+      </ol>
+    </nav>
 
     <!-- Erros de validação -->
     <div
       v-if="stepError"
-      class="mx-auto mt-4 max-w-2xl rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
       role="alert"
     >
-      {{ stepError }}
+      <span class="mdi mdi-alert-circle-outline text-xl" aria-hidden="true" />
+      <span>{{ stepError }}</span>
     </div>
 
     <!-- Erros retornados pelo Django -->
     <div
       v-if="submitError"
-      class="mx-auto mt-4 max-w-3xl rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
       role="alert"
     >
-      {{ submitError }}
+      <span class="mdi mdi-alert-circle-outline text-xl" aria-hidden="true" />
+      <span>{{ submitError }}</span>
     </div>
 
     <div
@@ -288,6 +325,10 @@ defineExpose({
         :min-participants="TEAM_LIMITS.min"
         :owner-email="ownerEmail"
         :owner-label="ownerLabel"
+        :edition-name="edicao?.nome"
+        :edition-location="edicao?.local"
+        :logo-preview="logoPreview"
+        @update:logo="logoFile = $event"
         @back="onTeamBack"
         @continue="onTeamContinue"
       />
@@ -296,9 +337,16 @@ defineExpose({
       <RegistrationReviewCard
         v-else-if="currentStep === 1"
         :edition="edition"
-        :participants="[`${ownerLabel} (você)`, ...form.participants]"
+        :edition-location="edicao?.local"
+        :participants="form.participants"
+        :owner-name="ownerLabel"
+        :owner-email="ownerEmail"
         :project-name="form.projectName"
         :team-name="form.teamName"
+        :image-url="logoPreview"
+        :min-participants="TEAM_LIMITS.min"
+        :max-participants="TEAM_LIMITS.max"
+        :submitting="isSubmitting"
         @back="goToStep(0)"
         @confirm="onConfirm"
       />
@@ -306,14 +354,15 @@ defineExpose({
       <!-- Etapa 3: Inscrição concluída -->
       <div
         v-else
-        class="flex min-h-[60vh] items-center justify-center"
+        class="flex min-h-[45vh] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white p-6 sm:p-10"
       >
         <SuccessState
           button-label="Ver meus projetos"
-          :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você completa descrição, tema e logo, e a pré-avaliação (com o link do sistema) fica por lá também.`"
+          :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você pode completar e editar as informações do projeto.`"
           title="Inscrição confirmada!"
           @click="onFinish"
         />
+        <p v-if="logoWarning" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="status">{{ logoWarning }}</p>
       </div>
 
       <!-- Carregamento durante o cadastro -->
