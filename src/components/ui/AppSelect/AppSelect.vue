@@ -1,9 +1,15 @@
 <template>
   <Select.Root v-model="model">
     <Select.Activator
-      class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 shadow-sm transition-colors hover:bg-gray-50 data-[open=true]:border-blue-600"
+      :aria-label="placeholder"
+      :class="toolbar
+        ? [
+          'flex h-11 w-full min-w-0 items-center gap-2 rounded-lg border bg-white px-3 text-sm transition-colors hover:border-blue-300 data-[open=true]:border-blue-600',
+          active ? 'border-blue-300 text-blue-700' : 'border-slate-200 text-slate-600',
+        ]
+        : 'flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 shadow-sm transition-colors hover:bg-gray-50 data-[open=true]:border-blue-600'"
     >
-      <Select.Value v-slot="{ selectedValue }" class="whitespace-nowrap">
+      <Select.Value v-slot="{ selectedValue }" :class="toolbar ? 'min-w-0 flex-1 truncate' : 'whitespace-nowrap'">
         {{ options.find((option) => option.value === selectedValue)?.label }}
       </Select.Value>
 
@@ -45,10 +51,14 @@
     options: SelectOption[]
     modelValue: string
     placeholder?: string
+    toolbar?: boolean
+    active?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
     placeholder: 'Ano',
+    toolbar: false,
+    active: false,
   })
 
   const emit = defineEmits<{

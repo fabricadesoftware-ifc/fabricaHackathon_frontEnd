@@ -223,26 +223,27 @@ const itemProjeto = computed(() => {
       @retry="run"
     >
       <div
-        class="grid grid-cols-1 gap-5
-               sm:grid-cols-2 xl:grid-cols-3"
+        class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
       >
         <!-- Minha edição -->
         <EventCard
           v-if="edicaoDestaque"
           v-bind="edicaoParaCard(edicaoDestaque)"
+          class="w-full max-w-[360px]"
         />
 
         <!-- Meu projeto -->
         <ProjectCard
           v-if="itemProjeto"
           v-bind="itemProjeto"
+          class="w-full max-w-[360px]"
         />
 
         <!-- Aparece apenas quando não existe projeto ativo -->
         <RouterLink
           v-if="!temProjetoAtivo"
           to="/edicoes"
-          class="group flex min-h-64 flex-col items-center
+          class="group flex min-h-64 w-full max-w-[360px] flex-col items-center
                  justify-center rounded-lg border
                  border-dashed border-blue-200
                  bg-blue-50/30 px-6 py-8 text-center

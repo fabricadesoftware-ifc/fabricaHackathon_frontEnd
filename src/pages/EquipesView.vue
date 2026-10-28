@@ -2,6 +2,7 @@
   import { computed, ref } from 'vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
+  import SearchFilterBar from '@/components/ui/SearchFilterBar'
   import { useAsync } from '@/composables/useAsync'
   import { ApiError } from '@/services/http'
   import {
@@ -15,6 +16,20 @@
 
   const { data, loading, error, run } = useAsync(() => listarMinhasEquipes())
   const equipes = computed(() => data.value ?? [])
+  const search = ref('')
+  const equipesFiltradas = computed(() => {
+    const termo = search.value.trim().toLowerCase()
+    if (!termo) return equipes.value
+
+    return equipes.value.filter(equipe => [
+      equipe.nome_equipe,
+      equipe.projeto?.nome_projeto,
+      equipe.tema,
+      ...equipe.membros.map(membro =>
+        `${membro.first_name} ${membro.last_name} ${membro.username} ${membro.email}`,
+      ),
+    ].filter(Boolean).join(' ').toLowerCase().includes(termo))
+  })
 
   // Estado por equipe (e-mail digitado, erro, ocupado) e ação aguardando confirmação.
   const emails = ref<Record<number, string>>({})
@@ -77,20 +92,23 @@
 </script>
 
 <template>
+  <div class="w-full min-w-0">
   <PageHeader subtitle="Veja seus integrantes e gerencie a equipe durante as inscrições" title="Minhas equipes" />
 
+  <SearchFilterBar v-model:search="search" appearance="toolbar" placeholder="Buscar equipes, projetos ou integrantes" />
+
   <AsyncView
-    :empty="!loading && !error && equipes.length === 0"
-    empty-message="Você ainda não faz parte de nenhuma equipe."
+    :empty="!loading && !error && equipesFiltradas.length === 0"
+    :empty-message="search ? 'Nenhuma equipe corresponde à sua busca.' : 'Você ainda não faz parte de nenhuma equipe.'"
     :error="error"
     :loading="loading"
     @retry="run"
   >
-    <div class="flex flex-col gap-6">
+    <div class="flex flex-col gap-5">
       <section
-        v-for="e in equipes"
+        v-for="e in equipesFiltradas"
         :key="e.id"
-        class="rounded-md border border-[#E5E7EB] bg-white p-6"
+        class="w-full max-w-[900px] rounded-lg border border-slate-200 bg-white p-5 sm:p-6"
       >
         <header class="flex flex-wrap items-start justify-between gap-2">
           <div>
@@ -220,4 +238,5 @@
       </section>
     </div>
   </AsyncView>
+  </div>
 </template>

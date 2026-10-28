@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import LoginCard from '@/components/layout/LoginCard/LoginCard.vue'
+import AuthLayout from '@/components/layout/AuthLayout/AuthLayout.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -44,14 +45,12 @@ async function handleLogin(payload: LoginPayload) {
 </script>
 
 <template>
-    <div class="flex min-h-[70vh] items-center justify-center">
-        <div class="w-full">
-            <LoginCard :is-loading="authStore.isLoading" @submit="handleLogin"
-                @create-account="router.push({ path: '/registro', query: route.query.redirect ? { redirect: route.query.redirect } : {} })" />
-
-            <p v-if="error" role="alert" class="mt-4 text-center text-sm text-red-600">
-                {{ error }}
-            </p>
-        </div>
-    </div>
+  <AuthLayout mode="login">
+    <LoginCard
+      :is-loading="authStore.isLoading"
+      :error="error"
+      @submit="handleLogin"
+      @create-account="router.push({ path: '/registro', query: route.query.redirect ? { redirect: route.query.redirect } : {} })"
+    />
+  </AuthLayout>
 </template>

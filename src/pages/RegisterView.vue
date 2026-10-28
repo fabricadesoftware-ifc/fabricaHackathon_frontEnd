@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import RegisterCard from '@/components/layout/RegisterCard/RegisterCard.vue'
+import AuthLayout from '@/components/layout/AuthLayout/AuthLayout.vue'
 
 import { registrarUsuario } from '@/services/auth'
 import { ApiError } from '@/services/http'
@@ -94,22 +95,13 @@ async function handleRegister(form: RegisterForm) {
 </script>
 
 <template>
-  <div class="flex min-h-[70vh] items-center justify-center">
-    <div class="w-full">
-      <RegisterCard
-        :is-loading="isLoading"
-        @submit="handleRegister"
-        @login-redirect="router.push({ path: '/login', query: route.query.redirect ? { redirect: route.query.redirect } : {} })"
-        @open-terms="abrirTermos"
-      />
-
-      <p
-        v-if="error"
-        role="alert"
-        class="mt-4 text-center text-sm text-red-600"
-      >
-        {{ error }}
-      </p>
-    </div>
-  </div>
+  <AuthLayout mode="register">
+    <RegisterCard
+      :is-loading="isLoading"
+      :error="error"
+      @submit="handleRegister"
+      @login-redirect="router.push({ path: '/login', query: route.query.redirect ? { redirect: route.query.redirect } : {} })"
+      @open-terms="abrirTermos"
+    />
+  </AuthLayout>
 </template>

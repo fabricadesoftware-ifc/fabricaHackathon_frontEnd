@@ -1,129 +1,55 @@
+<script setup lang="ts">
+import type { FormValidationRule } from '@vuetify/v0'
+import { Input } from '@vuetify/v0'
+import { computed } from 'vue'
+
+const props = withDefaults(defineProps<{
+  nome: string
+  sobrenome: string
+  disabled?: boolean
+}>(), {
+  disabled: false,
+})
+
+const emit = defineEmits<{
+  (e: 'update:nome' | 'update:sobrenome', value: string): void
+}>()
+
+const nome = computed({
+  get: () => props.nome,
+  set: value => emit('update:nome', value),
+})
+
+const sobrenome = computed({
+  get: () => props.sobrenome,
+  set: value => emit('update:sobrenome', value),
+})
+
+const requiredRule: FormValidationRule[] = [
+  value => (typeof value === 'string' && value.trim().length > 0) || 'Campo obrigatório',
+]
+</script>
+
 <template>
-  <div class="grid w-full grid-cols-1 gap-x-6 gap-y-6 md:grid-cols-2">
-    <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-500" for="profile-nome">Nome</label>
-
-      <Input.Root id="profile-nome" v-model="nome" :rules="requiredRule">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+    <label class="flex flex-col gap-1.5 text-sm font-medium text-slate-600">
+      <span>Nome</span>
+      <Input.Root v-model="nome" :rules="requiredRule" :disabled="disabled">
         <Input.Control
-          class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+          autocomplete="given-name"
+          class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none transition-colors data-[focused]:border-blue-500 data-[state=invalid]:border-red-500 disabled:bg-slate-50"
         />
       </Input.Root>
-    </div>
+    </label>
 
-    <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-500" for="profile-sobrenome">Sobrenome</label>
-
-      <Input.Root id="profile-sobrenome" v-model="sobrenome" :rules="requiredRule">
+    <label class="flex flex-col gap-1.5 text-sm font-medium text-slate-600">
+      <span>Sobrenome</span>
+      <Input.Root v-model="sobrenome" :rules="requiredRule" :disabled="disabled">
         <Input.Control
-           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
+          autocomplete="family-name"
+          class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none transition-colors data-[focused]:border-blue-500 data-[state=invalid]:border-red-500 disabled:bg-slate-50"
         />
       </Input.Root>
-    </div>
-
-    <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-500" for="profile-username">Username</label>
-
-      <Input.Root id="profile-username" v-model="username" :disabled="props.identityReadonly" :readonly="props.identityReadonly" :rules="requiredRule">
-        <Input.Control
-           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-        />
-      </Input.Root>
-    </div>
-
-    <div class="flex flex-col gap-1.5">
-      <label class="text-sm font-medium text-gray-500" for="profile-email">email</label>
-
-      <Input.Root
-        id="profile-email"
-        v-model="email"
-        :disabled="props.identityReadonly"
-        :readonly="props.identityReadonly"
-        :rules="emailRules"
-        type="email"
-      >
-        <Input.Control
-           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-        />
-      </Input.Root>
-    </div>
-
-    <div v-if="props.showBio" class="flex flex-col gap-1.5 md:col-span-2">
-      <label class="text-sm font-medium text-gray-500" for="profile-bio">Bio</label>
-
-      <Input.Root id="profile-bio" v-model="bio">
-        <Input.Control
-          as="textarea"
-           class="w-full rounded-xl border border-hackifc-card-border bg-hackifc-bg-alt px-3.5 py-2.5 text-sm text-hackifc-text-primary outline-none transition-colors data-[focused]:border-hackifc-primary data-[state=invalid]:border-red-500"
-          :maxlength="props.bioMaxLength"
-          rows="4"
-        />
-      </Input.Root>
-
-      <span class="self-end text-xs text-gray-400">{{ bio.length }}/{{ props.bioMaxLength }}</span>
-    </div>
+    </label>
   </div>
 </template>
-
-<script setup lang="ts">
-  import type { FormValidationRule } from '@vuetify/v0'
-  import { Input } from '@vuetify/v0'
-  import { computed } from 'vue'
-
-  interface Props {
-    nome: string
-    sobrenome: string
-    username: string
-    email: string
-    bio?: string
-    bioMaxLength?: number
-    /** Mostra o campo de bio (o back ainda não guarda esse dado). */
-    showBio?: boolean
-    /** Username e e-mail somente leitura (o e-mail é o login). */
-    identityReadonly?: boolean
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    bio: '',
-    bioMaxLength: 150,
-    showBio: true,
-    identityReadonly: false,
-  })
-
-  const emit = defineEmits<{
-    (e: 'update:nome' | 'update:sobrenome' | 'update:username' | 'update:email' | 'update:bio', value: string): void
-  }>()
-
-  const nome = computed<string>({
-    get: () => props.nome,
-    set: value => emit('update:nome', value),
-  })
-
-  const sobrenome = computed<string>({
-    get: () => props.sobrenome,
-    set: value => emit('update:sobrenome', value),
-  })
-
-  const username = computed<string>({
-    get: () => props.username,
-    set: value => emit('update:username', value),
-  })
-
-  const email = computed<string>({
-    get: () => props.email,
-    set: value => emit('update:email', value),
-  })
-
-  const bio = computed<string>({
-    get: () => props.bio,
-    set: value => emit('update:bio', value),
-  })
-
-  const requiredRule: FormValidationRule[] = [
-    value => (typeof value === 'string' && value.trim().length > 0) || 'Campo obrigatório',
-  ]
-
-  const emailRules: FormValidationRule[] = [
-    value =>
-      !value || (typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) || 'Digite um e-mail válido',
-  ]
-</script>

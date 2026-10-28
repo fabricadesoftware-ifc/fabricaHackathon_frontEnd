@@ -4,7 +4,7 @@
     title="Explore Hackathon"
   />
 
-  <div>
+  <div class="w-full min-w-0">
     <SearchFilterBar
       v-model:ano="ano"
       v-model:search="search"
@@ -13,13 +13,16 @@
       :options-ano="opcoesAno"
       :options-status="opcoesStatus"
       :options-tipo="opcoesTipo"
-      placeholder="Buscar edições..."
+      appearance="toolbar"
+      placeholder="Buscar edições por nome ou local"
     />
 
     <AsyncView
       skeleton="cards"
       :empty="!loading && !error && filtradas.length === 0"
-      empty-message="Nenhuma edição encontrada."
+      :empty-message="search || tipo || status || ano
+        ? 'Nenhuma edição corresponde aos critérios informados.'
+        : 'Nenhuma edição encontrada.'"
       :error="error"
       :loading="loading"
       @retry="run"
@@ -30,8 +33,8 @@
         :total="filtradas.length"
       />
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
-        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" />
+      <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
+        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" class="w-full max-w-[360px]" />
       </div>
 
       <AppPagination v-model="currentPage" :length="totalPages" />
@@ -61,12 +64,17 @@
 
   const edicoes = computed(() => data.value ?? [])
 
-  const opcoesStatus = [
+  const statusDisponiveis = [
     { label: 'Inscrições', value: 'inscricoes' },
     { label: 'Andamento', value: 'andamento' },
     { label: 'Avaliação', value: 'avaliacao' },
     { label: 'Finalizado', value: 'finalizado' },
   ]
+  const opcoesStatus = computed(() =>
+    statusDisponiveis.filter(option =>
+      edicoes.value.some(edicao => mapearStatus(edicao.status) === option.value),
+    ),
+  )
   const opcoesTipo = computed(() =>
     [...new Set(edicoes.value.map(e => e.tipo_edicao).filter(Boolean))].map(t => ({ label: t, value: t })),
   )
@@ -79,7 +87,7 @@
   const filtradas = computed(() => {
     const termo = search.value.trim().toLowerCase()
     return edicoes.value
-      .filter(e => !termo || `${e.nome} ${e.local}`.toLowerCase().includes(termo))
+      .filter(e => !termo || `${e.nome} ${e.local} ${e.tipo_edicao} ${e.ano} ${e.status_label}`.toLowerCase().includes(termo))
       .filter(e => !tipo.value || e.tipo_edicao === tipo.value)
       .filter(e => !status.value || mapearStatus(e.status) === status.value)
       .filter(e => !ano.value || String(e.ano) === ano.value)

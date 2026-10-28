@@ -70,7 +70,10 @@ const activeItem = computed(() => {
   @menu-option-click="handleMenuOption"
 />
 
-      <main class="min-w-0 flex-1 p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0">
+      <main
+        class="min-w-0 flex-1"
+        :class="isAuthPage ? '' : 'p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0'"
+      >
         <RouterView />
       </main>
     </div>

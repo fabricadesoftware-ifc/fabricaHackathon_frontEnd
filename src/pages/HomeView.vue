@@ -225,7 +225,7 @@ const projetosComunidade = computed(() => {
 />
 
     <!-- Conteúdo principal -->
-    <div class="mt-8 space-y-12 px-1 sm:px-6">
+    <div class="mt-8 space-y-12">
 
       <!-- ================================== -->
       <!-- MINHAS EDIÇÕES E PROJETOS           -->
@@ -266,13 +266,13 @@ const projetosComunidade = computed(() => {
           @retry="run"
         >
           <div
-            class="grid grid-cols-1 gap-5
-                   sm:grid-cols-2 xl:grid-cols-3"
+            class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
           >
             <EventCard
               v-for="edicao in edicoesAbertas"
               :key="edicao.id"
               v-bind="edicao"
+              class="w-full max-w-[360px]"
             />
           </div>
         </AsyncView>
@@ -309,13 +309,13 @@ const projetosComunidade = computed(() => {
           @retry="run"
         >
           <div
-            class="grid grid-cols-1 gap-5
-                   sm:grid-cols-2 xl:grid-cols-3"
+            class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
           >
             <EventCard
               v-for="edicao in edicoesDestaque"
               :key="edicao.id"
               v-bind="edicao"
+              class="w-full max-w-[360px]"
             />
           </div>
         </AsyncView>
@@ -370,6 +370,7 @@ const projetosComunidade = computed(() => {
           <CardGrid
             :items="projetosComunidade"
             :columns="3"
+            compact
           />
         </AsyncView>
 

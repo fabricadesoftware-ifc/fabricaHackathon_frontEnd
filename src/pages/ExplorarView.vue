@@ -4,18 +4,22 @@
     title="Explorar projetos"
   />
 
-  <div>
+  <div class="w-full min-w-0">
     <SearchFilterBar
       v-model:search="search"
       v-model:tipo="edicaoId"
       :options-tipo="opcoesEdicao"
-      placeholder="Buscar projetos..."
+      appearance="toolbar"
+      tipo-label="Edição"
+      placeholder="Buscar projetos por nome"
     />
 
     <AsyncView
       skeleton="cards"
       :empty="!loading && !error && itens.length === 0"
-      empty-message="Nenhum projeto encontrado."
+      :empty-message="search || edicaoId
+        ? 'Nenhum projeto corresponde aos critérios informados.'
+        : 'Nenhum projeto encontrado.'"
       :error="error"
       :loading="loading"
       @retry="run"
@@ -27,8 +31,8 @@
         :total="total"
       />
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
-        <projectCard v-for="p in itens" :key="p.id" v-bind="p" />
+      <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
+        <projectCard v-for="p in itens" :key="p.id" v-bind="p" class="w-full max-w-[360px]" />
       </div>
 
       <AppPagination v-model="currentPage" :length="totalPages" />
@@ -37,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, ref, watch } from 'vue'
+  import { computed, onUnmounted, ref, watch } from 'vue'
   import { useRoute } from 'vue-router'
   import AppPagination from '@/components/layout/AppPagination/AppPagination.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
@@ -98,4 +102,5 @@
     }
   }
   watch(currentPage, run)
+  onUnmounted(() => clearTimeout(debounce))
 </script>

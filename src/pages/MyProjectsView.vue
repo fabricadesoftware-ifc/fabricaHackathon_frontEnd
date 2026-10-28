@@ -82,7 +82,8 @@ const projetosFiltrados = computed(() => {
       !termo ||
       projeto.nome_projeto.toLowerCase().includes(termo) ||
       projeto.descricao_projeto.toLowerCase().includes(termo) ||
-      projeto.equipe.nome_equipe.toLowerCase().includes(termo)
+      projeto.equipe.nome_equipe.toLowerCase().includes(termo) ||
+      (edicaoPorId.value.get(projeto.edicao)?.nome.toLowerCase().includes(termo) ?? false)
 
     return correspondeEdicao && correspondeBusca
   })
@@ -254,17 +255,18 @@ async function salvarEdicao(dados: DadosEdicao) {
 <template>
   <PageHeader subtitle="Acompanhe os projetos das suas equipes" title="Meus projetos" />
 
-  <div>
+  <div class="w-full min-w-0">
     <SearchFilterBar v-model:search="search" v-model:tipo="edicaoId" :options-tipo="opcoesEdicao"
-      placeholder="Buscar meus projetos..." />
+      appearance="toolbar" tipo-label="Edição" placeholder="Buscar meus projetos ou equipes" />
 
     <AsyncView
-      skeleton="cards" :empty="!loading && !error && itens.length === 0" empty-message="Nenhum projeto encontrado."
+      skeleton="cards" :empty="!loading && !error && itens.length === 0"
+      :empty-message="search || edicaoId ? 'Nenhum dos seus projetos corresponde aos critérios informados.' : 'Nenhum projeto encontrado.'"
       :error="error" :loading="loading" @retry="run">
       <ResultsBar :end="endIndex" label="projeto(s)" :start="total ? startIndex + 1 : 0" :total="total" />
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4">
-        <ProjectCard v-for="projeto in itens" :key="projeto.id" v-bind="projeto" @edit="abrirEdicao(projeto.id)" />
+      <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
+        <ProjectCard v-for="projeto in itens" :key="projeto.id" v-bind="projeto" class="w-full max-w-[360px]" @edit="abrirEdicao(projeto.id)" />
       </div>
 
       <AppPagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" />
