@@ -1,43 +1,74 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import {
+  computed,
+  onBeforeUnmount,
+  ref,
+  watch,
+} from 'vue'
 
+import {
+  RouterLink,
+  useRoute,
+} from 'vue-router'
+
+// Componentes da edição
 import EventDetailsHero from '@/components/layout/EventDetails/EventDetailsHero.vue'
 import EventDetailsFacts from '@/components/layout/EventDetails/EventDetailsFacts.vue'
 import EventDetailsSidebar from '@/components/layout/EventDetails/EventDetailsSidebar.vue'
 
+// Componentes reutilizáveis
 import TeamsSection from '@/components/layout/TeamsSection'
 import SponsorList from '@/components/ui/SponsorList'
 import ProgressStepper from '@/components/ui/progressStepper.vue'
 import { AsyncView } from '@/components/ui/AsyncView'
 
+// Composables e stores
 import { useAsync } from '@/composables/useAsync'
 import { useAuthStore } from '@/stores/auth'
 
-import { listarRanking, obterEdicao } from '@/services'
-import { equipeParaCard, mapearStatus } from '@/types'
+// Serviços e mapeadores
+import {
+  listarRanking,
+  obterEdicao,
+} from '@/services'
+
+import {
+  equipeParaCard,
+  mapearStatus,
+} from '@/types'
 
 type Aba = 'visao' | 'equipes' | 'ranking'
 
 const route = useRoute()
 const auth = useAuthStore()
 
-const edicaoId = computed(() => String(route.params.id))
+// Edição acessada pela rota
+const edicaoId = computed(() =>
+  String(route.params.id),
+)
 
+// Controle das abas
 const abaAtiva = ref<Aba>('visao')
+
+// Compartilhamento
 const linkCopiado = ref(false)
 
 let temporizador: ReturnType<typeof setTimeout> | null = null
 
-// Dados da edição
+// ==============================
+// DADOS DA EDIÇÃO
+// ==============================
+
 const {
   data: edicao,
   loading,
   error,
   run,
-} = useAsync(() => obterEdicao(edicaoId.value))
+} = useAsync(() =>
+  obterEdicao(edicaoId.value),
+)
 
-// Status atual
+// Status atual da edição
 const status = computed(() =>
   edicao.value
     ? mapearStatus(edicao.value.status)
@@ -50,7 +81,10 @@ const podeInscrever = computed(() =>
   auth.userRole === 'PARTICIPANTE',
 )
 
-// Etapas da edição
+// ==============================
+// ETAPAS
+// ==============================
+
 const STEPS = {
   inscricoes: 0,
   andamento: 1,
@@ -59,10 +93,15 @@ const STEPS = {
 } as const
 
 const step = computed(() =>
-  status.value ? STEPS[status.value] : 0,
+  status.value
+    ? STEPS[status.value]
+    : 0,
 )
 
-// Equipes e projetos
+// ==============================
+// EQUIPES
+// ==============================
+
 const equipes = computed(() => {
   const e = edicao.value
 
@@ -76,23 +115,34 @@ const equipes = computed(() => {
   )
 })
 
-// Logos dos apoiadores
+// ==============================
+// APOIADORES
+// ==============================
+
 const patrocinadores = computed(() =>
   (edicao.value?.apoiadores ?? [])
-    .filter(apoiador => apoiador.logo_apoiador)
+    .filter(apoiador =>
+      Boolean(apoiador.logo_apoiador),
+    )
     .map(apoiador => ({
       name: apoiador.nome,
       imageUrl: apoiador.logo_apoiador as string,
     })),
 )
 
-// Ranking
+// ==============================
+// RANKING
+// ==============================
+
 const ranking = useAsync(
   () => listarRanking(edicaoId.value),
   false,
 )
 
-// Abas disponíveis
+// ==============================
+// ABAS
+// ==============================
+
 const abas = computed<Array<{
   id: Aba
   label: string
@@ -115,6 +165,7 @@ const abas = computed<Array<{
     },
   ]
 
+  // Ranking disponível somente após a finalização
   if (status.value === 'finalizado') {
     items.push({
       id: 'ranking',
@@ -126,7 +177,10 @@ const abas = computed<Array<{
   return items
 })
 
-// Compartilhar edição
+// ==============================
+// COMPARTILHAMENTO
+// ==============================
+
 async function compartilhar() {
   const url = window.location.href
 
@@ -144,7 +198,7 @@ async function compartilhar() {
     }, 2500)
   } catch {
     // Alternativa quando a área de transferência
-    // não está disponível no navegador.
+    // não está disponível.
     if (navigator.share) {
       try {
         await navigator.share({
@@ -160,7 +214,11 @@ async function compartilhar() {
   }
 }
 
-// Atualiza ao navegar entre edições
+// ==============================
+// ATUALIZAÇÃO DOS DADOS
+// ==============================
+
+// Atualiza quando o usuário navega entre edições.
 watch(edicaoId, () => {
   abaAtiva.value = 'visao'
   linkCopiado.value = false
@@ -168,7 +226,7 @@ watch(edicaoId, () => {
   void run()
 })
 
-// Só consulta o ranking quando a edição terminou
+// Consulta o ranking somente quando disponível.
 watch(status, novoStatus => {
   if (novoStatus === 'finalizado') {
     void ranking.run()
@@ -195,31 +253,63 @@ onBeforeUnmount(() => {
     >
       <template v-if="edicao && status">
 
-        <!-- Navegação -->
-        <nav
-          aria-label="Navegação da edição"
-          class="mb-5 flex flex-wrap
-                 items-center gap-2
-                 text-sm text-slate-500"
-        >
-          <RouterLink
-            to="/edicoes"
-            class="transition-colors hover:text-blue-600"
-          >
-            Edições
-          </RouterLink>
+        <!-- ============================== -->
+        <!-- NAVEGAÇÃO                      -->
+        <!-- ============================== -->
 
-          <span
-            class="mdi mdi-chevron-right text-base"
-            aria-hidden="true"
-          />
+        <!-- Navegação da edição -->
+<div class="mb-5 flex flex-wrap items-center gap-4">
 
-          <span class="font-medium text-slate-800">
-            {{ edicao.nome }}
-          </span>
-        </nav>
+  <!-- Botão voltar -->
+  <RouterLink
+    to="/edicoes"
+    class="group inline-flex items-center gap-1.5
+           text-sm font-medium text-slate-500
+           transition-colors hover:text-blue-600"
+  >
+    <span
+      class="mdi mdi-arrow-left text-lg
+             transition-transform duration-200
+             group-hover:-translate-x-0.5"
+      aria-hidden="true"
+    />
 
-        <!-- Capa e título -->
+    Voltar
+  </RouterLink>
+
+  <!-- Divisória -->
+  <span
+    class="hidden h-4 w-px bg-slate-200 sm:block"
+    aria-hidden="true"
+  />
+
+  <!-- Breadcrumb -->
+  <nav
+    aria-label="Navegação da edição"
+    class="flex min-w-0 items-center gap-2 text-sm"
+  >
+    <RouterLink
+      to="/edicoes"
+      class="text-slate-400 transition-colors hover:text-blue-600"
+    >
+      Edições
+    </RouterLink>
+
+    <span
+      class="mdi mdi-chevron-right text-base text-slate-400"
+      aria-hidden="true"
+    />
+
+    <span class="truncate font-medium text-slate-600">
+      {{ edicao.nome }}
+    </span>
+  </nav>
+
+</div>
+        <!-- ============================== -->
+        <!-- CAPA E TÍTULO                   -->
+        <!-- ============================== -->
+
         <EventDetailsHero
           :edicao="edicao"
           :status="status"
@@ -228,16 +318,23 @@ onBeforeUnmount(() => {
           @compartilhar="compartilhar"
         />
 
-        <!-- Informações essenciais -->
+        <!-- ============================== -->
+        <!-- INFORMAÇÕES ESSENCIAIS          -->
+        <!-- ============================== -->
+
         <div class="mt-4">
           <EventDetailsFacts :edicao="edicao" />
         </div>
 
-        <!-- Abas -->
+        <!-- ============================== -->
+        <!-- ABAS                            -->
+        <!-- ============================== -->
+
         <nav
           aria-label="Seções da edição"
-          class="mt-7 flex gap-2 overflow-x-auto
-                 border-b border-slate-200"
+          class="mt-7 flex gap-2
+                 overflow-x-auto border-b
+                 border-slate-200"
         >
           <button
             v-for="aba in abas"
@@ -245,13 +342,14 @@ onBeforeUnmount(() => {
             type="button"
             :aria-pressed="abaAtiva === aba.id"
             :class="[
-              'inline-flex min-h-11 shrink-0 items-center',
-              'gap-2 border-b-2 px-4 py-3',
-              'text-sm font-medium transition-colors',
+              'inline-flex min-h-11 shrink-0',
+              'items-center gap-2 border-b-2',
+              'px-4 py-3 text-sm font-medium',
+              'transition-colors',
 
               abaAtiva === aba.id
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800',
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-slate-500 hover:text-slate-700',
             ]"
             @click="abaAtiva = aba.id"
           >
@@ -265,9 +363,9 @@ onBeforeUnmount(() => {
           </button>
         </nav>
 
-        <!-- ================================= -->
-        <!-- VISÃO GERAL                       -->
-        <!-- ================================= -->
+        <!-- ============================== -->
+        <!-- VISÃO GERAL                     -->
+        <!-- ============================== -->
 
         <div
           v-if="abaAtiva === 'visao'"
@@ -278,21 +376,24 @@ onBeforeUnmount(() => {
           <!-- Coluna principal -->
           <div class="min-w-0 space-y-5">
 
-            <!-- Sobre a edição -->
+            <!-- SOBRE A EDIÇÃO -->
             <section
               class="rounded-lg border border-slate-200
                      bg-white p-5 sm:p-6"
             >
               <h2
                 class="text-lg font-semibold
-                       tracking-tight text-slate-900"
+                       tracking-tight
+                       text-slate-700"
               >
                 Sobre o {{ edicao.nome }}
               </h2>
 
+              <!-- Descrição -->
               <p
                 class="mt-3 whitespace-pre-line
-                       text-sm leading-6 text-slate-600"
+                       text-sm leading-6
+                       text-slate-500"
               >
                 {{
                   edicao.descricao ||
@@ -300,25 +401,28 @@ onBeforeUnmount(() => {
                 }}
               </p>
 
-              <!-- Critérios -->
+              <!-- CRITÉRIOS -->
               <div
                 v-if="edicao.criterios.length"
                 class="mt-6"
               >
                 <h3
-                  class="text-sm font-semibold
-                         text-slate-900"
+                  class="text-sm font-medium
+                         text-slate-600"
                 >
                   Critérios de avaliação
                 </h3>
 
-                <div class="mt-3 flex flex-wrap gap-2">
+                <div
+                  class="mt-3 flex flex-wrap gap-2"
+                >
                   <span
                     v-for="criterio in edicao.criterios"
                     :key="criterio.id"
-                    class="rounded-full bg-blue-50
-                           px-3 py-1.5 text-xs
-                           font-medium text-blue-700"
+                    class="rounded-full
+                           bg-blue-50 px-3 py-1.5
+                           text-xs font-medium
+                           text-blue-600"
                   >
                     {{ criterio.nome }}
                   </span>
@@ -326,50 +430,54 @@ onBeforeUnmount(() => {
               </div>
             </section>
 
-            <!-- Etapas -->
+            <!-- CRONOGRAMA -->
             <section
               class="rounded-lg border border-slate-200
                      bg-white p-5 sm:p-6"
             >
-              <h2
-                class="text-base font-semibold text-slate-900"
-              >
-                Etapas da edição
-              </h2>
+              <div class="mb-6">
+                <h2
+                  class="text-base font-semibold
+                         text-slate-700"
+                >
+                  Cronograma
+                </h2>
 
-              <p class="mt-1 text-sm text-slate-500">
-                Acompanhe a etapa atual do hackathon.
-              </p>
-
-              <div class="mt-5 overflow-x-auto">
-                <div class="min-w-[500px]">
-                  <ProgressStepper
-                    :current-step="step"
-                    :steps="[
-                      'Inscrições',
-                      'Andamento',
-                      'Avaliação',
-                      'Finalizado',
-                    ]"
-                  />
-                </div>
+                <p
+                  class="mt-1 text-sm
+                         text-slate-500"
+                >
+                  Acompanhe as etapas do hackathon.
+                </p>
               </div>
+
+              <ProgressStepper
+                :current-step="step"
+                :steps="[
+                  'Inscrições',
+                  'Andamento',
+                  'Avaliação',
+                  'Finalizado',
+                ]"
+              />
             </section>
 
-            <!-- Apoiadores -->
+            <!-- APOIADORES -->
             <section
               v-if="patrocinadores.length"
               class="rounded-lg border border-slate-200
                      bg-white p-5 sm:p-6"
             >
               <h2
-                class="mb-4 text-base font-semibold
-                       text-slate-900"
+                class="mb-4 text-base
+                       font-semibold text-slate-700"
               >
                 Apoiadores
               </h2>
 
-              <SponsorList :images="patrocinadores" />
+              <SponsorList
+                :images="patrocinadores"
+              />
             </section>
 
           </div>
@@ -383,9 +491,9 @@ onBeforeUnmount(() => {
           />
         </div>
 
-        <!-- ================================= -->
-        <!-- EQUIPES                           -->
-        <!-- ================================= -->
+        <!-- ============================== -->
+        <!-- EQUIPES                         -->
+        <!-- ============================== -->
 
         <section
           v-else-if="abaAtiva === 'equipes'"
@@ -397,9 +505,9 @@ onBeforeUnmount(() => {
           />
         </section>
 
-        <!-- ================================= -->
-        <!-- RANKING                           -->
-        <!-- ================================= -->
+        <!-- ============================== -->
+        <!-- RANKING                         -->
+        <!-- ============================== -->
 
         <section
           v-else-if="
@@ -409,12 +517,13 @@ onBeforeUnmount(() => {
           class="mt-6"
         >
           <div
-            class="rounded-lg border border-slate-200
+            class="rounded-lg border
+                   border-slate-200
                    bg-white p-5 sm:p-6"
           >
             <h2
-              class="mb-5 text-lg font-semibold
-                     text-slate-900"
+              class="mb-5 text-lg
+                     font-semibold text-slate-700"
             >
               Ranking da edição
             </h2>
@@ -431,20 +540,23 @@ onBeforeUnmount(() => {
               @retry="ranking.run"
             >
               <ol class="space-y-3">
+
                 <li
                   v-for="item in ranking.data.value"
                   :key="item.projeto_id"
                   class="flex items-center gap-4
                          rounded-lg border
-                         border-slate-200 px-4 py-3"
+                         border-slate-200
+                         px-4 py-3"
                 >
                   <!-- Posição -->
                   <span
-                    class="flex h-10 w-10 shrink-0
-                           items-center justify-center
-                           rounded-lg bg-blue-50
-                           text-base font-bold
-                           text-blue-700"
+                    class="flex h-10 w-10
+                           shrink-0 items-center
+                           justify-center rounded-lg
+                           bg-blue-50 text-base
+                           font-semibold
+                           text-blue-600"
                   >
                     {{ item.posicao }}º
                   </span>
@@ -452,13 +564,17 @@ onBeforeUnmount(() => {
                   <!-- Projeto -->
                   <div class="min-w-0 flex-1">
                     <h3
-                      class="truncate text-sm font-semibold
-                             text-slate-900"
+                      class="truncate text-sm
+                             font-medium
+                             text-slate-700"
                     >
                       {{ item.projeto }}
                     </h3>
 
-                    <p class="text-xs text-slate-500">
+                    <p
+                      class="mt-1 text-xs
+                             text-slate-500"
+                    >
                       {{ item.equipe }}
                     </p>
                   </div>
@@ -471,6 +587,7 @@ onBeforeUnmount(() => {
                     {{ item.nota_final }}
                   </span>
                 </li>
+
               </ol>
             </AsyncView>
           </div>

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-
 import type { EdicaoDetalhe } from '@/types/edicao'
 import { formatarData } from '@/utils/format'
 
@@ -37,45 +36,30 @@ const informacoes = computed(() => [
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-1 gap-3
-           sm:grid-cols-2 xl:grid-cols-4"
-  >
+  <div class="grid grid-cols-1 gap-y-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
     <div
-      v-for="informacao in informacoes"
+      v-for="(informacao, index) in informacoes"
       :key="informacao.id"
-      class="flex min-w-0 items-center gap-3
-             rounded-lg border border-slate-200
-             bg-white px-4 py-3.5"
+      class="flex min-w-0 items-center gap-3 px-2 sm:px-4 lg:px-5"
+      :class="{
+        'lg:border-l lg:border-slate-200': index > 0,
+        'lg:pl-0': index === 0,
+      }"
     >
       <!-- Ícone -->
-      <div
-        class="flex h-10 w-10 shrink-0
-               items-center justify-center
-               rounded-lg bg-blue-50
-               text-blue-600"
-      >
-        <span
-          :class="['mdi', informacao.icon]"
-          class="text-xl"
-          aria-hidden="true"
-        />
-      </div>
+      <span
+        :class="['mdi', informacao.icon]"
+        class="shrink-0 text-xl text-blue-500"
+        aria-hidden="true"
+      />
 
       <!-- Informações -->
       <div class="min-w-0">
-        <p
-          class="text-xs font-medium
-                 text-slate-500"
-        >
+        <p class="text-xs font-medium text-slate-400">
           {{ informacao.label }}
         </p>
 
-        <p
-          class="mt-1 break-words text-sm
-                 font-semibold leading-5
-                 text-slate-800"
-        >
+        <p class="mt-1 text-sm font-medium leading-5 text-slate-600">
           {{ informacao.value }}
         </p>
       </div>

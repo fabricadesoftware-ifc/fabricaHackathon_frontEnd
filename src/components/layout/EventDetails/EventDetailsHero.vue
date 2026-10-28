@@ -116,27 +116,6 @@ defineEmits<{
           </p>
         </div>
 
-        <!-- Inscrição -->
-        <RouterLink
-          v-if="status === 'inscricoes' && podeInscrever"
-          :to="{
-            path: '/novo',
-            query: { edicao_id: edicao.id },
-          }"
-          class="inline-flex min-h-10 shrink-0
-                 items-center justify-center
-                 gap-2 rounded-lg bg-blue-600
-                 px-5 py-2.5 text-sm font-semibold
-                 text-white transition-colors
-                 hover:bg-blue-700"
-        >
-          <span
-            class="mdi mdi-ticket-outline text-lg"
-            aria-hidden="true"
-          />
-
-          Inscrever-se
-        </RouterLink>
       </div>
     </div>
   </div>

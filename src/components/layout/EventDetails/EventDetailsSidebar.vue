@@ -43,16 +43,12 @@ const mensagemStatus = computed(() => {
 <template>
   <aside class="space-y-4">
 
-    <!-- Situação da edição -->
+    <!-- SITUAÇÃO DA EDIÇÃO -->
     <section
-      class="rounded-lg border border-slate-200
-             bg-white p-5"
+      class="rounded-lg border border-slate-200 bg-white p-5"
     >
-      <div
-        class="flex flex-wrap items-center
-               justify-between gap-3"
-      >
-        <h2 class="text-base font-semibold text-slate-900">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-base font-semibold text-slate-700">
           Situação da edição
         </h2>
 
@@ -63,25 +59,21 @@ const mensagemStatus = computed(() => {
       </div>
 
       <p
-        class="mt-3 rounded-lg bg-slate-50
-               px-3 py-3 text-sm
-               leading-5 text-slate-600"
+        class="mt-3 rounded-lg bg-slate-50 px-3 py-3
+               text-sm leading-5 text-slate-500"
       >
         {{ mensagemStatus }}
       </p>
 
-      <!-- Botão de inscrição -->
       <RouterLink
         v-if="status === 'inscricoes' && podeInscrever"
         :to="{
           path: '/novo',
           query: { edicao_id: edicao.id },
         }"
-        class="mt-4 flex min-h-11 w-full
-               items-center justify-center
-               gap-2 rounded-lg bg-blue-600
-               px-4 py-2.5 text-sm
-               font-semibold text-white
+        class="mt-4 flex min-h-11 w-full items-center
+               justify-center gap-2 rounded-lg bg-blue-600
+               px-4 py-2.5 text-sm font-semibold text-white
                transition-colors hover:bg-blue-700"
       >
         <span
@@ -93,56 +85,50 @@ const mensagemStatus = computed(() => {
       </RouterLink>
     </section>
 
-    <!-- Equipes participantes -->
+    <!-- EQUIPES PARTICIPANTES -->
     <section
       class="rounded-lg border border-slate-200
-             bg-white p-5"
+             bg-white p-4 sm:p-5"
     >
       <!-- Cabeçalho -->
-      <div
-        class="flex flex-wrap items-center
-               justify-between gap-2"
-      >
-        <h2 class="text-base font-semibold text-slate-900">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-sm font-semibold text-slate-700">
           Equipes participantes
         </h2>
 
         <button
           v-if="edicao.equipes.length > 0"
           type="button"
-          class="inline-flex items-center gap-1
-                 text-sm font-medium text-blue-600
-                 hover:text-blue-700"
+          class="inline-flex shrink-0 items-center gap-1
+                 text-xs font-medium text-blue-600
+                 transition-colors hover:text-blue-700"
           @click="$emit('ver-equipes')"
         >
           Ver todas ({{ edicao.equipes.length }})
 
           <span
-            class="mdi mdi-arrow-right"
+            class="mdi mdi-arrow-right text-sm"
             aria-hidden="true"
           />
         </button>
       </div>
 
-      <!-- Lista -->
+      <!-- Lista de equipes -->
       <div
         v-if="equipesDestaque.length"
         class="mt-4 space-y-2"
       >
         <article
-          v-for="equipe in equipesDestaque"
-          :key="equipe.id"
-          class="flex min-w-0 items-start
-                 gap-3 rounded-lg border
-                 border-slate-200 p-3"
-        >
-          <!-- Avatar do projeto -->
+  v-for="equipe in equipesDestaque"
+  :key="equipe.id"
+  class="flex items-start gap-3 rounded-lg
+         bg-slate-50/60 p-3"
+>
+          <!-- Logo / inicial do projeto -->
           <div
-            class="flex h-10 w-10 shrink-0
-                   items-center justify-center
-                   overflow-hidden rounded-lg
-                   bg-blue-50 font-semibold
-                   text-blue-700"
+            class="flex h-9 w-9 shrink-0 items-center
+                   justify-center overflow-hidden rounded-lg
+                   bg-blue-50 text-sm font-semibold text-blue-600"
           >
             <img
               v-if="equipe.projeto?.logo_projeto"
@@ -163,9 +149,11 @@ const mensagemStatus = computed(() => {
 
           <!-- Informações -->
           <div class="min-w-0 flex-1">
+
+            <!-- Nome do projeto -->
             <h3
               class="truncate text-sm font-semibold
-                     text-slate-900"
+                     leading-5 text-slate-700"
             >
               {{
                 equipe.projeto?.nome_projeto ||
@@ -173,40 +161,50 @@ const mensagemStatus = computed(() => {
               }}
             </h3>
 
+            <!-- Descrição -->
             <p
               v-if="equipe.projeto?.descricao_projeto"
-              class="mt-1 line-clamp-2
-                     text-xs leading-4 text-slate-500"
+              class="mt-0.5 line-clamp-1 text-xs
+                     leading-4 text-slate-500"
             >
               {{ equipe.projeto.descricao_projeto }}
             </p>
 
-            <p
-              class="mt-2 flex items-center gap-1.5
-                     text-xs text-slate-500"
+            <!-- Nome da equipe -->
+            <div
+              class="mt-2 flex min-w-0 items-center
+                     gap-1.5 text-xs text-slate-500"
             >
               <span
-                class="mdi mdi-account-group-outline"
+                class="mdi mdi-account-group-outline
+                       shrink-0 text-sm text-slate-400"
                 aria-hidden="true"
               />
 
               <span class="truncate">
                 {{ equipe.nome_equipe }}
               </span>
-            </p>
+            </div>
           </div>
         </article>
       </div>
 
-      <!-- Sem equipes -->
-      <p
+      <!-- Estado vazio -->
+      <div
         v-else
         class="mt-4 rounded-lg bg-slate-50
-               px-4 py-6 text-center
-               text-sm text-slate-500"
+               px-4 py-6 text-center"
       >
-        Ainda não existem equipes participantes.
-      </p>
+        <span
+          class="mdi mdi-account-group-outline
+                 text-2xl text-slate-400"
+          aria-hidden="true"
+        />
+
+        <p class="mt-2 text-sm text-slate-500">
+          Ainda não existem equipes participantes.
+        </p>
+      </div>
     </section>
 
   </aside>
