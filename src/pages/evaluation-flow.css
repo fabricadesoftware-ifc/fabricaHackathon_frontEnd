@@ -1,0 +1,10 @@
+
+.evaluation-flow { color: #334155; padding-top: 1rem; }
+.evaluation-back { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; color: #475569; font-size: .875rem; }
+.evaluation-back:hover { color: #2563eb; }
+.evaluation-flow :deep(button:focus-visible), .evaluation-back:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.evaluation-flow :deep(progress::-webkit-progress-bar) { background: #e2e8f0; border-radius: 999px; }
+.evaluation-flow :deep(progress::-webkit-progress-value) { background: #2563eb; border-radius: 999px; }
+.evaluation-actions :deep(.app-btn) { min-height: 44px; padding: .75rem 1rem; font-size: .875rem; box-shadow: none; }
+.evaluation-filters :deep(button) { min-height: 44px; border-radius: .5rem; border-color: #e2e8f0; }
+@media (prefers-reduced-motion: reduce) { .evaluation-flow :deep(*) { transition: none; animation: none; } }

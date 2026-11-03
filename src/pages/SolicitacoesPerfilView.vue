@@ -29,7 +29,14 @@
     PROFESSOR: 'Professor',
   }
 
+  const estadoVazio = computed(() => ({
+    PENDENTE: { titulo: 'Nenhuma solicitação pendente', descricao: 'Quando alguém solicitar um perfil de Avaliador ou Professor, o pedido aparecerá aqui.' },
+    APROVADA: { titulo: 'Nenhuma solicitação aprovada', descricao: 'Os pedidos aprovados aparecerão aqui para consulta.' },
+    RECUSADA: { titulo: 'Nenhuma solicitação recusada', descricao: 'Os pedidos recusados aparecerão aqui para consulta.' },
+  })[filtro.value])
+
   const decidindo = ref<number | null>(null)
+  const acaoAtual = ref<'aprovar' | 'recusar'>('aprovar')
   const mensagem = ref('')
   const erroAcao = ref('')
 
@@ -37,6 +44,7 @@
     if (decidindo.value !== null) {
       return
     }
+    acaoAtual.value = aprovar ? 'aprovar' : 'recusar'
     decidindo.value = item.id
     erroAcao.value = ''
     mensagem.value = ''
@@ -53,13 +61,14 @@
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-4xl px-4 py-6 sm:px-6">
+  <div class="solicitacoes w-full min-w-0">
     <PageHeader
+      class="solicitacoes-header"
       subtitle="Aprove ou recuse pedidos de perfil de Avaliador e Professor."
       title="Solicitações de perfil"
     />
 
-    <div class="my-5">
+    <div aria-label="Filtrar solicitações por situação" class="solicitacoes-filtros mb-6 border-b border-slate-200" role="group">
       <FilterChipGroup v-model="filtro" :options="filtros" />
     </div>
 
@@ -71,51 +80,144 @@
       {{ erroAcao }}
     </p>
 
-    <AsyncView
-      :empty="!loading && !error && itens.length === 0"
-      empty-message="Nenhuma solicitação neste filtro."
-      :error="error"
-      :loading="loading"
-      @retry="run"
-    >
-      <ul class="flex flex-col gap-3">
-        <li
-          v-for="item in itens"
-          :key="item.id"
-          class="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <div class="min-w-0">
-            <p class="truncate font-semibold text-gray-900">{{ item.usuario_nome || item.usuario_email }}</p>
-            <p class="truncate text-sm text-gray-500">{{ item.usuario_email }}</p>
+    <section :aria-busy="loading" aria-label="Lista de solicitações de perfil" class="overflow-hidden rounded-lg border border-slate-200 bg-white">
+      <div v-if="!loading && !error && itens.length > 0" aria-hidden="true" class="solicitacao-grid hidden gap-5 border-b border-slate-200 bg-slate-50 px-5 py-3 text-xs font-medium text-slate-600 xl:grid">
+        <span>Usuário</span>
+        <span>Perfil solicitado</span>
+        <span>Solicitada em</span>
+        <span class="text-right">{{ filtro === 'PENDENTE' ? 'Ações' : 'Decisão' }}</span>
+      </div>
 
-            <p class="mt-1 text-sm text-gray-700">
-              Quer ser <strong>{{ PERFIL[item.perfil_solicitado] }}</strong>
-              · pedido em {{ formatarData(item.criada_em) }}
-            </p>
-
-            <p v-if="item.decidida_em" class="text-xs text-gray-500">
-              Decidida em {{ formatarData(item.decidida_em) }}<template v-if="item.decidida_por_email"> por {{ item.decidida_por_email }}</template>
-            </p>
+      <div :class="{ 'p-5': loading || error }">
+        <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
+          <div v-if="itens.length === 0" class="flex flex-col items-center gap-2 px-5 py-12 text-center" role="status">
+            <span aria-hidden="true" class="mdi mdi-inbox-check-outline mb-1 text-3xl text-slate-400" />
+            <h2 class="text-base font-semibold text-slate-700">{{ estadoVazio.titulo }}</h2>
+            <p class="max-w-md text-sm leading-6 text-slate-500">{{ estadoVazio.descricao }}</p>
           </div>
 
-          <div v-if="item.status === 'PENDENTE'" class="flex shrink-0 gap-2">
-            <AppButton
-              :disabled="decidindo !== null"
-              label="Recusar"
-              variant="secondary"
-              @click="decidir(item, false)"
-            />
+          <ul v-else class="divide-y divide-slate-200">
+            <li v-for="item in itens" :key="item.id" class="solicitacao-grid grid min-w-0 gap-4 px-4 py-5 transition-colors hover:bg-slate-50/60 sm:px-5 xl:items-center xl:gap-5">
+              <div class="min-w-0">
+                <p class="break-words text-sm font-semibold leading-6 text-slate-700">{{ item.usuario_nome || item.usuario_email }}</p>
+                <p v-if="item.usuario_nome" class="break-all text-sm leading-6 text-slate-500">{{ item.usuario_email }}</p>
+              </div>
 
-            <AppButton
-              :disabled="decidindo !== null"
-              label="Aprovar"
-              :loading="decidindo === item.id"
-              variant="primary"
-              @click="decidir(item, true)"
-            />
-          </div>
-        </li>
-      </ul>
-    </AsyncView>
+              <div class="flex items-center gap-2 text-sm text-slate-700">
+                <span aria-hidden="true" class="mdi text-lg text-slate-500" :class="item.perfil_solicitado === 'AVALIADOR' ? 'mdi-clipboard-check-outline' : 'mdi-school-outline'" />
+                <span><span class="sr-only">Perfil solicitado: </span>{{ PERFIL[item.perfil_solicitado] }}</span>
+              </div>
+
+              <p class="text-sm tabular-nums text-slate-500">
+                <span class="xl:sr-only">Solicitada em </span>
+                <time :datetime="item.criada_em">{{ formatarData(item.criada_em) }}</time>
+              </p>
+
+              <div v-if="item.status === 'PENDENTE'" class="solicitacao-acoes flex items-center gap-2 border-t border-slate-100 pt-4 xl:justify-end xl:border-0 xl:pt-0">
+                <AppButton
+                  :aria-label="`Recusar solicitação de ${item.usuario_nome || item.usuario_email}`"
+                  :disabled="decidindo !== null"
+                  :label="decidindo === item.id && acaoAtual === 'recusar' ? 'Recusando…' : 'Recusar'"
+                  variant="secondary"
+                  @click="decidir(item, false)"
+                />
+
+                <AppButton
+                  :aria-label="`Aprovar solicitação de ${item.usuario_nome || item.usuario_email}`"
+                  :disabled="decidindo !== null"
+                  :label="decidindo === item.id && acaoAtual === 'aprovar' ? 'Aprovando…' : 'Aprovar'"
+                  :loading="decidindo === item.id"
+                  variant="primary"
+                  @click="decidir(item, true)"
+                />
+              </div>
+
+              <p v-else-if="item.decidida_em" class="min-w-0 break-words text-xs leading-5 text-slate-500 xl:text-right">
+                {{ item.status === 'APROVADA' ? 'Aprovada' : 'Recusada' }} em
+                <time :datetime="item.decidida_em">{{ formatarData(item.decidida_em) }}</time>
+                <span v-if="item.decidida_por_email" class="block break-all">por {{ item.decidida_por_email }}</span>
+              </p>
+            </li>
+          </ul>
+        </AsyncView>
+      </div>
+    </section>
   </div>
 </template>
+
+<style scoped>
+.solicitacoes-header {
+  margin: 1rem 0 1.5rem;
+}
+
+.solicitacoes-header :deep(h1) {
+  color: #334155;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.solicitacoes-header :deep(p) {
+  margin-top: 0.25rem;
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.solicitacoes-filtros :deep(> div) {
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+.solicitacoes-filtros :deep(button) {
+  min-height: 44px;
+  margin-bottom: -1px;
+  padding: 0.75rem 1rem;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.875rem;
+  transition: color 150ms, border-color 150ms, background-color 150ms;
+}
+
+.solicitacoes-filtros :deep(button.bg-blue-600) {
+  border-bottom-color: #2563eb;
+  color: #2563eb;
+}
+
+.solicitacoes-filtros :deep(button:hover) {
+  background: #f8fafc;
+  color: #334155;
+}
+
+.solicitacoes :deep(button:focus-visible) {
+  outline: 2px solid #2563eb;
+  outline-offset: -2px;
+}
+
+.solicitacao-acoes :deep(.app-btn) {
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  box-shadow: none;
+}
+
+.solicitacao-acoes :deep(.app-btn:first-child) {
+  border: 1px solid #e2e8f0;
+}
+
+@media (min-width: 1280px) {
+  .solicitacao-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(13rem, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .solicitacoes :deep(*) {
+    transition: none;
+    animation: none;
+  }
+}
+</style>

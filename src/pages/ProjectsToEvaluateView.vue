@@ -79,20 +79,32 @@
 </script>
 
 <template>
-  <div class="mx-auto w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
-    <header class="mb-5 sm:mb-6">
-      <h1 class="text-xl font-semibold tracking-tight text-gray-900 sm:text-2xl">
+  <div class="evaluation-flow w-full min-w-0">
+    <nav aria-label="Navegação de avaliações" class="mb-5">
+      <RouterLink class="evaluation-back" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
+    </nav>
+
+    <header class="evaluation-filters mb-5 border-b border-slate-200 pb-3">
+      <h1 class="text-xl font-semibold tracking-tight text-slate-700 sm:text-2xl">
         {{ isAvaliador ? 'Projetos para avaliar' : 'Projetos da edição' }}
       </h1>
 
-      <p v-if="isAvaliador" class="mt-1 text-sm text-gray-500">
+      <p v-if="isAvaliador" class="mt-1 text-sm text-slate-500">
         {{ evaluatedCount }} de {{ totalCount }} projetos avaliados
       </p>
 
-      <p v-else class="mt-1 text-sm text-gray-500">
+      <p v-else class="mt-1 text-sm text-slate-500">
         Visão somente leitura.
       </p>
     </header>
+
+    <progress
+      v-if="isAvaliador && !loading && !error && totalCount > 0"
+      aria-label="Progresso dos projetos avaliados"
+      class="mb-6 h-1.5 w-full overflow-hidden rounded-full accent-blue-600"
+      :max="totalCount"
+      :value="evaluatedCount"
+    />
 
     <p
       v-if="isAvaliador && !loading && !error && totalCount > 0 && !aberta"
@@ -105,7 +117,7 @@
     <AsyncView :error="error" :loading="loading" @retry="run">
       <!-- Professor / admin -->
       <template v-if="!isAvaliador">
-        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-gray-500">
+        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-slate-500">
           Não há equipes cadastradas nesta edição.
         </p>
 
@@ -114,15 +126,15 @@
 
       <!-- Avaliador -->
       <template v-else>
-        <div class="mb-5 sm:mb-6">
+        <div class="evaluation-filters mb-5 border-b border-slate-200 pb-3">
           <FilterChipGroup v-model="selectedFilter" :options="filterOptions" />
         </div>
 
-        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-gray-500">
+        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-slate-500">
           {{ totalCount === 0 ? 'Não há projetos nesta edição.' : 'Nenhum projeto neste filtro.' }}
         </p>
 
-        <div v-else class="flex flex-col gap-3 sm:gap-4">
+        <div v-else class="overflow-hidden rounded-lg border border-slate-200 bg-white divide-y divide-slate-200">
           <template v-for="item in filteredProjects" :key="item.projeto.id">
             <EvaluationProjectCardList
               v-if="item.concluido"
@@ -136,7 +148,7 @@
 
             <EvaluationProjectCardList
               v-else
-              :class="aberta ? 'cursor-pointer' : 'opacity-70'"
+              :editable="aberta"
               :name="item.projeto.nome_projeto"
               status="pendente"
               :team-name="item.projeto.equipe"
@@ -149,8 +161,6 @@
 
     <footer class="mt-6 flex items-center justify-start sm:mt-8">
       <AppButton
-        icon="←"
-        icon-position="left"
         label="Voltar para edições"
         variant="secondary"
         @click="router.push('/avaliacao')"
@@ -158,3 +168,5 @@
     </footer>
   </div>
 </template>
+
+<style scoped src="./evaluation-flow.css"></style>

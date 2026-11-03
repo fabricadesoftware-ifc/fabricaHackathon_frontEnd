@@ -1,77 +1,75 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import EvaluationBadge from '@/components/ui/EvaluationBadge'
+  import { computed, ref, watch } from 'vue'
+  import EvaluationBadge from '@/components/ui/EvaluationBadge'
 
-interface BaseProjectProps {
-  avatar?: string | null
-  name: string
-  teamName: string
-  /** Projeto já avaliado continua clicável (ex.: avaliação ainda aberta, para ajustar notas). */
-  editable?: boolean
-}
+  interface BaseProjectProps {
+    avatar?: string | null
+    name: string
+    teamName: string
+    /** Projeto já avaliado continua clicável (ex.: avaliação ainda aberta, para ajustar notas). */
+    editable?: boolean
+  }
 
-interface PendingProjectProps extends BaseProjectProps {
-  status: 'pendente'
-  score?: undefined
-}
+  interface PendingProjectProps extends BaseProjectProps {
+    status: 'pendente'
+    score?: undefined
+  }
 
-interface EvaluatedProjectProps extends BaseProjectProps {
-  status: 'avaliado'
-  score: number
-}
+  interface EvaluatedProjectProps extends BaseProjectProps {
+    status: 'avaliado'
+    score: number
+  }
 
-type EvaluationProjectCardListProps =
-  | PendingProjectProps
-  | EvaluatedProjectProps
+  type EvaluationProjectCardListProps
+    = | PendingProjectProps
+      | EvaluatedProjectProps
 
-const props = defineProps<EvaluationProjectCardListProps>()
+  const props = defineProps<EvaluationProjectCardListProps>()
 
-const emit = defineEmits<{
-  click: []
-}>()
+  const emit = defineEmits<{
+    click: []
+  }>()
 
-const imageError = ref(false)
+  const imageError = ref(false)
 
-const isEvaluated = computed(() => props.status === 'avaliado')
+  watch(
+    () => props.avatar,
+    () => {
+      imageError.value = false
+    },
+  )
 
-watch(
-  () => props.avatar,
-  () => {
-    imageError.value = false
-  },
-)
+  const hasAvatar = computed(() => {
+    return Boolean(props.avatar) && !imageError.value
+  })
 
-const hasAvatar = computed(() => {
-  return Boolean(props.avatar) && !imageError.value
-})
+  const projectInitial = computed(() => {
+    return props.name.trim().charAt(0).toUpperCase()
+  })
 
-const projectInitial = computed(() => {
-  return props.name.trim().charAt(0).toUpperCase()
-})
+  const isLocked = computed(() => !props.editable)
 
-const isLocked = computed(() => isEvaluated.value && !props.editable)
+  function handleClick () {
+    if (isLocked.value) return
 
-function handleClick() {
-  if (isLocked.value) return
+    emit('click')
+  }
 
-  emit('click')
-}
-
-function handleImageError() {
-  imageError.value = true
-}
+  function handleImageError () {
+    imageError.value = true
+  }
 </script>
 
 <template>
   <button
-    type="button"
-    :disabled="isLocked"
-    class="flex w-full items-center justify-between rounded-2xl border p-4 text-left transition-all duration-150 sm:p-5"
+    class="flex w-full flex-wrap items-center justify-between gap-y-3 p-4 text-left transition-colors duration-150 sm:p-5 focus-visible:outline-2 focus-visible:outline-blue-600"
     :class="
       isLocked
-        ? 'cursor-not-allowed border-gray-200 bg-gray-100 opacity-55'
-        : 'cursor-pointer border-gray-200 bg-white hover:border-blue-300 hover:shadow-md'
+        ? 'cursor-default bg-slate-50/50'
+        : 'cursor-pointer bg-white hover:bg-blue-50/50'
     "
+    :disabled="isLocked"
+    type="button"
     @click="handleClick"
   >
     <!-- Informações do projeto -->
@@ -79,7 +77,7 @@ function handleImageError() {
 
       <!-- Avatar -->
       <div
-        class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-100 bg-white shadow-sm sm:size-14"
+        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100"
       >
         <img
           v-if="hasAvatar"
@@ -87,7 +85,7 @@ function handleImageError() {
           class="size-full object-cover"
           :src="props.avatar!"
           @error="handleImageError"
-        />
+        >
 
         <span
           v-else
@@ -100,15 +98,15 @@ function handleImageError() {
       <!-- Nome e equipe -->
       <div class="min-w-0">
         <p
-          class="truncate text-sm font-semibold sm:text-base"
-          :class="isEvaluated ? 'text-gray-500' : 'text-gray-800'"
+          class="break-words text-sm font-semibold sm:text-base"
+          :class="'text-slate-700'"
         >
           {{ props.name }}
         </p>
 
         <p
           class="mt-0.5 truncate text-xs sm:text-sm"
-          :class="isEvaluated ? 'text-gray-400' : 'text-gray-500'"
+          :class="'text-slate-500'"
         >
           {{ props.teamName }}
         </p>
@@ -116,7 +114,7 @@ function handleImageError() {
     </div>
 
     <!-- Status -->
-    <div class="ml-3 flex shrink-0 items-center">
+    <div class="ml-3 flex shrink-0 items-center gap-3">
       <EvaluationBadge
         v-if="props.status === 'avaliado'"
         :score="props.score"
@@ -127,6 +125,8 @@ function handleImageError() {
         v-else
         status="Pendente"
       />
+
+      <span v-if="!isLocked" aria-hidden="true" class="mdi mdi-chevron-right text-xl text-slate-400" />
     </div>
   </button>
 </template>

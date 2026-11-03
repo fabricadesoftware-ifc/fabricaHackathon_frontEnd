@@ -1,72 +1,88 @@
 <template>
-  <div class="flex flex-col p-4 border border-gray-200 rounded-lg bg-white shadow-sm w-full gap-2 mb-2">
-    <div class="flex justify-between items-center w-full">
-      <h3 class="text-base font-semibold text-gray-800">{{ criteriaName }}</h3>
-      
-      <NumberStepper 
-        :modelValue="modelValue"
-        @update:modelValue="updateScore"
-        :min="min"
+  <section class="border-b border-slate-200 py-5 last:border-b-0">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="min-w-0">
+        <h3 :id="`${fieldId}-title`" class="break-words text-base font-semibold text-slate-700">{{ criteriaName }}</h3>
+        <p class="mt-1 text-xs text-slate-500">{{ modelValue === null ? 'Aguardando nota' : 'Nota preenchida' }} · de {{ min }} a {{ max }}</p>
+      </div>
+
+      <NumberStepper
+        :aria-labelledby="`${fieldId}-title`"
+        :disabled="disabled"
         :max="max"
+        :min="min"
+        :model-value="modelValue"
         :step="step"
+        @update:model-value="updateScore"
       />
     </div>
-    <div class="flex">
-      <button 
-        type="button"
-        @click="toggleComment"
-        class="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors focus:outline-none"
-      >
-        {{ isCommentVisible ? '- Esconder comentário' : '+ Adicionar comentário' }}
-      </button>
-    </div>
-    <div v-if="isCommentVisible" class="flex flex-col mt-2">
-      <textarea 
+
+    <button
+      :aria-controls="`${fieldId}-comment`"
+      :aria-expanded="isCommentVisible"
+      class="mt-3 inline-flex min-h-9 items-center gap-1.5 text-sm text-blue-600 hover:underline disabled:opacity-50"
+      :disabled="disabled"
+      type="button"
+      @click="toggleComment"
+    >
+      <span aria-hidden="true" class="mdi mdi-comment-text-outline" />
+      {{ isCommentVisible ? 'Ocultar comentário' : 'Adicionar comentário' }}
+      <span class="text-xs text-slate-500">(opcional)</span>
+    </button>
+
+    <div v-if="isCommentVisible" :id="`${fieldId}-comment`" class="mt-3">
+      <label class="mb-2 block text-sm text-slate-600" :for="`${fieldId}-input`">Comentário sobre {{ criteriaName }}</label>
+
+      <textarea
+        :id="`${fieldId}-input`"
+        class="w-full resize-y rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+        :disabled="disabled"
+        placeholder="Inclua uma observação sobre este critério"
+        rows="3"
         :value="comment"
         @input="updateComment"
-        class="w-full p-3 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-        placeholder="comentário (nota)"
-        rows="3"
-      ></textarea>
+      />
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import NumberStepper from '../NumberStepper/NumberStepper.vue' 
+  import { ref, useId } from 'vue'
+  import NumberStepper from '../NumberStepper/NumberStepper.vue'
 
-const props = withDefaults(defineProps<{
-  criteriaName: string;
-  modelValue: number;
-  comment?: string;
-  min?: number;
-  max?: number;
-  step?: number;
-}>(), {
-  comment: '',
-  min: 0,
-  max: 10,
-  step: 0.5
-})
+  withDefaults(defineProps<{
+    criteriaName: string
+    modelValue: number | null
+    disabled?: boolean
+    comment?: string
+    min?: number
+    max?: number
+    step?: number
+  }>(), {
+    comment: '',
+    min: 0,
+    max: 10,
+    step: 0.5,
+  })
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: number): void;
-  (e: 'update:comment', value: string): void;
-}>()
+  const emit = defineEmits<{
+    (e: 'update:modelValue', value: number): void
+    (e: 'update:comment', value: string): void
+  }>()
 
-const isCommentVisible = ref(false)
+  const fieldId = useId()
+  const isCommentVisible = ref(false)
 
-const toggleComment = () => {
-  isCommentVisible.value = !isCommentVisible.value
-}
+  function toggleComment () {
+    isCommentVisible.value = !isCommentVisible.value
+  }
 
-const updateScore = (newValue: number) => {
-  emit('update:modelValue', newValue)
-}
+  function updateScore (newValue: number) {
+    emit('update:modelValue', newValue)
+  }
 
-const updateComment = (event: Event) => {
-  const target = event.target as HTMLTextAreaElement
-  emit('update:comment', target.value)
-}
+  function updateComment (event: Event) {
+    const target = event.target as HTMLTextAreaElement
+    emit('update:comment', target.value)
+  }
 </script>

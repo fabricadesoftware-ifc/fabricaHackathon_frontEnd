@@ -1,15 +1,16 @@
 <template>
-  <div
-    class="group hover:-translate-y-0.5 transition-all duration-300 w-full cursor-pointer p-3 flex flex-col gap-4 rounded-lg border border-gray-200 hover:border-gray-300"
+  <button
+    class="group w-full cursor-pointer rounded-lg border border-slate-200 bg-white p-4 text-left transition-colors hover:border-blue-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 flex flex-col gap-4"
+    type="button"
     @click="emits('click')"
   >
     <div class="flex gap-3">
-      <img :alt="props.title" class="w-28 h-28 rounded-lg object-cover shrink-0" :src="props.image">
+      <img :alt="props.title" class="w-20 h-20 rounded-lg object-cover shrink-0" :src="props.image">
 
-      <div class="flex flex-col justify-between items-start gap-2 pt-2 w-full lg:flex-row lg:items-start">
+      <div class="flex flex-col justify-between items-start gap-2 w-full min-w-0">
         <div>
-          <h4 class="text-gray-900 text-base">{{ props.title }}</h4>
-          <p class="text-gray-600 text-sm">prazo final {{ props.deadline }}</p>
+          <h2 class="break-words font-semibold text-slate-700 text-base">{{ props.title }}</h2>
+          <p class="text-slate-500 text-sm">Prazo final: {{ props.deadline }}</p>
         </div>
 
         <StatusSelect
@@ -31,7 +32,7 @@
         <span class="text-xl text-blue-500 group-hover:text-blue-600 mdi mdi-arrow-right" />
       </div>
     </div>
-  </div>
+  </button>
 </template>
 
 <script setup lang="ts">

@@ -1,32 +1,22 @@
 <template>
-  <div class="relative flex w-full min-w-0 flex-col gap-4 rounded-md border border-solid border-[#E5E7EB] bg-white px-4 py-4 sm:flex-row sm:items-start sm:justify-between sm:px-5 sm:py-5">
-    <div class="flex justify-end sm:absolute sm:right-4 sm:top-4">
-      <EvaluationBadge :score="score" :status="status" />
-    </div>
-
-    <div class="flex min-w-0 items-start gap-3 sm:max-w-[70%]">
-      <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-white shadow-xl">
-        <img :alt="name" class="h-full w-full object-cover" :src="avatar">
-      </div>
-
+  <header class="border-b border-slate-200 pb-6">
+    <div class="flex flex-wrap items-start justify-between gap-3">
       <div class="min-w-0 flex-1">
-        <h2 class="break-words text-lg font-semibold text-[#111827] sm:text-xl">{{ name }}</h2>
-        <p class="mt-1 break-words text-sm text-[#4B5563] sm:text-base">{{ description }}</p>
-
-        <p class="mt-2 flex min-w-0 flex-wrap gap-x-2 text-sm text-[#4B5563]">
-          <span>Equipe:</span>
-          <span class="text-[#111827]">{{ teamName }}</span>
-          <span class="break-all text-[#2563EB]">{{ projectUrl }} <span class="mdi mdi-arrow-top-right"></span></span>
-        </p>
-
-        <div class="mt-3 flex items-center gap-2 break-words text-sm font-medium text-[#2563EB]">
-          <span class="mdi mdi-trophy-outline shrink-0 text-lg"></span>
-          <span>{{ editionName }}</span>
-        </div>
+        <h1 class="break-words text-2xl font-semibold leading-tight text-slate-700">{{ name }}</h1>
+        <p class="mt-2 text-sm text-slate-600">Equipe <span class="font-medium text-slate-700">{{ teamName }}</span></p>
       </div>
+
+      <EvaluationBadge v-if="status === 'Avaliado'" :score="score" status="Avaliado" />
+      <EvaluationBadge v-else status="Pendente" />
     </div>
 
-  </div>
+    <p class="mt-4 max-w-3xl whitespace-pre-line break-words text-sm leading-6 text-slate-600">{{ description }}</p>
+
+    <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+      <span class="inline-flex items-center gap-2"><span aria-hidden="true" class="mdi mdi-calendar-outline" />{{ editionName }}</span>
+      <span v-if="projectUrl" class="inline-flex min-w-0 items-center gap-2 break-all text-blue-600"><span aria-hidden="true" class="mdi mdi-open-in-new" />{{ projectUrl }}</span>
+    </div>
+  </header>
 </template>
 
 <script setup lang="ts">

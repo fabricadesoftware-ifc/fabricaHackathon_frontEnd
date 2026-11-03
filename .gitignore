@@ -5,3 +5,7 @@ dist/
 .env
 .env.local
 .env.*.local
+
+# Configuração local do agente e instruções de trabalho
+.codex/
+prompt-solicitacoes.md

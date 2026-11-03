@@ -80,16 +80,16 @@
 </script>
 
 <template>
-  <div class="px-4 py-6 sm:px-6 lg:px-8">
-    <h1 class="mb-2 text-xl font-semibold text-gray-900 sm:text-2xl">
+  <div class="evaluation-flow w-full min-w-0">
+    <h1 class="mb-2 text-xl font-semibold text-slate-700 sm:text-2xl">
       Avaliações
     </h1>
 
-    <p class="mb-1 text-sm text-gray-600 sm:text-base">
+    <p class="mb-1 text-sm text-slate-600 sm:text-base">
       {{ isAvaliador ? 'Edições em que você foi designado como avaliador.' : 'Visão somente leitura de todas as edições.' }}
     </p>
 
-    <p class="mb-6 text-sm text-gray-600 sm:text-base">
+    <p class="mb-6 text-sm text-slate-600 sm:text-base">
       Escolha uma para ver os projetos
     </p>
 
@@ -98,20 +98,22 @@
       v-model:search="searchQuery"
       v-model:status="status"
       v-model:tipo="tipo"
+      appearance="toolbar"
       :options-ano="opcoesAno"
       :options-status="opcoesStatus"
       :options-tipo="opcoesTipo"
-      placeholder="Buscar edições..."
+      placeholder="Buscar edições por nome"
     />
 
     <AsyncView
       :empty="!loading && !error && cards.length === 0"
-      :empty-message="isAvaliador ? 'Você ainda não foi vinculado a nenhuma edição como avaliador.' : 'Nenhuma edição encontrada.'"
+      :empty-message="searchQuery || tipo || status || ano ? 'Nenhuma edição corresponde aos filtros selecionados.' : isAvaliador ? 'Você ainda não foi vinculado a nenhuma edição como avaliador.' : 'Nenhuma edição encontrada.'"
       :error="error"
       :loading="loading"
+      skeleton="cards"
       @retry="run"
     >
-      <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div class="mt-5 grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-4">
         <EvaluationCard
           v-for="edition in cards"
           :key="edition.id"
@@ -128,3 +130,5 @@
     </AsyncView>
   </div>
 </template>
+
+<style scoped src="./evaluation-flow.css"></style>
