@@ -6,7 +6,7 @@
     avatar?: string | null
     name: string
     teamName: string
-    /** Projeto já avaliado continua clicável (ex.: avaliação ainda aberta, para ajustar notas). */
+    /** Permite abrir um projeto pendente quando a avaliação da edição estiver aberta. */
     editable?: boolean
   }
 
@@ -47,7 +47,11 @@
     return props.name.trim().charAt(0).toUpperCase()
   })
 
-  const isLocked = computed(() => !props.editable)
+  const isCompleted = computed(() => props.status === 'avaliado')
+  const isLocked = computed(() => isCompleted.value || !props.editable)
+  const formattedScore = computed(() => props.status === 'avaliado'
+    ? props.score.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : '')
 
   function handleClick () {
     if (isLocked.value) return
@@ -62,7 +66,7 @@
 
 <template>
   <button
-    class="flex w-full flex-wrap items-center justify-between gap-y-3 p-4 text-left transition-colors duration-150 sm:p-5 focus-visible:outline-2 focus-visible:outline-blue-600"
+    class="grid w-full grid-cols-1 gap-x-4 gap-y-3 p-4 text-left transition-colors duration-150 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-5 focus-visible:outline-2 focus-visible:outline-blue-600"
     :class="
       isLocked
         ? 'cursor-default bg-slate-50/50'
@@ -73,7 +77,7 @@
     @click="handleClick"
   >
     <!-- Informações do projeto -->
-    <div class="mr-2 flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+    <div class="flex min-w-0 items-center gap-3">
 
       <!-- Avatar -->
       <div
@@ -89,7 +93,8 @@
 
         <span
           v-else
-          class="flex size-full items-center justify-center text-base font-bold text-blue-600 sm:text-lg"
+          class="flex size-full items-center justify-center text-base font-semibold"
+          :class="isCompleted ? 'text-slate-500' : 'text-blue-600'"
         >
           {{ projectInitial }}
         </span>
@@ -98,15 +103,14 @@
       <!-- Nome e equipe -->
       <div class="min-w-0">
         <p
-          class="break-words text-sm font-semibold sm:text-base"
-          :class="'text-slate-700'"
+          class="break-words text-sm leading-6 sm:text-base"
+          :class="isCompleted ? 'font-medium text-slate-600' : 'font-semibold text-slate-700'"
         >
           {{ props.name }}
         </p>
 
         <p
-          class="mt-0.5 truncate text-xs sm:text-sm"
-          :class="'text-slate-500'"
+          class="mt-0.5 break-words text-xs text-slate-500 sm:text-sm"
         >
           {{ props.teamName }}
         </p>
@@ -114,19 +118,21 @@
     </div>
 
     <!-- Status -->
-    <div class="ml-3 flex shrink-0 items-center gap-3">
+    <div class="flex items-center gap-3 pl-13 sm:pl-0">
       <EvaluationBadge
         v-if="props.status === 'avaliado'"
         :score="props.score"
         status="Avaliado"
-      />
+      >
+        <template #score>{{ formattedScore }}</template>
+      </EvaluationBadge>
 
       <EvaluationBadge
         v-else
         status="Pendente"
       />
 
-      <span v-if="!isLocked" aria-hidden="true" class="mdi mdi-chevron-right text-xl text-slate-400" />
+      <span v-if="!isLocked" aria-hidden="true" class="mdi mdi-chevron-right ml-auto text-xl text-slate-400 sm:ml-0" />
     </div>
   </button>
 </template>

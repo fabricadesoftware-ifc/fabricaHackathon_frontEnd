@@ -21,6 +21,8 @@
     original?: number
   }
 
+  const emit = defineEmits<{ 'evaluation-completed': [path: string | null] }>()
+
   const route = useRoute()
   const router = useRouter()
 
@@ -31,6 +33,10 @@
   const isSubmitting = ref(false)
   const isSubmitted = ref(false)
   const submitError = ref('')
+
+  watch(isSubmitted, submitted => {
+    emit('evaluation-completed', submitted ? route.path : null)
+  }, { immediate: true })
 
   const { data: avaliacao, loading, error, run } = useAsync(async (): Promise<MinhaAvaliacao> => {
     if (!Number.isInteger(editionId.value) || !Number.isInteger(projectId.value)) {
@@ -79,9 +85,9 @@
     criteria.value.filter(c => c.notaId !== undefined && (c.score !== c.original || c.comment.trim() !== '')),
   )
 
-  // Todos os critérios pendentes precisam de nota entre 0 e 10 (a API exige todos).
-  const allPendingScored = computed(() =>
-    pendentes.value.every(c => c.score !== null && c.score >= 0 && c.score <= 10),
+  // A digitação pode esvaziar também uma nota já lançada; valide todos antes de salvar.
+  const allCriteriaScored = computed(() =>
+    criteria.value.every(c => c.score !== null && c.score >= 0 && c.score <= 10),
   )
   const hasChanges = computed(() => pendentes.value.length > 0 || alterados.value.length > 0)
 
@@ -94,7 +100,7 @@
       : avaliados.reduce((soma, c) => soma + (c.score ?? 0), 0) / avaliados.length
   })
 
-  function updateScore (criterion: Criterion, score: number) {
+  function updateScore (criterion: Criterion, score: number | null) {
     criterion.score = score
     submitError.value = ''
   }
@@ -119,7 +125,7 @@
     if (isSubmitting.value || isSubmitted.value || !avaliacao.value) {
       return
     }
-    if (!allPendingScored.value) {
+    if (!allCriteriaScored.value) {
       submitError.value = 'Avalie todos os critérios antes de enviar.'
       return
     }
@@ -154,22 +160,25 @@
 
 <template>
   <div class="evaluation-flow w-full min-w-0">
-    <nav aria-label="Navegação de avaliações" class="mb-5">
+    <nav v-if="!isSubmitted" aria-label="Navegação de avaliações" class="mb-5">
       <button class="evaluation-back" :disabled="isSubmitting" type="button" @click="voltar"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Projetos da edição</button>
     </nav>
 
     <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
       <SuccessState
         v-if="isSubmitted"
-        button-label="Voltar às avaliações"
-        class="py-12"
-        :description="`Sua avaliação do projeto ${avaliacao?.projeto.nome_projeto} foi registrada.`"
-        role="status"
+        button-label="Voltar aos projetos da edição"
+        description="Sua avaliação foi registrada com sucesso."
+        :edition-name="avaliacao?.edicao_nome"
+        fullscreen
+        :project-name="avaliacao?.projeto.nome_projeto"
+        secondary-button-label="Ver todas as avaliações"
         title="Avaliação enviada!"
         @click="voltar"
+        @secondary-click="router.push('/avaliacao')"
       />
 
-      <div v-else-if="avaliacao" class="flex flex-col gap-6">
+      <div v-else-if="avaliacao" class="flex min-w-0 flex-col gap-5">
         <EvaluationProjectCard
           avatar=""
           :description="avaliacao.projeto.descricao_projeto || 'Projeto participante da edição.'"
@@ -189,19 +198,19 @@
           A avaliação desta edição não está aberta: as notas abaixo são somente leitura.
         </p>
 
-        <div class="grid min-w-0 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
+        <div class="grid min-w-0 grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
           <section aria-labelledby="criteria-title" class="min-w-0">
             <h2 id="criteria-title" class="text-lg font-semibold text-slate-700">
               Critérios de avaliação
             </h2>
 
-            <p class="mb-2 mt-1 text-sm leading-6 text-slate-500">Atribua uma nota de 0 a 10 para cada critério, em intervalos de 0,5.</p>
+            <p class="mb-4 mt-1 text-sm leading-6 text-slate-500">Atribua uma nota de 0 a 10 para cada critério, em intervalos de 0,5.</p>
 
             <p v-if="criteria.length === 0" class="text-gray-500">
               Esta edição ainda não tem critérios cadastrados.
             </p>
 
-            <div v-else-if="aberta" class="flex flex-col">
+            <div v-else-if="aberta" class="flex flex-col gap-3">
               <EvaluationCriteriaCard
                 v-for="criterion in criteria"
                 :key="criterion.id"
@@ -221,28 +230,32 @@
               <li
                 v-for="criterion in criteria"
                 :key="criterion.id"
-                class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4"
               >
-                <span class="font-semibold text-gray-800">{{ criterion.name }}</span>
-                <span class="text-gray-700">{{ criterion.score === null ? 'Sem nota' : criterion.score.toFixed(1) }}</span>
+                <span class="break-words font-semibold text-slate-700">{{ criterion.name }}</span>
+                <span class="shrink-0 tabular-nums text-slate-600">{{ criterion.score === null ? 'Sem nota' : criterion.score.toFixed(1) }}</span>
               </li>
             </ul>
           </section>
 
-          <aside aria-labelledby="summary-title" class="rounded-lg border border-slate-200 bg-slate-50 p-5 xl:sticky xl:top-6">
+          <aside aria-labelledby="summary-title" class="evaluation-summary rounded-lg border border-slate-200 bg-white p-5 xl:sticky xl:top-6">
             <h2 id="summary-title" class="text-base font-semibold text-slate-700">Resumo da avaliação</h2>
-            <p class="mt-3 text-sm text-slate-600" role="status">{{ scoredCount }} de {{ criteria.length }} critérios preenchidos</p>
+
+            <p class="mt-5 flex items-baseline justify-between gap-2 text-sm text-slate-600" role="status">
+              <span>Critérios preenchidos</span>
+              <span class="shrink-0 font-semibold tabular-nums text-slate-700">{{ scoredCount }} de {{ criteria.length }}</span>
+            </p>
 
             <progress
               v-if="criteria.length > 0"
               aria-label="Critérios preenchidos"
-              class="mt-3 mb-4 h-1.5 w-full overflow-hidden rounded-full accent-blue-600"
+              class="mt-2 mb-5 h-1.5 w-full overflow-hidden rounded-full accent-blue-600"
               :max="criteria.length"
               :value="scoredCount"
             />
 
             <FinalScoreBar :label="scoredCount < criteria.length ? 'Média parcial' : 'Média desta avaliação'" :score="finalScore" />
-            <p v-if="aberta && !allPendingScored" class="mt-4 text-sm leading-6 text-slate-600">Preencha todos os critérios para liberar o envio. Para atribuir zero, selecione o centro do controle de nota.</p>
+            <p v-if="aberta && !allCriteriaScored" class="mt-4 text-sm leading-6 text-slate-600">Preencha todos os critérios com notas válidas para enviar. Digite o valor ou use os botões de ajuste.</p>
             <p v-else-if="aberta" class="mt-4 text-sm leading-6 text-slate-500">Revise as notas antes de {{ avaliacao.concluido ? 'salvar as alterações' : 'enviar a avaliação' }}.</p>
 
             <p v-if="submitError" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">
@@ -251,6 +264,7 @@
 
             <footer class="evaluation-actions mt-5 flex w-full flex-col-reverse gap-2">
               <AppButton
+                class="evaluation-secondary-action"
                 :disabled="isSubmitting"
                 :label="aberta ? 'Voltar sem salvar' : 'Voltar'"
                 variant="secondary"
@@ -259,7 +273,7 @@
 
               <AppButton
                 v-if="aberta"
-                :disabled="isSubmitting || !hasChanges || !allPendingScored"
+                :disabled="isSubmitting || !hasChanges || !allCriteriaScored"
                 :label="isSubmitting ? 'Enviando...' : (avaliacao.concluido ? 'Salvar alterações' : 'Enviar avaliação')"
                 :loading="isSubmitting"
                 variant="primary"
@@ -274,3 +288,19 @@
 </template>
 
 <style scoped src="./evaluation-flow.css"></style>
+
+<style scoped>
+.evaluation-flow {
+  padding-top: 0;
+}
+
+.evaluation-summary :deep(.evaluation-secondary-action) {
+  background: transparent !important;
+  color: #64748b !important;
+}
+
+.evaluation-summary :deep(.evaluation-secondary-action:hover) {
+  background: #f8fafc !important;
+  color: #334155 !important;
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
-  <section class="border-b border-slate-200 py-5 last:border-b-0">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="min-w-0">
+  <section class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 sm:p-5">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div class="min-w-0 flex-1">
         <h3 :id="`${fieldId}-title`" class="break-words text-base font-semibold text-slate-700">{{ criteriaName }}</h3>
         <p class="mt-1 text-xs text-slate-500">{{ modelValue === null ? 'Aguardando nota' : 'Nota preenchida' }} · de {{ min }} a {{ max }}</p>
       </div>
@@ -9,6 +9,7 @@
       <NumberStepper
         :aria-labelledby="`${fieldId}-title`"
         :disabled="disabled"
+        :label="`Nota de ${criteriaName}`"
         :max="max"
         :min="min"
         :model-value="modelValue"
@@ -20,7 +21,7 @@
     <button
       :aria-controls="`${fieldId}-comment`"
       :aria-expanded="isCommentVisible"
-      class="mt-3 inline-flex min-h-9 items-center gap-1.5 text-sm text-blue-600 hover:underline disabled:opacity-50"
+      class="mt-2 inline-flex min-h-9 items-center gap-1.5 text-sm text-blue-600 hover:underline disabled:opacity-50"
       :disabled="disabled"
       type="button"
       @click="toggleComment"
@@ -66,7 +67,7 @@
   })
 
   const emit = defineEmits<{
-    (e: 'update:modelValue', value: number): void
+    (e: 'update:modelValue', value: number | null): void
     (e: 'update:comment', value: string): void
   }>()
 
@@ -77,7 +78,7 @@
     isCommentVisible.value = !isCommentVisible.value
   }
 
-  function updateScore (newValue: number) {
+  function updateScore (newValue: number | null) {
     emit('update:modelValue', newValue)
   }
 

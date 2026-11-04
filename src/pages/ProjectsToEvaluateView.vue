@@ -7,6 +7,7 @@
   import { AsyncView } from '@/components/ui/AsyncView'
   import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
   import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
+  import ProgressBar from '@/components/ui/ProgressBar/ProgressBar.vue'
   import { useAsync } from '@/composables/useAsync'
   import { listarMinhasAvaliacoes, obterEdicao } from '@/services'
   import { useAuthStore } from '@/stores/auth'
@@ -64,9 +65,10 @@
     return e ? e.equipes.map(eq => equipeParaCard(eq, { nome: e.nome, status: e.status })) : []
   })
 
-  // Projeto pendente abre o formulário; avaliado também, enquanto a avaliação estiver aberta (ajuste de notas).
+  // Só projetos pendentes podem abrir o formulário, enquanto a avaliação estiver aberta.
   function handleProjectClick (projectId: number) {
-    if (!aberta.value) {
+    const project = projects.value.find(item => item.projeto.id === projectId)
+    if (!aberta.value || !project || project.concluido) {
       return
     }
     router.push(`/avaliacao/${editionId.value}/projeto/${projectId}`)
@@ -84,13 +86,13 @@
       <RouterLink class="evaluation-back" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
     </nav>
 
-    <header class="evaluation-filters mb-5 border-b border-slate-200 pb-3">
+    <header class="mb-5">
       <h1 class="text-xl font-semibold tracking-tight text-slate-700 sm:text-2xl">
         {{ isAvaliador ? 'Projetos para avaliar' : 'Projetos da edição' }}
       </h1>
 
       <p v-if="isAvaliador" class="mt-1 text-sm text-slate-500">
-        {{ evaluatedCount }} de {{ totalCount }} projetos avaliados
+        Acompanhe o progresso e avalie os projetos pendentes da edição.
       </p>
 
       <p v-else class="mt-1 text-sm text-slate-500">
@@ -98,12 +100,13 @@
       </p>
     </header>
 
-    <progress
+    <ProgressBar
       v-if="isAvaliador && !loading && !error && totalCount > 0"
-      aria-label="Progresso dos projetos avaliados"
-      class="mb-6 h-1.5 w-full overflow-hidden rounded-full accent-blue-600"
-      :max="totalCount"
-      :value="evaluatedCount"
+      class="mb-6"
+      :current="evaluatedCount"
+      heading="Projetos avaliados"
+      label="projetos avaliados"
+      :total="totalCount"
     />
 
     <p
@@ -138,12 +141,10 @@
           <template v-for="item in filteredProjects" :key="item.projeto.id">
             <EvaluationProjectCardList
               v-if="item.concluido"
-              :editable="aberta"
               :name="item.projeto.nome_projeto"
               :score="mediaDasNotas(item)"
               status="avaliado"
               :team-name="item.projeto.equipe"
-              @click="handleProjectClick(item.projeto.id)"
             />
 
             <EvaluationProjectCardList

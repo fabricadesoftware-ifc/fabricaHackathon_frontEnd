@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterView, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
@@ -30,6 +30,16 @@ const isAuthPage = computed(() =>
   ['/login', '/registro'].includes(route.path)
 )
 
+// Estado transitório: acesso direto e recarregamento nunca implicam uma conclusão.
+const completedEvaluationPath = ref<string | null>(null)
+const isFullscreenPage = computed(() => isAuthPage.value || (
+  route.name === 'avaliacao-projeto' && completedEvaluationPath.value === route.path
+))
+
+watch(() => route.path, () => {
+  completedEvaluationPath.value = null
+})
+
 const authStore = useAuthStore()
 
 const isLoggedIn = computed(() => authStore.isAuthenticated)
@@ -58,12 +68,12 @@ const activeItem = computed(() => {
 <template>
   <div class="flex min-h-screen bg-white">
     <!-- Sidebar desktop -->
-    <Sidebar v-if="!isAuthPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
+    <Sidebar v-if="!isFullscreenPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
 
     <!-- Conteúdo -->
     <div class="flex min-w-0 flex-1 flex-col">
       <AppHeader
-  v-if="!isAuthPage"
+  v-if="!isFullscreenPage"
   :is-logged="isLoggedIn"
   :user-avatar="authStore.user?.foto_perfil ?? undefined"
   :user-name="userName"
@@ -72,13 +82,20 @@ const activeItem = computed(() => {
 
       <main
         class="min-w-0 flex-1"
-        :class="isAuthPage ? '' : 'p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0'"
+        :class="isFullscreenPage ? '' : 'p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0'"
       >
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <component
+            :is="Component"
+            v-if="route.name === 'avaliacao-projeto'"
+            @evaluation-completed="completedEvaluationPath = $event"
+          />
+          <component :is="Component" v-else />
+        </RouterView>
       </main>
     </div>
 
 
-    <BottomNavBar v-if="!isAuthPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
+    <BottomNavBar v-if="!isFullscreenPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
   </div>
 </template>

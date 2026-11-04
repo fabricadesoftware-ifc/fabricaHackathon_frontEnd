@@ -2,7 +2,7 @@
   <div v-if="props.score !== undefined" class="bg-[#DCFCE7] border border-[#DCFCE7] gap-1" :class="baseStyle">
     <p :class="textColor">{{ props.status }}</p>
     <p :class="textColor">-</p>
-    <p :class="textColor">{{ formattedScore }}</p>
+    <p :class="textColor"><slot name="score">{{ formattedScore }}</slot></p>
   </div>
 
   <div v-else class="bg-[#FEF3C7] border border-[#FEF3C7]" :class="baseStyle">
