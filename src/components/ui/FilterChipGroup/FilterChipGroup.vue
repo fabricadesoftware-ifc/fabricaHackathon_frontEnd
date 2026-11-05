@@ -1,24 +1,24 @@
 <script setup lang="ts">
 
-interface FilterOption {
-  label: string
-  value: string
-}
+  interface FilterOption {
+    label: string
+    value: string
+  }
 
-interface Props {
-  options: FilterOption[]
-  modelValue: string
-}
+  interface Props {
+    options: FilterOption[]
+    modelValue: string
+  }
 
-const props = defineProps<Props>()
+  const props = defineProps<Props>()
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-}>()
+  const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+  }>()
 
-function selectOption(value: string) {
-  emit('update:modelValue', value)
-}
+  function selectOption (value: string) {
+    emit('update:modelValue', value)
+  }
 
 </script>
 
@@ -28,13 +28,15 @@ function selectOption(value: string) {
     <button
       v-for="option in props.options"
       :key="option.value"
-      @click="selectOption(option.value)"
+      :aria-pressed="props.modelValue === option.value"
       :class="[
-        'px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition whitespace-nowrap',
+        'px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-11',
         props.modelValue === option.value
-          ? 'bg-blue-600 text-white border border-blue-600'
-          : 'bg-white border border-gray-400 text-gray-700 hover:bg-gray-50'
+          ? 'bg-blue-50 text-blue-700 border border-blue-200'
+          : 'bg-white border border-slate-200 text-slate-600 hover:bg-gray-50'
       ]"
+      type="button"
+      @click="selectOption(option.value)"
     >
       {{ option.label }}
     </button>

@@ -39,6 +39,7 @@ export interface Edicao {
   tipo_edicao: string
   total_equipes: number
   imagem_capa?: string | null
+  descricao?: string
 }
 
 export interface Apoiador {
@@ -75,6 +76,7 @@ export function edicaoParaCard (e: Edicao) {
   return {
     id: e.id,
     title: e.nome,
+    description: e.descricao ?? '',
     tags: [e.tipo_edicao, String(e.ano)].filter(Boolean),
     manager: e.responsavel,
     image: e.imagem_capa ?? '/images/fabricaHackathonThumb.png',

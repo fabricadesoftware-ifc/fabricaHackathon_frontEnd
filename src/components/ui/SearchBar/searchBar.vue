@@ -1,14 +1,17 @@
 <script setup lang="ts">
 
-  import { Input } from '@vuetify/v0'
-  import { ref, watch } from 'vue'
+  import { onBeforeUnmount, ref, watch } from 'vue'
 
   const props = withDefaults(defineProps<{
     modelValue: string
     placeholder?: string
     debounceMs?: number
+    id?: string
+    ariaLabel?: string
   }>(), {
-    placeholder: 'Buscar...',
+    placeholder: 'Buscar…',
+    id: undefined,
+    ariaLabel: 'Buscar',
     debounceMs: 300,
   })
 
@@ -23,6 +26,10 @@
 
   watch(() => props.modelValue, (val: string) => {
     searchValue.value = val
+  })
+
+  onBeforeUnmount(() => {
+    if (debounceTimer) clearTimeout(debounceTimer)
   })
 
   function onInput (value: string) {
@@ -59,11 +66,7 @@
 
 <template>
 
-  <Input.Root
-    v-slot="{ isDirty }"
-    :model-value="searchValue"
-    @update:model-value="onInput"
-  >
+  <div>
 
     <div
       class="
@@ -72,13 +75,13 @@
       bg-white
       border
       border-[#E5E7EB]
-      shadow-sm
+
       transition
       hover:border-blue-300
       focus-within:border-blue-600
       focus-within:ring-2
       focus-within:ring-blue-100
-      rounded-full
+      rounded-lg
       h-11
       w-full
       px-4
@@ -86,6 +89,7 @@
     >
 
       <span
+        aria-hidden="true"
         class="
         mdi mdi-magnify
         text-blue-600
@@ -94,21 +98,29 @@
       "
       />
 
-      <Input.Control
+      <input
+        :id="id"
+        :aria-label="ariaLabel"
+        autocomplete="off"
         class="
         bg-transparent
         w-full
         text-gray-900
         text-sm
-        placeholder-gray-400
+        placeholder-slate-500
         outline-none
       "
+        name="search"
         :placeholder="placeholder"
+        type="search"
+        :value="searchValue"
+        @input="onInput(($event.target as HTMLInputElement).value)"
         @keydown.enter="onEnter"
-      />
+      >
 
       <button
-        v-if="isDirty"
+        v-if="searchValue"
+        aria-label="Limpar busca"
         class="
           mdi mdi-close
           text-gray-400
@@ -116,6 +128,7 @@
           xl:text-[25px]
           hover:text-gray-600
           ml-2
+          min-h-8 min-w-8
         "
         type="button"
         @click="onClear"
@@ -123,6 +136,6 @@
 
     </div>
 
-  </Input.Root>
+  </div>
 
 </template>
