@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./theme/tokens.css";
 
 html {
   scrollbar-gutter: stable;
@@ -6,7 +7,7 @@ html {
 
 /* 🎨 Sobrescreve a cor primária do @vuetify/v0 com a paleta HackIFC */
 :root {
-  --v0-primary: #2563EB;
+  --v0-primary: var(--app-brand-action);
 }
 
 button:not(:disabled),
@@ -16,7 +17,7 @@ button:not(:disabled),
 
 @layer base {
   :focus-visible {
-    outline: 2px solid var(--v0-primary);
+    outline: 2px solid var(--app-focus-ring);
     outline-offset: 2px;
   }
 }
@@ -31,61 +32,186 @@ button:not(:disabled),
   }
 }
 
-/* 🎨 Paleta HackIFC — Modo Claro */
-:root {
-  --hackifc-primary: #2563EB;
-  --hackifc-primary-hover: #1D4ED8;
-  --hackifc-primary-light: #3B82F6;
-
-  --hackifc-bg: #F9FAFB;
-  --hackifc-bg-alt: #F3F4F6;
-  --hackifc-bg-dashboard: #FFFFFF;
-
-  --hackifc-card-bg: #FFFFFF;
-  --hackifc-card-border: #E5E7EB;
-  --hackifc-card-shadow: rgba(0, 0, 0, 0.05);
-
-  --hackifc-text-primary: #111827;
-  --hackifc-text-secondary: #4B5563;
-  --hackifc-text-weak: #9CA3AF;
-}
-
+/* Semantic Tailwind API; component colors follow the selected palette. */
 @theme inline {
+  --color-app-action: var(--app-action);
+  --color-app-action-hover: var(--app-action-hover);
+  --color-app-action-indicator: var(--app-action-indicator);
+  --color-app-action-indicator-soft: var(--app-action-indicator-soft);
+  --color-app-art-address: var(--app-art-address);
+  --color-app-art-badge: var(--app-art-badge);
+  --color-app-art-base: var(--app-art-base);
+  --color-app-art-base-light: var(--app-art-base-light);
+  --color-app-art-base-shadow: var(--app-art-base-shadow);
+  --color-app-art-card-line: var(--app-art-card-line);
+  --color-app-art-clock-line: var(--app-art-clock-line);
+  --color-app-art-code: var(--app-art-code);
+  --color-app-art-code-accent: var(--app-art-code-accent);
+  --color-app-art-code-muted: var(--app-art-code-muted);
+  --color-app-art-code-soft: var(--app-art-code-soft);
+  --color-app-art-connector: var(--app-art-connector);
+  --color-app-art-dot: var(--app-art-dot);
+  --color-app-art-dot-muted: var(--app-art-dot-muted);
+  --color-app-art-frame: var(--app-art-frame);
+  --color-app-art-icon-line: var(--app-art-icon-line);
+  --color-app-art-label: var(--app-art-label);
+  --color-app-art-panel-line: var(--app-art-panel-line);
+  --color-app-art-paper: var(--app-art-paper);
+  --color-app-art-path: var(--app-art-path);
+  --color-app-art-surface: var(--app-art-surface);
+  --color-app-art-toolbar: var(--app-art-toolbar);
+  --color-app-art-white: var(--app-art-white);
+  --color-app-auth-surface: var(--app-auth-surface);
+  --color-app-avatar: var(--app-avatar);
+  --color-app-border-active: var(--app-border-active);
+  --color-app-border-default: var(--app-border-default);
+  --color-app-border-default-neutral: var(--app-border-default-neutral);
+  --color-app-border-soft: var(--app-border-soft);
+  --color-app-border-soft-neutral: var(--app-border-soft-neutral);
+  --color-app-border-strong: var(--app-border-strong);
+  --color-app-border-strong-neutral: var(--app-border-strong-neutral);
+  --color-app-brand-accent: var(--app-brand-accent);
+  --color-app-brand-action: var(--app-brand-action);
+  --color-app-brand-active: var(--app-brand-active);
+  --color-app-brand-border-100: var(--app-brand-border-100);
+  --color-app-brand-border-200: var(--app-brand-border-200);
+  --color-app-brand-border-300: var(--app-brand-border-300);
+  --color-app-brand-border-400: var(--app-brand-border-400);
+  --color-app-brand-border-500: var(--app-brand-border-500);
+  --color-app-brand-border-600: var(--app-brand-border-600);
+  --color-app-brand-hover: var(--app-brand-hover);
+  --color-app-brand-hover-surface: var(--app-brand-hover-surface);
+  --color-app-brand-light: var(--app-brand-light);
+  --color-app-brand-pressed: var(--app-brand-pressed);
+  --color-app-brand-surface: var(--app-brand-surface);
+  --color-app-brand-text: var(--app-brand-text);
+  --color-app-canvas: var(--app-canvas);
+  --color-app-cover-fallback: var(--app-cover-fallback);
+  --color-app-danger-border-200: var(--app-danger-border-200);
+  --color-app-danger-border-300: var(--app-danger-border-300);
+  --color-app-danger-border-400: var(--app-danger-border-400);
+  --color-app-danger-border-500: var(--app-danger-border-500);
+  --color-app-danger-surface-100: var(--app-danger-surface-100);
+  --color-app-danger-surface-50: var(--app-danger-surface-50);
+  --color-app-danger-text-400: var(--app-danger-text-400);
+  --color-app-danger-text-500: var(--app-danger-text-500);
+  --color-app-danger-text-600: var(--app-danger-text-600);
+  --color-app-danger-text-700: var(--app-danger-text-700);
+  --color-app-evaluation-marker: var(--app-evaluation-marker);
+  --color-app-evaluation-solid: var(--app-evaluation-solid);
+  --color-app-field-accent: var(--app-field-accent);
+  --color-app-field-caption: var(--app-field-caption);
+  --color-app-field-disabled: var(--app-field-disabled);
+  --color-app-finished-solid: var(--app-finished-solid);
+  --color-app-focus-ring: var(--app-focus-ring);
+  --color-app-focus: var(--app-focus);
+  --color-app-focus-alternate: var(--app-focus-alternate);
+  --color-app-focus-halo: var(--app-focus-halo);
+  --color-app-focus-soft: var(--app-focus-soft);
+  --color-app-hero-label: var(--app-hero-label);
+  --color-app-hero-photo-placeholder: var(--app-hero-photo-placeholder);
+  --color-app-ink-heading: var(--app-ink-heading);
+  --color-app-ink-heading-surface: var(--app-ink-heading-surface);
+  --color-app-ink-muted: var(--app-ink-muted);
+  --color-app-ink-muted-surface: var(--app-ink-muted-surface);
+  --color-app-ink-on-control: var(--app-ink-on-control);
+  --color-app-ink-placeholder: var(--app-ink-placeholder);
+  --color-app-ink-secondary: var(--app-ink-secondary);
+  --color-app-ink-secondary-neutral: var(--app-ink-secondary-neutral);
+  --color-app-ink-strong: var(--app-ink-strong);
+  --color-app-ink-strong-neutral: var(--app-ink-strong-neutral);
+  --color-app-ink-subtitle: var(--app-ink-subtitle);
+  --color-app-ink-subtle: var(--app-ink-subtle);
+  --color-app-ink-subtle-surface: var(--app-ink-subtle-surface);
+  --color-app-line: var(--app-line);
+  --color-app-line-foreground: var(--app-line-foreground);
+  --color-app-line-neutral: var(--app-line-neutral);
+  --color-app-line-strong: var(--app-line-strong);
+  --color-app-link: var(--app-link);
+  --color-app-link-hover: var(--app-link-hover);
+  --color-app-link-soft: var(--app-link-soft);
+  --color-app-link-strong: var(--app-link-strong);
+  --color-app-logo-plate: var(--app-logo-plate);
+  --color-app-menu-copy: var(--app-menu-copy);
+  --color-app-menu-hover: var(--app-menu-hover);
+  --color-app-on-brand: var(--app-on-brand);
+  --color-app-on-inverse: var(--app-on-inverse);
+  --color-app-on-warning: var(--app-on-warning);
+  --color-app-positive-border-100: var(--app-positive-border-100);
+  --color-app-positive-surface-50: var(--app-positive-surface-50);
+  --color-app-positive-surface-500: var(--app-positive-surface-500);
+  --color-app-positive-text-600: var(--app-positive-text-600);
+  --color-app-positive-text-700: var(--app-positive-text-700);
+  --color-app-progress-solid: var(--app-progress-solid);
+  --color-app-project-logo-ink: var(--app-project-logo-ink);
+  --color-app-project-logo-surface: var(--app-project-logo-surface);
+  --color-app-project-revealed-surface: var(--app-project-revealed-surface);
+  --color-app-registration-marker: var(--app-registration-marker);
+  --color-app-score-pending: var(--app-score-pending);
+  --color-app-score-positive: var(--app-score-positive);
+  --color-app-score-success: var(--app-score-success);
+  --color-app-score-warning: var(--app-score-warning);
+  --color-app-scrim: var(--app-scrim);
+  --color-app-secondary-hover: var(--app-secondary-hover);
+  --color-app-selection: var(--app-selection);
+  --color-app-selection-blue: var(--app-selection-blue);
+  --color-app-selection-ink: var(--app-selection-ink);
+  --color-app-selection-ink-deep: var(--app-selection-ink-deep);
+  --color-app-selection-soft: var(--app-selection-soft);
+  --color-app-selection-strong: var(--app-selection-strong);
+  --color-app-status-error: var(--app-status-error);
+  --color-app-status-info: var(--app-status-info);
+  --color-app-status-success: var(--app-status-success);
+  --color-app-status-warning: var(--app-status-warning);
+  --color-app-step-copy: var(--app-step-copy);
+  --color-app-step-neutral: var(--app-step-neutral);
+  --color-app-success-border-200: var(--app-success-border-200);
+  --color-app-success-strong: var(--app-success-strong);
+  --color-app-success-surface: var(--app-success-surface);
+  --color-app-success-surface-50: var(--app-success-surface-50);
+  --color-app-success-text-700: var(--app-success-text-700);
+  --color-app-success-text-800: var(--app-success-text-800);
+  --color-app-surface: var(--app-surface);
+  --color-app-surface-faint: var(--app-surface-faint);
+  --color-app-surface-faint-foreground: var(--app-surface-faint-foreground);
+  --color-app-surface-faint-neutral: var(--app-surface-faint-neutral);
+  --color-app-surface-inverse: var(--app-surface-inverse);
+  --color-app-surface-muted: var(--app-surface-muted);
+  --color-app-surface-muted-neutral: var(--app-surface-muted-neutral);
+  --color-app-surface-plain: var(--app-surface-plain);
+  --color-app-surface-skeleton: var(--app-surface-skeleton);
+  --color-app-surface-skeleton-neutral: var(--app-surface-skeleton-neutral);
+  --color-app-surface-soft: var(--app-surface-soft);
+  --color-app-surface-soft-foreground: var(--app-surface-soft-foreground);
+  --color-app-surface-soft-neutral: var(--app-surface-soft-neutral);
+  --color-app-surface-step-marker: var(--app-surface-step-marker);
+  --color-app-surface-step-pending: var(--app-surface-step-pending);
+  --color-app-surface-step-strong: var(--app-surface-step-strong);
+  --color-app-surface-subtle: var(--app-surface-subtle);
+  --color-app-surface-subtle-neutral: var(--app-surface-subtle-neutral);
+  --color-app-text-base: var(--app-text-base);
+  --color-app-text-body-strong: var(--app-text-body-strong);
+  --color-app-text-body-strong-neutral: var(--app-text-body-strong-neutral);
+  --color-app-text-disabled: var(--app-text-disabled);
+  --color-app-text-heading: var(--app-text-heading);
+  --color-app-text-heading-neutral: var(--app-text-heading-neutral);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-text-muted-neutral: var(--app-text-muted-neutral);
+  --color-app-text-placeholder: var(--app-text-placeholder);
+  --color-app-text-placeholder-neutral: var(--app-text-placeholder-neutral);
+  --color-app-text-secondary: var(--app-text-secondary);
+  --color-app-text-secondary-neutral: var(--app-text-secondary-neutral);
+  --color-app-text-strong: var(--app-text-strong);
+  --color-app-text-strong-neutral: var(--app-text-strong-neutral);
+  --color-app-warning-border-200: var(--app-warning-border-200);
+  --color-app-warning-surface-50: var(--app-warning-surface-50);
+  --color-app-warning-text-700: var(--app-warning-text-700);
+  --color-app-warning-text-800: var(--app-warning-text-800);
+  --shadow-app-soft: var(--app-shadow-soft);
+  --shadow-app-search-focus: var(--app-shadow-search-focus);
   --color-primary: var(--v0-primary);
-  --color-secondary: var(--v0-secondary);
-  --color-error: var(--v0-error);
-  --color-info: var(--v0-info);
-  --color-success: var(--v0-success);
-  --color-warning: var(--v0-warning);
-  --color-background: var(--v0-background);
   --color-surface: var(--v0-surface);
-  --color-surface-tint: var(--v0-surface-tint);
-  --color-surface-variant: var(--v0-surface-variant);
-  --color-divider: var(--v0-divider);
-  --color-on-primary: var(--v0-on-primary);
-  --color-on-secondary: var(--v0-on-secondary);
-  --color-on-error: var(--v0-on-error);
-  --color-on-info: var(--v0-on-info);
-  --color-on-success: var(--v0-on-success);
-  --color-on-warning: var(--v0-on-warning);
-  --color-on-background: var(--v0-on-background);
-  --color-on-surface: var(--v0-on-surface);
-  --color-on-surface-variant: var(--v0-on-surface-variant);
-
-  --color-hackifc-primary: var(--hackifc-primary);
-  --color-hackifc-primary-hover: var(--hackifc-primary-hover);
-  --color-hackifc-primary-light: var(--hackifc-primary-light);
-
-  --color-hackifc-bg: var(--hackifc-bg);
-  --color-hackifc-bg-alt: var(--hackifc-bg-alt);
-  --color-hackifc-bg-dashboard: var(--hackifc-bg-dashboard);
-
-  --color-hackifc-card-bg: var(--hackifc-card-bg);
-  --color-hackifc-card-border: var(--hackifc-card-border);
-
-  --color-hackifc-text-primary: var(--hackifc-text-primary);
-  --color-hackifc-text-secondary: var(--hackifc-text-secondary);
-  --color-hackifc-text-weak: var(--hackifc-text-weak);
+  --color-background: var(--v0-background);
 }
 
 @layer base {
@@ -95,8 +221,8 @@ button:not(:disabled),
   textarea:-webkit-autofill,
   textarea:-webkit-autofill:hover,
   textarea:-webkit-autofill:focus {
-    -webkit-box-shadow: 0 0 0 1000px #F3F4F6 inset !important;
-    -webkit-text-fill-color: #111827 !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--app-surface-soft-neutral) inset !important;
+    -webkit-text-fill-color: var(--app-ink-strong-neutral) !important;
     transition: background-color 5000s ease-in-out 0s;
   }
 }
@@ -112,7 +238,7 @@ button:not(:disabled),
     @apply [background:color-mix(in_srgb,var(--v0-surface)_70%,transparent)] backdrop-blur-[12];
   }
   .shadow-hackifc-card {
-    box-shadow: 0 1px 2px 0 var(--hackifc-primary-hover);
+    box-shadow: 0 1px 2px 0 var(--app-brand-hover-surface);
   }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -122,3 +248,19 @@ button:not(:disabled),
     scrollbar-width: none;  
   }
 }
+
+/* Preserve Vuetify's legacy white-helper foreground/cascade in Light Mode. */
+.bg-app-surface, .bg-app-canvas {
+  background-color: var(--app-surface);
+  color: var(--app-text-base);
+}
+.bg-app-canvas { background-color: var(--app-canvas); }
+:root[data-theme="dark"] .bg-app-surface:disabled {
+  background-color: var(--app-field-disabled);
+  color: var(--app-text-disabled);
+}
+@layer base {
+  html, body { background-color: var(--app-canvas); color: var(--app-text-base); }
+}
+
+.text-app-on-brand { color: var(--app-on-brand) !important; }

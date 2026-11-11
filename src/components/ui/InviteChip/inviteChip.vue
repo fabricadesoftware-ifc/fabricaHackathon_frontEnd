@@ -9,18 +9,18 @@
 </script>
 
 <template>
-  <div class="inline-flex items-center gap-3 max-w-full bg-gray-50 border border-gray-200 rounded-full pl-4 pr-3 py-2">
-    <span class="text-sm text-gray-900 truncate">
+  <div class="inline-flex items-center gap-3 max-w-full bg-app-surface-subtle-neutral border border-app-border-default-neutral rounded-full pl-4 pr-3 py-2">
+    <span class="text-sm text-app-text-strong-neutral truncate">
       {{ props.email }}
     </span>
 
-    <span class="text-xs text-blue-600 lowercase shrink-0">
+    <span class="text-xs text-app-link lowercase shrink-0">
       {{ props.status }}
     </span>
 
     <button
       aria-label="Remover participante"
-      class="shrink-0 flex items-center text-gray-500 hover:text-gray-900 transition-colors"
+      class="shrink-0 flex items-center text-app-text-muted-neutral hover:text-app-text-strong-neutral transition-colors"
       type="button"
       @click="emits('remove')"
     >

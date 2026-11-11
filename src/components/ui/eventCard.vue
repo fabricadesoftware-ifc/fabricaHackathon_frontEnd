@@ -53,7 +53,7 @@
 
 <template>
   <article
-    class="edition-card relative w-full max-w-[320px] min-w-0 self-start rounded-lg bg-[#172331] text-white isolate"
+    class="edition-card relative w-full max-w-[320px] min-w-0 self-start rounded-lg bg-app-project-revealed-surface text-app-on-brand isolate"
     :class="{ 'is-revealed': isRevealed }"
     :style="{ '--edition-rest-offset': `${restOffset}px` }"
     @focusin="onFocusIn"
@@ -75,7 +75,7 @@
           @error="imageFailed = true"
         >
 
-        <div v-else aria-label="Imagem da edição não disponível" class="edition-fallback flex h-full flex-col items-center justify-start gap-[.35rem] p-[4.5rem_1.25rem_0] bg-[#273747] text-[#e2e8f0] text-[.75rem]" role="img">
+        <div v-else aria-label="Imagem da edição não disponível" class="edition-fallback flex h-full flex-col items-center justify-start gap-[.35rem] p-[4.5rem_1.25rem_0] bg-app-cover-fallback text-app-line-foreground text-[.75rem]" role="img">
           <span aria-hidden="true" class="mdi mdi-image-outline text-[1.75rem]" />
           <span>Imagem não disponível</span>
         </div>
@@ -88,28 +88,28 @@
         <h3 class="edition-title m-0 text-[clamp(1.4rem,_1.8vw,_1.75rem)] font-bold leading-[1.12] tracking-[-.025em] [overflow-wrap:anywhere] text-balance" :title="props.title">{{ props.title }}</h3>
 
         <div ref="information" class="edition-information grid-cols-1 grid-rows-[auto_auto] grid gap-[.75rem_0] mt-[.65rem]">
-          <dl ref="metadata" class="edition-metadata grid gap-[.4rem] m-0 text-[#f1f5f9] text-[.75rem] leading-[1.45]">
+          <dl ref="metadata" class="edition-metadata grid gap-[.4rem] m-0 text-app-surface-soft-foreground text-[.75rem] leading-[1.45]">
             <div v-if="props.startDate">
               <dt class="sr-only">Data</dt>
-              <dd class="flex items-start gap-2 m-0 [overflow-wrap:anywhere]"><span aria-hidden="true" class="mdi mdi-calendar-blank-outline shrink-0 text-[#e2e8f0] text-[1rem] leading-[1.1]" />{{ props.startDate }}{{ props.startDate === props.endDate || !props.endDate ? '' : ` a ${props.endDate}` }}</dd>
+              <dd class="flex items-start gap-2 m-0 [overflow-wrap:anywhere]"><span aria-hidden="true" class="mdi mdi-calendar-blank-outline shrink-0 text-app-line-foreground text-[1rem] leading-[1.1]" />{{ props.startDate }}{{ props.startDate === props.endDate || !props.endDate ? '' : ` a ${props.endDate}` }}</dd>
             </div>
 
             <div v-if="props.location">
               <dt class="sr-only">Local</dt>
-              <dd class="flex items-start gap-2 m-0 [overflow-wrap:anywhere]" :title="props.location"><span aria-hidden="true" class="mdi mdi-map-marker-outline shrink-0 text-[#e2e8f0] text-[1rem] leading-[1.1]" />{{ props.location }}</dd>
+              <dd class="flex items-start gap-2 m-0 [overflow-wrap:anywhere]" :title="props.location"><span aria-hidden="true" class="mdi mdi-map-marker-outline shrink-0 text-app-line-foreground text-[1rem] leading-[1.1]" />{{ props.location }}</dd>
             </div>
           </dl>
 
           <div class="edition-reveal self-start opacity-0 invisible">
-            <div v-if="hasTeams || editionModality" class="edition-details [&>span]:inline-flex [&>span]:items-center [&>span]:gap-[.4rem] [&>span]:[overflow-wrap:anywhere] [&_.mdi]:text-[1rem] flex flex-wrap gap-[.4rem_1rem] text-[#f1f5f9] text-[.75rem] leading-[1.4]">
+            <div v-if="hasTeams || editionModality" class="edition-details [&>span]:inline-flex [&>span]:items-center [&>span]:gap-[.4rem] [&>span]:[overflow-wrap:anywhere] [&_.mdi]:text-[1rem] flex flex-wrap gap-[.4rem_1rem] text-app-surface-soft-foreground text-[.75rem] leading-[1.4]">
               <span v-if="hasTeams"><span aria-hidden="true" class="mdi mdi-account-group-outline" />{{ props.teamsCounter }} {{ props.teamsCounter === 1 ? 'equipe' : 'equipes' }}</span>
               <span v-if="editionModality"><span aria-hidden="true" class="mdi mdi-tag-outline" />{{ editionModality }}</span>
             </div>
 
-            <p v-if="props.manager.trim()" class="edition-manager m-[.5rem_0_0] [overflow-wrap:anywhere] text-[#e2e8f0] text-[.75rem] leading-[1.4]">Responsável: {{ props.manager }}</p>
+            <p v-if="props.manager.trim()" class="edition-manager m-[.5rem_0_0] [overflow-wrap:anywhere] text-app-line-foreground text-[.75rem] leading-[1.4]">Responsável: {{ props.manager }}</p>
           </div>
 
-          <span class="edition-action [grid-area:2/1] opacity-0 invisible flex w-[fit-content] min-h-[36px] items-center justify-center gap-[.65rem] m-0 p-[.4rem_.75rem] rounded-[6px] bg-[#fff] text-[#172331] text-[.75rem] font-medium leading-[1.4]">Explorar edição <span aria-hidden="true" class="mdi mdi-arrow-right text-[#2563eb] text-[.95rem]" /></span>
+          <span class="edition-action [grid-area:2/1] opacity-0 invisible flex w-[fit-content] min-h-[36px] items-center justify-center gap-[.65rem] m-0 p-[.4rem_.75rem] rounded-[6px] bg-app-surface-plain text-app-ink-on-control text-[.75rem] font-medium leading-[1.4]">Explorar edição <span aria-hidden="true" class="mdi mdi-arrow-right text-app-brand-text text-[.95rem]" /></span>
         </div>
       </div>
     </RouterLink>
@@ -117,8 +117,8 @@
 </template>
 
 <style scoped>
-.edition-shade { background: linear-gradient(180deg, rgb(5 12 20 / 14%) 0%, rgb(5 12 20 / 0%) 25%, rgb(5 12 20 / 56%) 55%, rgb(5 12 20 / 95%) 100%); }
-.edition-shade::after { position: absolute; inset: 0; background: rgb(5 12 20 / 65%); content: ''; opacity: 0; transition: opacity 320ms ease; }
+.edition-shade { background: linear-gradient(180deg, rgb(var(--app-edition-shade) / 14%) 0%, rgb(var(--app-edition-shade) / 0%) 25%, rgb(var(--app-edition-shade) / 56%) 55%, rgb(var(--app-edition-shade) / 95%) 100%); }
+.edition-shade::after { position: absolute; inset: 0; background: rgb(var(--app-edition-shade) / 65%); content: ''; opacity: 0; transition: opacity 320ms ease; }
 .edition-content { transform: translateY(var(--edition-rest-offset, 0px)); transition: transform 320ms cubic-bezier(.22, 1, .36, 1); }
 .edition-reveal { grid-area: 1 / 1; transform: translateY(5px); transition: opacity 160ms ease, transform 240ms ease, visibility 0s 160ms; }
 .edition-action { transition: opacity 120ms ease, visibility 0s 120ms; }
@@ -129,7 +129,7 @@
 .is-revealed .edition-metadata { opacity: 0; visibility: hidden; transition-delay: 0s, 120ms; }
 .is-revealed .edition-reveal,
 .is-revealed .edition-action { opacity: 1; visibility: visible; transition-delay: 120ms; }
-.edition-card:has(.edition-link:focus-visible) { outline: 2px solid #2563eb; outline-offset: 4px; }
+.edition-card:has(.edition-link:focus-visible) { outline: 2px solid var(--app-brand-accent); outline-offset: 4px; }
 .edition-link:focus-visible { outline: none; }
 @media (hover: none), (pointer: coarse) {
   .edition-content { transform: none; }

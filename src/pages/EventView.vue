@@ -255,8 +255,8 @@
           <!-- Botão voltar -->
           <RouterLink
             class="group inline-flex items-center gap-1.5
-           text-sm font-medium text-slate-500
-           transition-colors hover:text-blue-600"
+           text-sm font-medium text-app-text-muted
+           transition-colors hover:text-app-link"
             to="/edicoes"
           >
             <span
@@ -272,7 +272,7 @@
           <!-- Divisória -->
           <span
             aria-hidden="true"
-            class="hidden h-4 w-px bg-slate-200 sm:block"
+            class="hidden h-4 w-px bg-app-surface-skeleton sm:block"
           />
 
           <!-- Breadcrumb -->
@@ -281,7 +281,7 @@
             class="flex min-w-0 items-center gap-2 text-sm"
           >
             <RouterLink
-              class="text-slate-400 transition-colors hover:text-blue-600"
+              class="text-app-text-placeholder transition-colors hover:text-app-link"
               to="/edicoes"
             >
               Edições
@@ -289,10 +289,10 @@
 
             <span
               aria-hidden="true"
-              class="mdi mdi-chevron-right text-base text-slate-400"
+              class="mdi mdi-chevron-right text-base text-app-text-placeholder"
             />
 
-            <span class="truncate font-medium text-slate-600">
+            <span class="truncate font-medium text-app-text-secondary">
               {{ edicao.nome }}
             </span>
           </nav>
@@ -326,7 +326,7 @@
           aria-label="Seções da edição"
           class="mt-7 flex gap-2
                  overflow-x-auto border-b
-                 border-slate-200"
+                 border-app-border-default"
         >
           <button
             v-for="aba in abas"
@@ -339,8 +339,8 @@
               'transition-colors',
 
               abaAtiva === aba.id
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700',
+                ? 'border-app-brand-border-500 text-app-link'
+                : 'border-transparent text-app-text-muted hover:text-app-text-body-strong',
             ]"
             type="button"
             @click="abaAtiva = aba.id"
@@ -370,13 +370,13 @@
 
             <!-- SOBRE A EDIÇÃO -->
             <section
-              class="rounded-lg border border-slate-200
-                     bg-white p-5 sm:p-6"
+              class="rounded-lg border border-app-border-default
+                     bg-app-surface p-5 sm:p-6"
             >
               <h2
                 class="text-lg font-semibold
                        tracking-tight
-                       text-slate-700"
+                       text-app-text-body-strong"
               >
                 Sobre o {{ edicao.nome }}
               </h2>
@@ -385,7 +385,7 @@
               <p
                 class="mt-3 whitespace-pre-line
                        text-sm leading-6
-                       text-slate-500"
+                       text-app-text-muted"
               >
                 {{
                   edicao.descricao ||
@@ -400,7 +400,7 @@
               >
                 <h3
                   class="text-sm font-medium
-                         text-slate-600"
+                         text-app-text-secondary"
                 >
                   Critérios de avaliação
                 </h3>
@@ -412,9 +412,9 @@
                     v-for="criterio in edicao.criterios"
                     :key="criterio.id"
                     class="rounded-full
-                           bg-blue-50 px-3 py-1.5
+                           bg-app-selection-soft px-3 py-1.5
                            text-xs font-medium
-                           text-blue-600"
+                           text-app-link"
                   >
                     {{ criterio.nome }}
                   </span>
@@ -424,20 +424,20 @@
 
             <!-- CRONOGRAMA -->
             <section
-              class="rounded-lg border border-slate-200
-                     bg-white p-5 sm:p-6"
+              class="rounded-lg border border-app-border-default
+                     bg-app-surface p-5 sm:p-6"
             >
               <div class="mb-6">
                 <h2
                   class="text-base font-semibold
-                         text-slate-700"
+                         text-app-text-body-strong"
                 >
                   Cronograma
                 </h2>
 
                 <p
                   class="mt-1 text-sm
-                         text-slate-500"
+                         text-app-text-muted"
                 >
                   Acompanhe as etapas do hackathon.
                 </p>
@@ -457,12 +457,12 @@
             <!-- APOIADORES -->
             <section
               v-if="patrocinadores.length > 0"
-              class="rounded-lg border border-slate-200
-                     bg-white p-5 sm:p-6"
+              class="rounded-lg border border-app-border-default
+                     bg-app-surface p-5 sm:p-6"
             >
               <h2
                 class="mb-4 text-base
-                       font-semibold text-slate-700"
+                       font-semibold text-app-text-body-strong"
               >
                 Apoiadores
               </h2>
@@ -510,12 +510,12 @@
         >
           <div
             class="rounded-lg border
-                   border-slate-200
-                   bg-white p-5 sm:p-6"
+                   border-app-border-default
+                   bg-app-surface p-5 sm:p-6"
           >
             <h2
               class="mb-5 text-lg
-                     font-semibold text-slate-700"
+                     font-semibold text-app-text-body-strong"
             >
               Ranking da edição
             </h2>
@@ -538,7 +538,7 @@
                   :key="item.projeto_id"
                   class="flex items-center gap-4
                          rounded-lg border
-                         border-slate-200
+                         border-app-border-default
                          px-4 py-3"
                 >
                   <!-- Posição -->
@@ -546,9 +546,9 @@
                     class="flex h-10 w-10
                            shrink-0 items-center
                            justify-center rounded-lg
-                           bg-blue-50 text-base
+                           bg-app-selection-soft text-base
                            font-semibold
-                           text-blue-600"
+                           text-app-link"
                   >
                     {{ item.posicao }}º
                   </span>
@@ -558,14 +558,14 @@
                     <h3
                       class="truncate text-sm
                              font-medium
-                             text-slate-700"
+                             text-app-text-body-strong"
                     >
                       {{ item.projeto }}
                     </h3>
 
                     <p
                       class="mt-1 text-xs
-                             text-slate-500"
+                             text-app-text-muted"
                     >
                       {{ item.equipe }}
                     </p>
@@ -574,7 +574,7 @@
                   <!-- Nota -->
                   <span
                     class="text-base font-semibold
-                           text-blue-600"
+                           text-app-link"
                   >
                     {{ item.nota_final }}
                   </span>

@@ -80,16 +80,16 @@
 </script>
 
 <template>
-  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0">
-    <h1 class="mb-2 text-xl font-semibold text-slate-700 sm:text-2xl">
+  <div class="evaluation-flow pt-4 text-app-ink-heading w-full min-w-0">
+    <h1 class="mb-2 text-xl font-semibold text-app-text-body-strong sm:text-2xl">
       Avaliações
     </h1>
 
-    <p class="mb-1 text-sm text-slate-600 sm:text-base">
+    <p class="mb-1 text-sm text-app-text-secondary sm:text-base">
       {{ isAvaliador ? 'Edições em que você foi designado como avaliador.' : 'Visão somente leitura de todas as edições.' }}
     </p>
 
-    <p class="mb-6 text-sm text-slate-600 sm:text-base">
+    <p class="mb-6 text-sm text-app-text-secondary sm:text-base">
       Escolha uma para ver os projetos
     </p>
 

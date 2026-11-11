@@ -32,24 +32,24 @@
 
 <template>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
-    <label class="flex flex-col gap-1.5 text-sm font-medium text-slate-600">
+    <label class="flex flex-col gap-1.5 text-sm font-medium text-app-text-secondary">
       <span>Nome</span>
 
       <Input.Root v-model="nome" :disabled="disabled" :rules="requiredRule">
         <Input.Control
           autocomplete="given-name"
-          class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none transition-colors data-[focused]:border-blue-500 data-[state=invalid]:border-red-500 disabled:bg-slate-50"
+          class="w-full rounded-lg border border-app-border-default bg-app-surface px-3.5 py-2.5 text-sm text-app-text-body-strong outline-none transition-colors data-[focused]:border-app-brand-border-500 data-[state=invalid]:border-app-danger-border-500 disabled:bg-app-surface-subtle"
         />
       </Input.Root>
     </label>
 
-    <label class="flex flex-col gap-1.5 text-sm font-medium text-slate-600">
+    <label class="flex flex-col gap-1.5 text-sm font-medium text-app-text-secondary">
       <span>Sobrenome</span>
 
       <Input.Root v-model="sobrenome" :disabled="disabled" :rules="requiredRule">
         <Input.Control
           autocomplete="family-name"
-          class="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-700 outline-none transition-colors data-[focused]:border-blue-500 data-[state=invalid]:border-red-500 disabled:bg-slate-50"
+          class="w-full rounded-lg border border-app-border-default bg-app-surface px-3.5 py-2.5 text-sm text-app-text-body-strong outline-none transition-colors data-[focused]:border-app-brand-border-500 data-[state=invalid]:border-app-danger-border-500 disabled:bg-app-surface-subtle"
         />
       </Input.Root>
     </label>

@@ -261,7 +261,7 @@
 
     <button
       v-if="currentStep < 2"
-      class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-blue-600"
+      class="inline-flex items-center gap-2 text-sm text-app-text-secondary hover:text-app-link"
       type="button"
       @click="currentStep === 0 ? onTeamBack() : goToStep(0)"
     >
@@ -275,18 +275,18 @@
     />
 
     <nav aria-label="Etapas da inscrição" class="relative my-7 w-full min-w-0">
-      <div aria-hidden="true" class="pointer-events-none absolute left-[16.666%] right-[16.666%] top-5 border-t border-dashed border-slate-300" />
-      <div aria-hidden="true" class="pointer-events-none absolute left-[16.666%] top-5 border-t-2 border-blue-600" :style="{ width: `${currentStep * 33.333}%` }" />
+      <div aria-hidden="true" class="pointer-events-none absolute left-[16.666%] right-[16.666%] top-5 border-t border-dashed border-app-border-strong" />
+      <div aria-hidden="true" class="pointer-events-none absolute left-[16.666%] top-5 border-t-2 border-app-brand-border-600" :style="{ width: `${currentStep * 33.333}%` }" />
 
       <ol class="relative grid grid-cols-3">
         <li v-for="(step, index) in STEPS" :key="step" :aria-current="currentStep === index ? 'step' : undefined" class="flex min-w-0 flex-col items-center text-center">
           <span
             class="flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold"
-            :class="index === currentStep ? 'border-blue-600 bg-blue-600 text-white' : index < currentStep ? 'border-blue-300 bg-blue-50 text-blue-600' : 'border-slate-300 bg-white text-slate-500'"
+            :class="index === currentStep ? 'border-app-brand-border-600 bg-app-action text-app-on-brand' : index < currentStep ? 'border-app-brand-border-300 bg-app-selection-soft text-app-link' : 'border-app-border-strong bg-app-surface text-app-text-muted'"
           >{{ index + 1 }}</span>
 
-          <span class="mt-2 text-xs font-semibold sm:text-sm" :class="currentStep === index ? 'text-blue-600' : 'text-slate-600'">{{ step }}</span>
-          <span class="mt-0.5 hidden text-xs text-slate-500 sm:block">{{ index < currentStep ? 'Etapa concluída' : index === currentStep ? ['Monte sua equipe', 'Confirme suas informações', 'Inscrição confirmada'][index] : ['Monte sua equipe', 'Confirme suas informações', 'Finalize sua inscrição'][index] }}</span>
+          <span class="mt-2 text-xs font-semibold sm:text-sm" :class="currentStep === index ? 'text-app-link' : 'text-app-text-secondary'">{{ step }}</span>
+          <span class="mt-0.5 hidden text-xs text-app-text-muted sm:block">{{ index < currentStep ? 'Etapa concluída' : index === currentStep ? ['Monte sua equipe', 'Confirme suas informações', 'Inscrição confirmada'][index] : ['Monte sua equipe', 'Confirme suas informações', 'Finalize sua inscrição'][index] }}</span>
         </li>
       </ol>
     </nav>
@@ -294,7 +294,7 @@
     <!-- Erros de validação -->
     <div
       v-if="stepError"
-      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-app-danger-border-200 bg-app-danger-surface-50 px-4 py-3 text-sm text-app-danger-text-700"
       role="alert"
     >
       <span aria-hidden="true" class="mdi mdi-alert-circle-outline text-xl" />
@@ -304,7 +304,7 @@
     <!-- Erros retornados pelo Django -->
     <div
       v-if="submitError"
-      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      class="mt-4 flex w-full items-start gap-3 rounded-lg border border-app-danger-border-200 bg-app-danger-surface-50 px-4 py-3 text-sm text-app-danger-text-700"
       role="alert"
     >
       <span aria-hidden="true" class="mdi mdi-alert-circle-outline text-xl" />
@@ -355,7 +355,7 @@
       <!-- Etapa 3: Inscrição concluída -->
       <div
         v-else
-        class="flex min-h-[45vh] flex-col items-center justify-center rounded-lg border border-slate-200 bg-white p-6 sm:p-10"
+        class="flex min-h-[45vh] flex-col items-center justify-center rounded-lg border border-app-border-default bg-app-surface p-6 sm:p-10"
       >
         <SuccessState
           button-label="Ver meus projetos"
@@ -364,17 +364,17 @@
           @click="onFinish"
         />
 
-        <p v-if="logoWarning" class="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800" role="status">{{ logoWarning }}</p>
+        <p v-if="logoWarning" class="mt-4 rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800" role="status">{{ logoWarning }}</p>
       </div>
 
       <!-- Carregamento durante o cadastro -->
       <div
         v-if="isSubmitting"
-        class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-white/70"
+        class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-app-surface/70"
         role="status"
       >
-        <span class="flex items-center gap-2 text-sm font-medium text-gray-700">
-          <span class="mdi mdi-loading mdi-spin text-xl text-blue-600" />
+        <span class="flex items-center gap-2 text-sm font-medium text-app-text-body-strong-neutral">
+          <span class="mdi mdi-loading mdi-spin text-xl text-app-link" />
           Enviando inscrição...
         </span>
       </div>

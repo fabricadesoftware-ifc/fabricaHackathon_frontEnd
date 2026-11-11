@@ -11,8 +11,8 @@
   }>()
 
   const variantes = {
-    perigo: 'text-red-400',
-    perfil: 'text-[#111827]',
+    perigo: 'text-app-danger-text-400',
+    perfil: 'text-app-ink-strong-neutral',
   }
   const iconClass = computed(() => {
     const base = 'text-[1.5rem]'
@@ -25,7 +25,7 @@
 </script>
 <template>
   <div class="p-5 gap-2 flex items-start  w-m sm:max-w-[20vw] rounded-xl">
-    <div class="rounded-full p-1 px-2 bg-[#F3F4F6] flex justify-center items-center shadow-lg mr-2">
+    <div class="rounded-full p-1 px-2 bg-app-surface-soft-neutral flex justify-center items-center shadow-lg mr-2">
       <span :class="iconClass" />
     </div>
 
@@ -34,7 +34,7 @@
         {{ props.title }}
       </h1>
 
-      <h2 class="text-[0.9rem] text-gray-400">
+      <h2 class="text-[0.9rem] text-app-text-placeholder-neutral">
         {{ props.subtitle }}
       </h2>
     </div>

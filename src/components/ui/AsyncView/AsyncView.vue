@@ -33,6 +33,6 @@
     <LoadingSkeleton v-else :lines="lines" />
   </template>
 
-  <p v-else-if="empty" class="py-8 text-center text-gray-500">{{ emptyMessage }}</p>
+  <p v-else-if="empty" class="py-8 text-center text-app-text-muted-neutral">{{ emptyMessage }}</p>
   <slot v-else />
 </template>

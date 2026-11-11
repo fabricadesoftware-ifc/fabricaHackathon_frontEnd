@@ -21,7 +21,7 @@
 <template>
   <div
     class="relative overflow-hidden rounded-lg
-           bg-slate-900"
+           bg-app-surface-inverse"
   >
     <!-- Capa da edição -->
     <img
@@ -60,10 +60,10 @@
 
         <button
           class="inline-flex items-center gap-2
-                 rounded-lg bg-white/95
+                 rounded-lg bg-app-surface/95
                  px-4 py-2 text-sm font-medium
-                 text-slate-800
-                 transition-colors hover:bg-white"
+                 text-app-text-heading
+                 transition-colors hover:bg-app-surface"
           type="button"
           @click="$emit('compartilhar')"
         >
@@ -91,7 +91,7 @@
           <h1
             class="max-w-3xl text-2xl font-bold
                    leading-tight tracking-tight
-                   text-white
+                   text-app-on-brand
                    sm:text-3xl lg:text-4xl"
           >
             {{ edicao.nome }}
@@ -100,7 +100,7 @@
           <p
             v-if="edicao.responsavel"
             class="mt-3 flex items-center gap-2
-                   text-sm text-white/85"
+                   text-sm text-app-on-brand/85"
           >
             <span
               aria-hidden="true"
@@ -108,7 +108,7 @@
             />
 
             Gerenciado por:
-            <span class="font-medium text-white">
+            <span class="font-medium text-app-on-brand">
               {{ edicao.responsavel }}
             </span>
           </p>

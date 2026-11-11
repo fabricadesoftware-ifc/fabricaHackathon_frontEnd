@@ -210,8 +210,8 @@
 </script>
 
 <template>
-  <div class="home-view @container/home w-full min-w-0 pb-10 text-[#0f172a]">
-    <a class="absolute w-px h-px [overflow:hidden] [clip-path:inset(50%)] focus:relative focus:inline-flex focus:items-center focus:min-h-11 focus:w-auto focus:h-auto focus:p-2 focus:overflow-visible focus:[clip-path:none] focus:text-[#1d4ed8]" href="#home-content">Ir para as edições e projetos</a>
+  <div class="home-view @container/home w-full min-w-0 pb-10 text-app-ink-strong">
+    <a class="absolute w-px h-px [overflow:hidden] [clip-path:inset(50%)] focus:relative focus:inline-flex focus:items-center focus:min-h-11 focus:w-auto focus:h-auto focus:p-2 focus:overflow-visible focus:[clip-path:none] focus:text-app-brand-hover" href="#home-content">Ir para as edições e projetos</a>
 
     <HeroSection
       v-model="search"
@@ -333,7 +333,7 @@
       <!-- Separador -->
       <div
         aria-hidden="true"
-        class="border-t border-slate-200"
+        class="border-t border-app-border-default"
       />
 
       <!-- ================================== -->
@@ -392,6 +392,6 @@
   .home-view :deep(.animate-pulse) { animation: none; }
 }
 .home-view section[id] { scroll-margin-top: 6rem; }
-.home-view :deep(::selection) { background: #dbeafe; color: #1e3a8a; }
-.home-view :deep(a:focus-visible), .home-view :deep(button:focus-visible) { outline: 2px solid #2563eb; outline-offset: 4px; }
+.home-view :deep(::selection) { background: var(--app-selection-blue); color: var(--app-selection-ink); }
+.home-view :deep(a:focus-visible), .home-view :deep(button:focus-visible) { outline: 2px solid var(--app-brand-accent); outline-offset: 4px; }
 </style>

@@ -63,25 +63,25 @@
 <template>
   <div class="solicitacoes w-full min-w-0">
     <PageHeader
-      class="mt-[1rem] mb-[1.5rem] mx-0 [&_h1]:text-[#334155] [&_h1]:text-[1.5rem] [&_h1]:font-semibold [&_h1]:leading-[1.35] [&_p]:mt-[.25rem] [&_p]:text-[#475569] [&_p]:text-[.875rem] [&_p]:leading-[1.6]"
+      class="mt-[1rem] mb-[1.5rem] mx-0 [&_h1]:text-app-ink-heading [&_h1]:text-[1.5rem] [&_h1]:font-semibold [&_h1]:leading-[1.35] [&_p]:mt-[.25rem] [&_p]:text-app-ink-secondary [&_p]:text-[.875rem] [&_p]:leading-[1.6]"
       subtitle="Aprove ou recuse pedidos de perfil de Avaliador e Professor."
       title="Solicitações de perfil"
     />
 
-    <div aria-label="Filtrar solicitações por situação" class="mb-6 border-b border-slate-200" role="group">
+    <div aria-label="Filtrar solicitações por situação" class="mb-6 border-b border-app-border-default" role="group">
       <FilterChipGroup v-model="filtro" :options="filtros" variant="underline" />
     </div>
 
-    <p v-if="mensagem" class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">
+    <p v-if="mensagem" class="mb-4 rounded-lg border border-app-success-border-200 bg-app-success-surface-50 px-4 py-3 text-sm text-app-success-text-800" role="status">
       {{ mensagem }}
     </p>
 
-    <p v-if="erroAcao" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+    <p v-if="erroAcao" class="mb-4 rounded-lg border border-app-danger-border-200 bg-app-danger-surface-50 px-4 py-3 text-sm text-app-danger-text-700" role="alert">
       {{ erroAcao }}
     </p>
 
-    <section :aria-busy="loading" aria-label="Lista de solicitações de perfil" class="overflow-hidden rounded-lg border border-slate-200 bg-white">
-      <div v-if="!loading && !error && itens.length > 0" aria-hidden="true" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] hidden gap-5 border-b border-slate-200 bg-slate-50 px-5 py-3 text-xs font-medium text-slate-600 xl:grid">
+    <section :aria-busy="loading" aria-label="Lista de solicitações de perfil" class="overflow-hidden rounded-lg border border-app-border-default bg-app-surface">
+      <div v-if="!loading && !error && itens.length > 0" aria-hidden="true" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] hidden gap-5 border-b border-app-border-default bg-app-surface-subtle px-5 py-3 text-xs font-medium text-app-text-secondary xl:grid">
         <span>Usuário</span>
         <span>Perfil solicitado</span>
         <span>Solicitada em</span>
@@ -91,29 +91,29 @@
       <div :class="{ 'p-5': loading || error }">
         <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
           <div v-if="itens.length === 0" class="flex flex-col items-center gap-2 px-5 py-12 text-center" role="status">
-            <span aria-hidden="true" class="mdi mdi-inbox-check-outline mb-1 text-3xl text-slate-400" />
-            <h2 class="text-base font-semibold text-slate-700">{{ estadoVazio.titulo }}</h2>
-            <p class="max-w-md text-sm leading-6 text-slate-500">{{ estadoVazio.descricao }}</p>
+            <span aria-hidden="true" class="mdi mdi-inbox-check-outline mb-1 text-3xl text-app-text-placeholder" />
+            <h2 class="text-base font-semibold text-app-text-body-strong">{{ estadoVazio.titulo }}</h2>
+            <p class="max-w-md text-sm leading-6 text-app-text-muted">{{ estadoVazio.descricao }}</p>
           </div>
 
-          <ul v-else class="divide-y divide-slate-200">
-            <li v-for="item in itens" :key="item.id" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] grid min-w-0 gap-4 px-4 py-5 transition-colors hover:bg-slate-50/60 sm:px-5 xl:items-center xl:gap-5">
+          <ul v-else class="divide-y divide-app-border-default">
+            <li v-for="item in itens" :key="item.id" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] grid min-w-0 gap-4 px-4 py-5 transition-colors hover:bg-app-surface-subtle/60 sm:px-5 xl:items-center xl:gap-5">
               <div class="min-w-0">
-                <p class="break-words text-sm font-semibold leading-6 text-slate-700">{{ item.usuario_nome || item.usuario_email }}</p>
-                <p v-if="item.usuario_nome" class="break-all text-sm leading-6 text-slate-500">{{ item.usuario_email }}</p>
+                <p class="break-words text-sm font-semibold leading-6 text-app-text-body-strong">{{ item.usuario_nome || item.usuario_email }}</p>
+                <p v-if="item.usuario_nome" class="break-all text-sm leading-6 text-app-text-muted">{{ item.usuario_email }}</p>
               </div>
 
-              <div class="flex items-center gap-2 text-sm text-slate-700">
-                <span aria-hidden="true" class="mdi text-lg text-slate-500" :class="item.perfil_solicitado === 'AVALIADOR' ? 'mdi-clipboard-check-outline' : 'mdi-school-outline'" />
+              <div class="flex items-center gap-2 text-sm text-app-text-body-strong">
+                <span aria-hidden="true" class="mdi text-lg text-app-text-muted" :class="item.perfil_solicitado === 'AVALIADOR' ? 'mdi-clipboard-check-outline' : 'mdi-school-outline'" />
                 <span><span class="sr-only">Perfil solicitado: </span>{{ PERFIL[item.perfil_solicitado] }}</span>
               </div>
 
-              <p class="text-sm tabular-nums text-slate-500">
+              <p class="text-sm tabular-nums text-app-text-muted">
                 <span class="xl:sr-only">Solicitada em </span>
                 <time :datetime="item.criada_em">{{ formatarData(item.criada_em) }}</time>
               </p>
 
-              <div v-if="item.status === 'PENDENTE'" class="solicitacao-acoes flex items-center gap-2 border-t border-slate-100 pt-4 xl:justify-end xl:border-0 xl:pt-0">
+              <div v-if="item.status === 'PENDENTE'" class="solicitacao-acoes flex items-center gap-2 border-t border-app-border-soft pt-4 xl:justify-end xl:border-0 xl:pt-0">
                 <AppButton
                   :aria-label="`Recusar solicitação de ${item.usuario_nome || item.usuario_email}`"
                   :disabled="decidindo !== null"
@@ -133,7 +133,7 @@
                 />
               </div>
 
-              <p v-else-if="item.decidida_em" class="min-w-0 break-words text-xs leading-5 text-slate-500 xl:text-right">
+              <p v-else-if="item.decidida_em" class="min-w-0 break-words text-xs leading-5 text-app-text-muted xl:text-right">
                 {{ item.status === 'APROVADA' ? 'Aprovada' : 'Recusada' }} em
                 <time :datetime="item.decidida_em">{{ formatarData(item.decidida_em) }}</time>
                 <span v-if="item.decidida_por_email" class="block break-all">por {{ item.decidida_por_email }}</span>
@@ -148,7 +148,7 @@
 
 <style scoped>
 .solicitacoes :deep(button:focus-visible) {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--app-brand-accent);
   outline-offset: -2px;
 }
 
@@ -160,7 +160,7 @@
 }
 
 .solicitacao-acoes :deep(.app-btn:first-child) {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--app-line);
 }
 
 @media (prefers-reduced-motion: reduce) {

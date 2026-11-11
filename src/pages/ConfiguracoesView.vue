@@ -141,30 +141,30 @@
     :class="hasChanges ? 'pb-32' : 'pb-6'"
   >
     <header class="mb-6">
-      <h1 class="text-2xl font-semibold tracking-tight text-slate-800">Configurações</h1>
-      <p class="mt-1 text-sm text-slate-500">Gerencie seu perfil e sua sessão.</p>
+      <h1 class="text-2xl font-semibold tracking-tight text-app-text-heading">Configurações</h1>
+      <p class="mt-1 text-sm text-app-text-muted">Gerencie seu perfil e sua sessão.</p>
     </header>
 
     <p
       v-if="avisoSolicitacao"
       class="mb-5 rounded-lg border px-4 py-3 text-sm"
       :class="avisoSolicitacao.tom === 'amber'
-        ? 'border-amber-200 bg-amber-50 text-amber-800'
-        : 'border-red-200 bg-red-50 text-red-700'"
+        ? 'border-app-warning-border-200 bg-app-warning-surface-50 text-app-warning-text-800'
+        : 'border-app-danger-border-200 bg-app-danger-surface-50 text-app-danger-text-700'"
       role="status"
     >
       {{ avisoSolicitacao.texto }}
     </p>
 
     <div class="space-y-5">
-      <section aria-labelledby="profile-heading" class="w-full max-w-[1000px] rounded-lg border border-slate-200 bg-white p-5 sm:p-6">
-        <h2 id="profile-heading" class="text-lg font-semibold text-slate-700">Meu perfil</h2>
-        <p class="mt-1 text-sm text-slate-500">Atualize sua foto e suas informações pessoais.</p>
+      <section aria-labelledby="profile-heading" class="w-full max-w-[1000px] rounded-lg border border-app-border-default bg-app-surface p-5 sm:p-6">
+        <h2 id="profile-heading" class="text-lg font-semibold text-app-text-body-strong">Meu perfil</h2>
+        <p class="mt-1 text-sm text-app-text-muted">Atualize sua foto e suas informações pessoais.</p>
 
-        <div class="mt-5 border-b border-slate-200 pb-5">
+        <div class="mt-5 border-b border-app-border-default pb-5">
           <AvatarUpload :disabled="isSaving" :src="currentPhotoUrl" @update:file="handleFileUpdate">
-            <p class="truncate font-medium text-slate-700">{{ displayName }}</p>
-            <p class="truncate text-sm text-slate-500">{{ email }}</p>
+            <p class="truncate font-medium text-app-text-body-strong">{{ displayName }}</p>
+            <p class="truncate text-sm text-app-text-muted">{{ email }}</p>
           </AvatarUpload>
         </div>
 
@@ -177,17 +177,17 @@
         </div>
 
         <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
-          <span v-if="hasChanges" class="inline-flex items-center gap-2 text-sm text-slate-500">
-            <span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-blue-600" />
+          <span v-if="hasChanges" class="inline-flex items-center gap-2 text-sm text-app-text-muted">
+            <span aria-hidden="true" class="h-1.5 w-1.5 rounded-full bg-app-action" />
             Alterações não salvas
           </span>
 
-          <span v-else-if="saveOk" class="text-sm text-green-700" role="status">Perfil atualizado.</span>
-          <span v-else class="text-sm text-slate-500">Nome e sobrenome podem ser alterados aqui.</span>
+          <span v-else-if="saveOk" class="text-sm text-app-success-text-700" role="status">Perfil atualizado.</span>
+          <span v-else class="text-sm text-app-text-muted">Nome e sobrenome podem ser alterados aqui.</span>
 
           <button
             :aria-busy="isSaving"
-            class="inline-flex min-h-10 items-center justify-center rounded-lg bg-[#2563EB] px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
+            class="inline-flex min-h-10 items-center justify-center rounded-lg bg-app-brand-action px-4 text-sm font-medium text-app-on-brand transition-colors hover:bg-app-action-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus disabled:cursor-not-allowed disabled:opacity-50"
             :disabled="!hasChanges || isSaving"
             type="button"
             @click="handleSave"
@@ -196,45 +196,45 @@
           </button>
         </div>
 
-        <p v-if="saveError" class="mt-3 text-sm text-red-600" role="alert">{{ saveError }}</p>
+        <p v-if="saveError" class="mt-3 text-sm text-app-danger-text-600" role="alert">{{ saveError }}</p>
       </section>
 
-      <section aria-labelledby="account-heading" class="w-full max-w-[1000px] rounded-lg border border-slate-200 bg-white p-5 sm:p-6">
-        <h2 id="account-heading" class="text-lg font-semibold text-slate-700">Informações da conta</h2>
-        <p class="mt-1 text-sm text-slate-500">Esses dados não podem ser alterados nesta página.</p>
+      <section aria-labelledby="account-heading" class="w-full max-w-[1000px] rounded-lg border border-app-border-default bg-app-surface p-5 sm:p-6">
+        <h2 id="account-heading" class="text-lg font-semibold text-app-text-body-strong">Informações da conta</h2>
+        <p class="mt-1 text-sm text-app-text-muted">Esses dados não podem ser alterados nesta página.</p>
 
         <dl class="mt-5 grid gap-5 sm:grid-cols-2">
           <div>
-            <dt class="text-sm font-medium text-slate-600">Nome de usuário</dt>
+            <dt class="text-sm font-medium text-app-text-secondary">Nome de usuário</dt>
 
-            <dd class="mt-1 flex items-center gap-2 text-sm text-slate-700">
+            <dd class="mt-1 flex items-center gap-2 text-sm text-app-text-body-strong">
               <span class="min-w-0 break-all">{{ username }}</span>
-              <span aria-hidden="true" class="mdi mdi-lock-outline shrink-0 text-base text-slate-400" />
+              <span aria-hidden="true" class="mdi mdi-lock-outline shrink-0 text-base text-app-text-placeholder" />
             </dd>
           </div>
 
           <div>
-            <dt class="text-sm font-medium text-slate-600">E-mail</dt>
+            <dt class="text-sm font-medium text-app-text-secondary">E-mail</dt>
 
-            <dd class="mt-1 flex items-center gap-2 text-sm text-slate-700">
+            <dd class="mt-1 flex items-center gap-2 text-sm text-app-text-body-strong">
               <span class="min-w-0 break-all">{{ email }}</span>
-              <span aria-hidden="true" class="mdi mdi-lock-outline shrink-0 text-base text-slate-400" />
+              <span aria-hidden="true" class="mdi mdi-lock-outline shrink-0 text-base text-app-text-placeholder" />
             </dd>
           </div>
         </dl>
       </section>
 
-      <section aria-labelledby="session-heading" class="w-full max-w-[1000px] rounded-lg border border-slate-200 bg-white p-5 sm:p-6">
-        <h2 id="session-heading" class="text-lg font-semibold text-slate-700">Sessão</h2>
+      <section aria-labelledby="session-heading" class="w-full max-w-[1000px] rounded-lg border border-app-border-default bg-app-surface p-5 sm:p-6">
+        <h2 id="session-heading" class="text-lg font-semibold text-app-text-body-strong">Sessão</h2>
 
         <div class="mt-4 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p class="text-sm font-medium text-slate-700">Sair da conta</p>
-            <p class="mt-0.5 text-sm text-slate-500">Encerre sua sessão neste dispositivo.</p>
+            <p class="text-sm font-medium text-app-text-body-strong">Sair da conta</p>
+            <p class="mt-0.5 text-sm text-app-text-muted">Encerre sua sessão neste dispositivo.</p>
           </div>
 
           <button
-            class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 px-3.5 text-sm font-medium text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            class="inline-flex min-h-10 items-center gap-2 rounded-lg border border-app-border-default px-3.5 text-sm font-medium text-app-text-secondary transition-colors hover:border-app-border-strong hover:bg-app-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus"
             type="button"
             @click="sair"
           >

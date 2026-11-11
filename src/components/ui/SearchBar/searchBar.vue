@@ -72,15 +72,15 @@
       class="
       flex
       items-center
-      bg-white
+      bg-app-surface
       border
-      border-[#E5E7EB]
+      border-app-line-neutral
 
       transition
-      hover:border-blue-300
-      focus-within:border-blue-600
+      hover:border-app-brand-border-300
+      focus-within:border-app-brand-border-600
       focus-within:ring-2
-      focus-within:ring-blue-100
+      focus-within:ring-app-focus-halo
       rounded-lg
       h-11
       w-full
@@ -92,7 +92,7 @@
         aria-hidden="true"
         class="
         mdi mdi-magnify
-        text-blue-600
+        text-app-link
         text-[22px]
         mr-2
       "
@@ -105,9 +105,9 @@
         class="
         bg-transparent
         w-full
-        text-gray-900
+        text-app-text-strong-neutral
         text-sm
-        placeholder-slate-500
+        placeholder-app-text-muted
         outline-none
       "
         name="search"
@@ -123,10 +123,10 @@
         aria-label="Limpar busca"
         class="
           mdi mdi-close
-          text-gray-400
+          text-app-text-placeholder-neutral
           text-[20px]
           xl:text-[25px]
-          hover:text-gray-600
+          hover:text-app-text-secondary-neutral
           ml-2
           min-h-8 min-w-8
         "

@@ -3,6 +3,7 @@
   import { RouterLink } from 'vue-router'
   import { useCardReveal } from '@/composables/useCardReveal'
   import { resolveMediaUrl } from '@/utils/media'
+  import ProjectLogoFallback from './ProjectLogoFallback.vue'
   import StatusProject from './statusProject.vue'
 
   type Status = 'finalizado' | 'ativo'
@@ -35,7 +36,6 @@
   watch(logoSource, () => {
     logoFailed.value = false
   })
-  const initials = computed(() => props.title.trim().split(/\s+/).slice(0, 2).map(word => word.charAt(0)).join('').toLocaleUpperCase('pt-BR') || 'P')
   const deploy = computed(() => {
     try {
       const url = new URL(props.deployUrl?.trim() ?? '')
@@ -90,7 +90,7 @@
 
 <template>
   <article
-    class="project-card [@media(max-width:400px)]:min-h-[380px] [@media(max-width:400px)]:p-[1rem] relative flex w-full max-w-[320px] min-w-0 min-h-[384px] aspect-[5_/_6] flex-col self-start overflow-hidden p-[1.25rem] border-[1px] border-[#e2e8f0] rounded-lg bg-[#fff] text-[#0f172a]"
+    class="project-card [@media(max-width:400px)]:min-h-[356px] [@media(max-width:400px)]:p-[1rem] relative flex w-full max-w-[320px] min-w-0 min-h-[360px] aspect-[8_/_9] flex-col self-start overflow-hidden p-[1.25rem] border-[1px] border-app-line rounded-lg bg-app-surface-plain text-app-ink-strong"
     :class="{ 'is-revealed': isRevealed, 'has-more': hasMore, 'has-management': props.preAvaliacaoTo || props.editavel }"
     tabindex="0"
     @focusin="onFocusIn"
@@ -108,7 +108,7 @@
     />
 
     <div class="project-heading [@media(max-width:400px)]:mt-[2.9rem] flex min-w-0 shrink-0 items-center gap-[.8rem] mt-[2.85rem]">
-      <div class="project-mark flex-[0_0_56px] grid w-[56px] h-[56px] place-items-center border-[1px] border-[#172331] rounded-[10px] bg-[#172331]" :class="{ 'project-mark--logo': hasLogo }">
+      <div class="project-mark grid place-items-center border-[1px] border-app-project-logo-surface rounded-[10px] bg-app-project-logo-surface" :class="hasLogo ? 'project-mark--logo flex-[0_0_56px] size-14' : 'flex-[0_0_50px] size-[50px]'">
         <img
           v-if="hasLogo"
           :alt="'Logo de ' + props.title"
@@ -120,13 +120,13 @@
           @error="logoFailed = true"
         >
 
-        <span v-else aria-hidden="true" class="project-monogram text-white text-[1.45rem] font-bold tracking-[-.05em]">{{ initials.charAt(0) }}<span class="text-[#2563eb]">{{ initials.slice(1) }}</span></span>
+        <ProjectLogoFallback v-else :revealed="isRevealed" />
       </div>
 
       <div class="project-heading-copy min-w-0">
-        <h3 class="project-title [@media(max-width:400px)]:text-[1.25rem] line-clamp-2 overflow-hidden m-0 text-[#0f172a] text-[1.375rem] font-bold leading-[1.18] tracking-[-.025em] [overflow-wrap:anywhere] text-pretty" :title="props.title">{{ props.title }}</h3>
+        <h3 class="project-title [@media(max-width:400px)]:text-[1.125rem] line-clamp-2 overflow-hidden m-0 text-app-ink-strong text-[1.25rem] font-bold leading-[1.18] tracking-[-.025em] [overflow-wrap:anywhere] text-pretty" :title="props.title">{{ props.title }}</h3>
 
-        <span v-if="props.notaFinal !== null && props.notaFinal !== undefined" class="project-grade inline-flex items-center gap-[.3rem] mt-[.3rem] text-[#475569] text-[.6875rem] leading-[1.4]">
+        <span v-if="props.notaFinal !== null && props.notaFinal !== undefined" class="project-grade inline-flex items-center gap-[.3rem] mt-[.3rem] text-app-ink-secondary text-[.6875rem] leading-[1.4]">
           <span aria-hidden="true" class="mdi mdi-star-outline" />Nota final: {{ props.notaFinal }}
         </span>
       </div>
@@ -136,7 +136,7 @@
       v-if="props.description"
       :id="descriptionId"
       ref="summary"
-      class="project-description min-h-0 max-h-[3.15em] overflow-hidden m-[1.25rem_0_0] text-[#475569] text-[.875rem] leading-[1.55] [overflow-wrap:anywhere] whitespace-pre-line"
+      class="project-description min-h-0 max-h-[3.15em] overflow-hidden m-[1.25rem_0_0] text-app-ink-secondary text-[.875rem] leading-[1.55] [overflow-wrap:anywhere] whitespace-pre-line"
       :tabindex="hasMore ? 0 : undefined"
     >{{ props.description }}</p>
 
@@ -144,33 +144,33 @@
       <dl class="project-context grid gap-2 m-0">
 
         <div v-if="props.team" class="flex min-w-0 items-center gap-[.65rem]">
-          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-[#334155]"><span aria-hidden="true" class="mdi mdi-account-group-outline text-[1.15rem] leading-none" /><span class="sr-only">Equipe</span></dt>
-          <dd class="min-w-0 overflow-hidden m-0 text-[#0f172a] text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.team">{{ props.team }}</dd>
+          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-app-ink-heading"><span aria-hidden="true" class="mdi mdi-account-group-outline text-[1.15rem] leading-none" /><span class="sr-only">Equipe</span></dt>
+          <dd class="min-w-0 overflow-hidden m-0 text-app-ink-strong text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.team">{{ props.team }}</dd>
         </div>
 
         <div v-if="props.event" class="flex min-w-0 items-center gap-[.65rem]">
-          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-[#334155]"><span aria-hidden="true" class="mdi mdi-layers-outline text-[1.15rem] leading-none" /><span class="sr-only">Edição</span></dt>
-          <dd class="min-w-0 overflow-hidden m-0 text-[#0f172a] text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.event">{{ props.event }}</dd>
+          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-app-ink-heading"><span aria-hidden="true" class="mdi mdi-layers-outline text-[1.15rem] leading-none" /><span class="sr-only">Edição</span></dt>
+          <dd class="min-w-0 overflow-hidden m-0 text-app-ink-strong text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.event">{{ props.event }}</dd>
         </div>
       </dl>
 
       <div v-if="hasActions" class="project-actions flex max-h-0 flex-col items-start gap-[.45rem] overflow-hidden mt-0 opacity-0 invisible">
         <a
           v-if="deploy"
-          class="project-deploy inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] hover:bg-[#f1f5f9] p-[.45rem_.7rem] bg-[#fff] text-[#0f172a]"
+          class="project-deploy inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-app-focus-soft hover:bg-app-surface-soft p-[.45rem_.7rem] bg-app-surface-plain text-app-ink-strong"
           :href="deploy"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Acessar sistema <span aria-hidden="true" class="mdi mdi-open-in-new text-[#0f172a] text-[.875rem]" />
+          Acessar sistema <span aria-hidden="true" class="mdi mdi-open-in-new text-app-ink-strong text-[.875rem]" />
         </a>
 
         <div v-if="props.preAvaliacaoTo || props.editavel" class="project-management flex flex-wrap items-center gap-[.1rem_.8rem]">
-          <RouterLink v-if="props.preAvaliacaoTo" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] cursor-pointer text-[#e2e8f0] hover:text-white" :to="props.preAvaliacaoTo">
+          <RouterLink v-if="props.preAvaliacaoTo" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-app-focus-soft cursor-pointer text-app-line-foreground hover:text-app-on-brand" :to="props.preAvaliacaoTo">
             <span aria-hidden="true" class="mdi mdi-clipboard-text-outline" />Pré-avaliação
           </RouterLink>
 
-          <button v-if="props.editavel" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] cursor-pointer text-[#e2e8f0] hover:text-white" type="button" @click="emit('edit')">
+          <button v-if="props.editavel" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-app-focus-soft cursor-pointer text-app-line-foreground hover:text-app-on-brand" type="button" @click="emit('edit')">
             <span aria-hidden="true" class="mdi mdi-pencil-outline" />Editar
           </button>
         </div>
@@ -181,7 +181,7 @@
         :aria-controls="props.description ? descriptionId : undefined"
         :aria-expanded="isRevealed"
         :aria-label="(isRevealed ? 'Ocultar' : 'Mostrar') + ' informações e ações de ' + props.title"
-        class="project-reveal focus-visible:outline-[#93c5fd] hidden"
+        class="project-reveal focus-visible:outline-app-focus-soft hidden"
         type="button"
         @click="toggleReveal"
       >
@@ -194,25 +194,25 @@
 
 <style scoped>
 /* Vuetify's unlayered button reset overrides utility fonts and colors. */
-.project-management button { font-size: .75rem; font-weight: 500; line-height: 1.4; color: #e2e8f0; }
-.project-management button:hover { color: #fff; }
+.project-management button { font-size: .75rem; font-weight: 500; line-height: 1.4; color: var(--app-line-foreground); }
+.project-management button:hover { color: var(--app-on-inverse); }
 
 .project-card {
   transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
-.project-card.has-management { min-height: 430px; }
+.project-card.has-management { min-height: 406px; }
 .project-status { transition: background-color 300ms ease-out, color 300ms ease-out; }
 .project-mark {
   transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
-.project-mark--logo { padding: .3rem; border-color: #e2e8f0; background: #fff; }
+.project-mark--logo { padding: .3rem; border-color: var(--app-line); background: var(--app-logo-plate); }
 .project-title {
   transition: color 300ms ease-out;
 }
 .project-grade { transition: color 300ms ease-out; }
 .project-description {
   scrollbar-width: thin;
-  scrollbar-color: #94a3b8 transparent;
+  scrollbar-color: var(--app-ink-subtle) transparent;
   transition: color 300ms ease-out, max-height 300ms ease-out;
 }
 .project-context dt, .project-context dd { transition: color 300ms ease-out; }
@@ -221,20 +221,20 @@
   transition: max-height 300ms ease-out, margin-top 300ms ease-out, opacity 250ms ease-out, transform 300ms ease-out, visibility 0s 300ms;
 }
 .project-deploy { transition: background-color 200ms ease-out; }
-.is-revealed.project-card { border-color: #172331; background: #172331; }
-.is-revealed .project-status { background: #334155; color: #f8fafc; }
-.is-revealed .project-mark { border-color: #334155; background: #334155; }
-.is-revealed .project-mark--logo { border-color: #64748b; background: #fff; }
-.is-revealed .project-title { color: #fff; }
-.is-revealed .project-grade, .is-revealed .project-description, .is-revealed .project-context dd { color: #f1f5f9; }
-.is-revealed .project-context dt { color: #e2e8f0; }
+.is-revealed.project-card { border-color: var(--app-project-revealed-surface); background: var(--app-project-revealed-surface); }
+.is-revealed .project-status { background: var(--app-ink-heading-surface); color: var(--app-surface-faint-foreground); }
+.is-revealed .project-mark { border-color: var(--app-ink-heading); background: var(--app-project-revealed-surface); }
+.is-revealed .project-mark--logo { border-color: var(--app-ink-muted); background: var(--app-logo-plate); }
+.is-revealed .project-title { color: var(--app-on-inverse); }
+.is-revealed .project-grade, .is-revealed .project-description, .is-revealed .project-context dd { color: var(--app-surface-soft-foreground); }
+.is-revealed .project-context dt { color: var(--app-line-foreground); }
 .is-revealed .project-actions { max-height: 130px; margin-top: 1rem; opacity: 1; transform: translateY(0); visibility: visible; transition-delay: 0s; }
 .has-more.is-revealed .project-description { flex: 1; max-height: 100%; overflow: auto; }
-.project-card ::selection { background: #dbeafe; color: #172554; }
+.project-card ::selection { background: var(--app-selection-blue); color: var(--app-selection-ink-deep); }
 @media (hover: none), (pointer: coarse) {
-  .project-reveal { display: inline-flex; min-height: 36px; align-items: center; align-self: flex-end; gap: .25rem; margin-top: .4rem; padding: .2rem 0; color: #475569; font-size: .75rem; cursor: pointer; }
+  .project-reveal { display: inline-flex; min-height: 36px; align-items: center; align-self: flex-end; gap: .25rem; margin-top: .4rem; padding: .2rem 0; color: var(--app-ink-secondary); font-size: .75rem; cursor: pointer; }
   .project-reveal .mdi { font-size: 1rem; transition: transform 300ms ease-out; }
-  .is-revealed .project-reveal { color: #e2e8f0; }
+  .is-revealed .project-reveal { color: var(--app-line-foreground); }
   .is-revealed .project-reveal .mdi { transform: rotate(180deg); }
   .project-actions a, .project-actions button { min-height: 44px; }
 }

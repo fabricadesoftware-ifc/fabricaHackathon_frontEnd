@@ -1,7 +1,7 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
-import { themePlugin, vuetify } from '../../src/plugins/vuetify'
+import { connectThemes, themePlugin, vuetify } from '../../src/plugins/vuetify'
 import Fixtures from './Fixtures.vue'
 import '../../src/tailwind.css'
 import 'vuetify/styles'
@@ -33,4 +33,6 @@ const router = createRouter({
   routes: [{ path: '/:pathMatch(.*)*', component: { render: () => null } }, { path: '/edicoes/:id', name: 'edicoes', component: { render: () => null } }],
 })
 void router.push('/projetos/1/pre-avaliacao')
-createApp(Fixtures).use(createPinia()).use(vuetify).use(themePlugin).use(router).mount('#app')
+const app = createApp(Fixtures).use(createPinia()).use(vuetify).use(themePlugin).use(router)
+connectThemes(app)
+app.mount('#app')

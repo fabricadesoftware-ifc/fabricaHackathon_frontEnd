@@ -21,14 +21,14 @@
     <div class="space-y-1">
       <h2
         class="text-xl font-semibold tracking-tight
-               text-slate-900 sm:text-[22px]"
+               text-app-text-strong sm:text-[22px]"
       >
         {{ title }}
       </h2>
 
       <p
         v-if="subtitle"
-        class="text-sm leading-5 text-slate-500"
+        class="text-sm leading-5 text-app-text-muted"
       >
         {{ subtitle }}
       </p>
@@ -37,8 +37,8 @@
     <RouterLink
       v-if="to"
       class="inline-flex shrink-0 items-center
-             min-h-11 gap-1.5 text-sm font-medium text-blue-600
-             transition-colors hover:text-blue-700"
+             min-h-11 gap-1.5 text-sm font-medium text-app-link
+             transition-colors hover:text-app-link-hover"
       :to="to"
     >
       {{ linkText }}

@@ -1,12 +1,12 @@
 <template>
   <div class="flex items-center justify-between">
-    <h2 class="text-base font-semibold text-gray-900">
+    <h2 class="text-base font-semibold text-app-text-strong-neutral">
       {{ title }}
     </h2>
 
     <component
       :is="linkTag"
-      class="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
+      class="flex items-center gap-1 text-sm font-medium text-app-link hover:text-app-link-hover"
       :href="href"
       :to="to"
     >

@@ -7,7 +7,7 @@
     :size="length"
   >
     <Pagination.Prev
-      class="flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-500 transition-colors hover:bg-gray-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
+      class="flex h-9 w-9 items-center justify-center rounded-md border border-app-border-strong-neutral bg-app-surface text-app-text-muted-neutral transition-colors hover:bg-app-surface-subtle-neutral data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
     >
       <span class="mdi mdi-chevron-left text-lg" />
     </Pagination.Prev>
@@ -15,12 +15,12 @@
     <template v-for="(item, index) in items" :key="index">
       <Pagination.Ellipsis
         v-if="item.type === 'ellipsis'"
-        class="flex h-9 w-9 items-center justify-center text-sm text-gray-400"
+        class="flex h-9 w-9 items-center justify-center text-sm text-app-text-placeholder-neutral"
       />
 
       <Pagination.Item
         v-else
-        class="flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 data-[selected]:border-blue-600 data-[selected]:bg-blue-600 data-[selected]:text-white data-[selected]:hover:bg-blue-600"
+        class="flex h-9 w-9 items-center justify-center rounded-md border border-app-border-strong-neutral bg-app-surface text-sm font-medium text-app-text-body-strong-neutral transition-colors hover:bg-app-surface-subtle-neutral data-[selected]:border-app-brand-border-600 data-[selected]:bg-app-action data-[selected]:text-app-on-brand data-[selected]:hover:bg-app-action"
         :value="item.value as number"
       >
         {{ item.value }}
@@ -28,7 +28,7 @@
     </template>
 
     <Pagination.Next
-      class="flex h-9 w-9 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-500 transition-colors hover:bg-gray-50 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
+      class="flex h-9 w-9 items-center justify-center rounded-md border border-app-border-strong-neutral bg-app-surface text-app-text-muted-neutral transition-colors hover:bg-app-surface-subtle-neutral data-[disabled]:cursor-not-allowed data-[disabled]:opacity-40"
     >
       <span class="mdi mdi-chevron-right text-lg" />
     </Pagination.Next>

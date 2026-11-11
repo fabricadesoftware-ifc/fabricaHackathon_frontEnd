@@ -99,7 +99,7 @@ test('filter variants expose pressed state, emit selection and update the select
       assert.equal(buttons[0]!.props['aria-pressed'], false)
       assert.equal(buttons[1]!.props['aria-pressed'], true)
       if (variant === 'underline') {
-        assert.match(String(buttons[1]!.props.class), /border-\[#2563eb\]/)
+        assert.match(String(buttons[1]!.props.class), /border-app-brand-accent/)
       }
     } finally {
       component.unmount()

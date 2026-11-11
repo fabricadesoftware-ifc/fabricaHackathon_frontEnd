@@ -21,24 +21,24 @@
 
 <template>
   <form
-    class="header-search flex h-10 items-center overflow-hidden rounded-full border-[1px] border-transparent bg-white transition-all duration-300 [&:hover:not(:focus-within)]:border-[#e5e7eb] [&:hover:not(:focus-within)]:shadow-[0_1px_2px_rgb(0_0_0/0.06)] focus-within:border-[#2563eb] focus-within:shadow-[0_0_0_3px_#dbeafe] [&:is(:hover,:focus-within)_input]:w-26 [&:is(:hover,:focus-within)_input]:pr-3 sm:[&:is(:hover,:focus-within)_input]:w-56"
+    class="header-search flex h-10 items-center overflow-hidden rounded-full border-[1px] border-transparent bg-app-surface transition-all duration-300 [&:hover:not(:focus-within)]:border-app-line-neutral [&:hover:not(:focus-within)]:shadow-app-soft focus-within:border-app-brand-accent focus-within:shadow-app-search-focus [&:is(:hover,:focus-within)_input]:w-26 [&:is(:hover,:focus-within)_input]:pr-3 sm:[&:is(:hover,:focus-within)_input]:w-56"
     role="search"
     @submit.prevent="pesquisar"
   >
     <button
       aria-label="Pesquisar"
-      class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-blue-600 hover:text-blue-700"
+      class="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center text-app-link hover:text-app-link-hover"
       type="button"
       @click="aoClicarNaLupa"
     >
-      <span class="mdi mdi-magnify header-search-icon text-[24px] text-[#2563eb]" />
+      <span class="mdi mdi-magnify header-search-icon text-[24px] text-app-brand-text" />
     </button>
 
     <input
       ref="input"
       v-model="termo"
       aria-label="Pesquisar projetos"
-      class="header-search-input [&::-webkit-search-cancel-button]:hidden w-0 bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-500 transition-all duration-300 p-0 min-w-0"
+      class="header-search-input [&::-webkit-search-cancel-button]:hidden w-0 bg-transparent text-sm text-app-text-strong-neutral outline-none placeholder:text-app-text-muted-neutral transition-all duration-300 p-0 min-w-0"
       placeholder="Pesquisar"
       type="search"
     >

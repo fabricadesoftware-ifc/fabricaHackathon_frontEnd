@@ -12,7 +12,7 @@ Utilize Vue 3 com `<script setup lang="ts">`, props e eventos tipados. Prefira o
 
 Utilize Tailwind nos templates, preservando os valores e os estados existentes. `App.vue` controla o espaçamento externo das páginas.
 
-O projeto também carrega estilos do Vuetify. Algumas classes, como `bg-white` e `border`, possuem regras fora das camadas do Tailwind e podem sobrescrever cores e bordas. Ao migrar CSS existente, confira a cascata no navegador; valores como `bg-[#fff]` e `border-[1px]` permitem preservar a aparência sem acrescentar `!important`.
+O projeto também carrega estilos do Vuetify. Algumas classes, como `bg-white` e `border`, possuem regras fora das camadas do Tailwind e podem sobrescrever cores e bordas. Ao migrar CSS existente, confira a cascata no navegador. Utilize os tokens semânticos `bg-app-*`, `text-app-*` e `border-app-*`, descritos em [Temas](../../docs/themes.md), em vez de novas cores fixas. `bg-app-surface` conserva a cascata legada de `bg-white`; `bg-app-surface-plain` fornece apenas o fundo.
 
 Mantenha CSS próprio para transições com temporizações específicas, ilustrações e ajustes necessários sobre o DOM ou os resets do Vuetify. O foco global fornece um contorno visível na camada base; preserve indicadores equivalentes quando um controle utilizar `outline-none`.
 
@@ -34,4 +34,4 @@ Os testes unitários compilam os templates reais com o compilador fornecido por 
 
 Para os testes de navegador, inicie `npm run dev` e uma instância isolada de Chrome com depuração na porta 9231. Execute `npm run test:browser`. `HACKIFC_PREVIEW_URL` e `HACKIFC_CHROME_URL` permitem apontar para outras portas. A página `tests/browser/fixtures.html` usa somente fixtures e bloqueia acesso à API real.
 
-As verificações cobrem foco por teclado, filtros, loading, edição da bio, hover, Escape, toque e largura dos containers em desktop e celular. As capturas dos cards são gravadas em `/tmp/hackifc-final-cards-1200.png` e `/tmp/hackifc-final-cards-390.png`.
+As verificações cobrem os dois temas, alternância por teclado, persistência, os dois provedores, menus e modais teleportados, formulários de autenticação, foco, filtros, loading, edição da bio, hover, Escape, toque e largura dos containers em desktop e celular. As capturas ficam em `/tmp/hackifc-final-cards-{light,dark}-{1200,390}.png`.

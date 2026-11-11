@@ -1,6 +1,6 @@
 <template>
   <button
-    class="bg-[#2563EB] text-[22px] text-white py-1.5 px-5.5 rounded-md flex items-center gap-2 hover:bg-[#0d4edc] disabled:bg-[#787878] disabled:text-[#d8d8d8]"
+    class="bg-app-brand-action text-[22px] text-app-on-brand py-1.5 px-5.5 rounded-md flex items-center gap-2 hover:bg-app-brand-active disabled:bg-app-step-neutral disabled:text-app-step-copy"
   >
     <!-- @click="emit('click')" -->
 

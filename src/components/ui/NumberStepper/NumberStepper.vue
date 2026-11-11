@@ -66,7 +66,7 @@
   }
 
   const buttonDesign
-    = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-sm text-slate-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30'
+    = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-sm text-app-text-secondary transition-colors hover:bg-app-surface-muted-neutral disabled:cursor-not-allowed disabled:opacity-30'
 
   function incrementar () {
     if (!canIncrement.value) return
@@ -86,8 +86,8 @@
 <template>
   <div class="flex shrink-0 flex-col items-start gap-2 sm:items-end" role="group">
     <div
-      class="inline-flex items-center overflow-hidden rounded-lg border bg-white transition-colors focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100"
-      :class="inputError ? 'border-red-400' : 'border-slate-200'"
+      class="inline-flex items-center overflow-hidden rounded-lg border bg-app-surface transition-colors focus-within:border-app-brand-border-600 focus-within:ring-2 focus-within:ring-app-focus-halo"
+      :class="inputError ? 'border-app-danger-border-400' : 'border-app-border-default'"
     >
       <button
         aria-label="Diminuir nota"
@@ -108,7 +108,7 @@
         :aria-valuemin="min"
         :aria-valuenow="modelValue ?? undefined"
         autocomplete="off"
-        class="h-10 w-14 min-w-0 border-x border-slate-200 bg-slate-50 text-center text-base font-semibold tabular-nums text-slate-700 outline-none placeholder:text-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
+        class="h-10 w-14 min-w-0 border-x border-app-border-default bg-app-surface-subtle text-center text-base font-semibold tabular-nums text-app-text-body-strong outline-none placeholder:text-app-text-placeholder disabled:cursor-not-allowed disabled:opacity-50"
         :disabled="disabled"
         inputmode="decimal"
         placeholder="—"
@@ -131,6 +131,6 @@
       </button>
     </div>
 
-    <p v-if="inputError" :id="`${fieldId}-error`" class="max-w-52 text-xs leading-5 text-red-600 sm:text-right" role="status">{{ inputError }}</p>
+    <p v-if="inputError" :id="`${fieldId}-error`" class="max-w-52 text-xs leading-5 text-app-danger-text-600 sm:text-right" role="status">{{ inputError }}</p>
   </div>
 </template>

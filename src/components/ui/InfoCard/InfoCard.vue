@@ -1,15 +1,15 @@
 <template>
   <v-card>
-    <div class="bg-white flex flex-col gap-4 px-5 pb-8 pt-5 sm:px-11 sm:pb-30 sm:pr-25">
-      <v-card-title class="!whitespace-normal text-[20px] text-[#111827] sm:text-[24px]">
+    <div class="bg-app-surface flex flex-col gap-4 px-5 pb-8 pt-5 sm:px-11 sm:pb-30 sm:pr-25">
+      <v-card-title class="!whitespace-normal text-[20px] text-app-ink-strong-neutral sm:text-[24px]">
         {{ letraMaiscPrep(props.title) }}
       </v-card-title>
 
-      <v-card-text class="text-[16px] text-[#4B5563]">
+      <v-card-text class="text-[16px] text-app-ink-secondary-neutral">
         {{ props.description ? textoFormatado(props.description) : 'Sem mais descrições' }}
       </v-card-text>
 
-      <v-card-title class="text-[20px] text-[#111827]">
+      <v-card-title class="text-[20px] text-app-ink-strong-neutral">
         {{ letraMaiscPrep(props.criteriaLabel) }}
       </v-card-title>
 
@@ -17,7 +17,7 @@
         <v-chip
           v-for="(item, index) in props.criteria"
           :key="index"
-          class="text-[#4B5563] border-[#E5E7EB] border-[3px] py-1.5 px-4 rounded-[33px]"
+          class="text-app-ink-secondary-neutral border-app-line-neutral border-[3px] py-1.5 px-4 rounded-[33px]"
         >
           {{ letraMaiscPrep(item) }}
         </v-chip>

@@ -66,11 +66,11 @@
 
 <template>
   <button
-    class="grid w-full grid-cols-1 gap-x-4 gap-y-3 p-4 text-left transition-colors duration-150 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-5 focus-visible:outline-2 focus-visible:outline-blue-600"
+    class="grid w-full grid-cols-1 gap-x-4 gap-y-3 p-4 text-left transition-colors duration-150 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-5 focus-visible:outline-2 focus-visible:outline-app-focus"
     :class="
       isLocked
-        ? 'cursor-default bg-slate-50/50'
-        : 'cursor-pointer bg-white hover:bg-blue-50/50'
+        ? 'cursor-default bg-app-surface-subtle/50'
+        : 'cursor-pointer bg-app-surface hover:bg-app-selection-soft/50'
     "
     :disabled="isLocked"
     type="button"
@@ -81,7 +81,7 @@
 
       <!-- Avatar -->
       <div
-        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-slate-100"
+        class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-app-surface-muted"
       >
         <img
           v-if="hasAvatar"
@@ -94,7 +94,7 @@
         <span
           v-else
           class="flex size-full items-center justify-center text-base font-semibold"
-          :class="isCompleted ? 'text-slate-500' : 'text-blue-600'"
+          :class="isCompleted ? 'text-app-text-muted' : 'text-app-link'"
         >
           {{ projectInitial }}
         </span>
@@ -104,13 +104,13 @@
       <div class="min-w-0">
         <p
           class="break-words text-sm leading-6 sm:text-base"
-          :class="isCompleted ? 'font-medium text-slate-600' : 'font-semibold text-slate-700'"
+          :class="isCompleted ? 'font-medium text-app-text-secondary' : 'font-semibold text-app-text-body-strong'"
         >
           {{ props.name }}
         </p>
 
         <p
-          class="mt-0.5 break-words text-xs text-slate-500 sm:text-sm"
+          class="mt-0.5 break-words text-xs text-app-text-muted sm:text-sm"
         >
           {{ props.teamName }}
         </p>
@@ -132,7 +132,7 @@
         status="Pendente"
       />
 
-      <span v-if="!isLocked" aria-hidden="true" class="mdi mdi-chevron-right ml-auto text-xl text-slate-400 sm:ml-0" />
+      <span v-if="!isLocked" aria-hidden="true" class="mdi mdi-chevron-right ml-auto text-xl text-app-text-placeholder sm:ml-0" />
     </div>
   </button>
 </template>

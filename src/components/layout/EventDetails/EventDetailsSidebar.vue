@@ -37,10 +37,10 @@
 
     <!-- SITUAÇÃO DA EDIÇÃO -->
     <section
-      class="rounded-lg border border-slate-200 bg-white p-5"
+      class="rounded-lg border border-app-border-default bg-app-surface p-5"
     >
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h2 class="text-base font-semibold text-slate-700">
+        <h2 class="text-base font-semibold text-app-text-body-strong">
           Situação da edição
         </h2>
 
@@ -51,8 +51,8 @@
       </div>
 
       <p
-        class="mt-3 rounded-lg bg-slate-50 px-3 py-3
-               text-sm leading-5 text-slate-500"
+        class="mt-3 rounded-lg bg-app-surface-subtle px-3 py-3
+               text-sm leading-5 text-app-text-muted"
       >
         {{ mensagemStatus }}
       </p>
@@ -60,9 +60,9 @@
       <RouterLink
         v-if="status === 'inscricoes' && podeInscrever"
         class="mt-4 flex min-h-11 w-full items-center
-               justify-center gap-2 rounded-lg bg-blue-600
-               px-4 py-2.5 text-sm font-semibold text-white
-               transition-colors hover:bg-blue-700"
+               justify-center gap-2 rounded-lg bg-app-action
+               px-4 py-2.5 text-sm font-semibold text-app-on-brand
+               transition-colors hover:bg-app-action-hover"
         :to="{
           path: '/novo',
           query: { edicao_id: edicao.id },
@@ -79,20 +79,20 @@
 
     <!-- EQUIPES PARTICIPANTES -->
     <section
-      class="rounded-lg border border-slate-200
-             bg-white p-4 sm:p-5"
+      class="rounded-lg border border-app-border-default
+             bg-app-surface p-4 sm:p-5"
     >
       <!-- Cabeçalho -->
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-sm font-semibold text-slate-700">
+        <h2 class="text-sm font-semibold text-app-text-body-strong">
           Equipes participantes
         </h2>
 
         <button
           v-if="edicao.equipes.length > 0"
           class="inline-flex shrink-0 items-center gap-1
-                 text-xs font-medium text-blue-600
-                 transition-colors hover:text-blue-700"
+                 text-xs font-medium text-app-link
+                 transition-colors hover:text-app-link-hover"
           type="button"
           @click="$emit('ver-equipes')"
         >
@@ -114,13 +114,13 @@
           v-for="equipe in equipesDestaque"
           :key="equipe.id"
           class="flex items-start gap-3 rounded-lg
-         bg-slate-50/60 p-3"
+         bg-app-surface-subtle/60 p-3"
         >
           <!-- Logo / inicial do projeto -->
           <div
             class="flex h-9 w-9 shrink-0 items-center
                    justify-center overflow-hidden rounded-lg
-                   bg-blue-50 text-sm font-semibold text-blue-600"
+                   bg-app-selection-soft text-sm font-semibold text-app-link"
           >
             <img
               v-if="equipe.projeto?.logo_projeto"
@@ -145,7 +145,7 @@
             <!-- Nome do projeto -->
             <h3
               class="truncate text-sm font-semibold
-                     leading-5 text-slate-700"
+                     leading-5 text-app-text-body-strong"
             >
               {{
                 equipe.projeto?.nome_projeto ||
@@ -157,7 +157,7 @@
             <p
               v-if="equipe.projeto?.descricao_projeto"
               class="mt-0.5 line-clamp-1 text-xs
-                     leading-4 text-slate-500"
+                     leading-4 text-app-text-muted"
             >
               {{ equipe.projeto.descricao_projeto }}
             </p>
@@ -165,12 +165,12 @@
             <!-- Nome da equipe -->
             <div
               class="mt-2 flex min-w-0 items-center
-                     gap-1.5 text-xs text-slate-500"
+                     gap-1.5 text-xs text-app-text-muted"
             >
               <span
                 aria-hidden="true"
                 class="mdi mdi-account-group-outline
-                       shrink-0 text-sm text-slate-400"
+                       shrink-0 text-sm text-app-text-placeholder"
               />
 
               <span class="truncate">
@@ -184,16 +184,16 @@
       <!-- Estado vazio -->
       <div
         v-else
-        class="mt-4 rounded-lg bg-slate-50
+        class="mt-4 rounded-lg bg-app-surface-subtle
                px-4 py-6 text-center"
       >
         <span
           aria-hidden="true"
           class="mdi mdi-account-group-outline
-                 text-2xl text-slate-400"
+                 text-2xl text-app-text-placeholder"
         />
 
-        <p class="mt-2 text-sm text-slate-500">
+        <p class="mt-2 text-sm text-app-text-muted">
           Ainda não existem equipes participantes.
         </p>
       </div>

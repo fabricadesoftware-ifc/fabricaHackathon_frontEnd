@@ -31,20 +31,20 @@
     <Transition name="unsaved-changes-bar-fade">
       <div
         v-if="isVisible"
-        class="fixed inset-x-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-[960px] flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-lg sm:flex-row sm:items-center sm:justify-between md:bottom-4"
+        class="fixed inset-x-4 bottom-[calc(5.5rem+env(safe-area-inset-bottom))] z-50 mx-auto flex max-w-[960px] flex-col gap-3 rounded-lg border border-app-border-default bg-app-surface p-4 shadow-lg sm:flex-row sm:items-center sm:justify-between md:bottom-4"
       >
         <div class="flex min-w-0 items-start gap-3">
-          <span aria-hidden="true" class="mdi mdi-content-save-outline mt-0.5 text-xl text-blue-600" />
+          <span aria-hidden="true" class="mdi mdi-content-save-outline mt-0.5 text-xl text-app-link" />
 
           <div>
-            <p class="text-sm font-medium text-slate-700" role="status">{{ title }}</p>
-            <p class="text-xs text-slate-500">{{ description }}</p>
+            <p class="text-sm font-medium text-app-text-body-strong" role="status">{{ title }}</p>
+            <p class="text-xs text-app-text-muted">{{ description }}</p>
           </div>
         </div>
 
         <div class="flex shrink-0 items-center justify-end gap-2">
           <button
-            class="min-h-10 rounded-lg px-3.5 text-sm font-medium text-slate-600 hover:bg-slate-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50"
+            class="min-h-10 rounded-lg px-3.5 text-sm font-medium text-app-text-secondary hover:bg-app-surface-subtle focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus disabled:opacity-50"
             :disabled="saving"
             type="button"
             @click="emit('cancel')"
@@ -54,7 +54,7 @@
 
           <button
             :aria-busy="saving"
-            class="min-h-10 rounded-lg bg-[#2563EB] px-3.5 text-sm font-medium text-white hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50"
+            class="min-h-10 rounded-lg bg-app-brand-action px-3.5 text-sm font-medium text-app-on-brand hover:bg-app-action-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus disabled:opacity-50"
             :disabled="saving"
             type="button"
             @click="emit('save')"

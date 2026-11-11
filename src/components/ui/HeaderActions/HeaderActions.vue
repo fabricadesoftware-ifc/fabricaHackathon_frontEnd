@@ -52,9 +52,9 @@
 
       <template #activator="{ props: menuProps }">
 
-        <v-avatar v-bind="menuProps" class="cursor-pointer transition-opacity duration-150 ease-[ease-in-out] [&:hover]:opacity-90" color="#3B82F6" :size="size">
+        <v-avatar v-bind="menuProps" class="cursor-pointer transition-opacity duration-150 ease-[ease-in-out] [&:hover]:opacity-90" color="app-avatar" :size="size">
           <img v-if="props.userAvatar" :alt="props.userName" class="h-full w-full object-cover" :src="props.userAvatar">
-          <v-icon v-else color="white" icon="mdi-account" />
+          <v-icon v-else color="app-on-brand" icon="mdi-account" />
         </v-avatar>
 
       </template>
@@ -79,7 +79,7 @@
 <style scoped>
 /* Menu */
 .simple-menu {
-  background-color: #ffffff !important;
+  background-color: var(--app-surface-plain) !important;
   border-radius: 8px !important;
   padding: 2px !important;
   min-width: 150px !important;
@@ -89,16 +89,16 @@
   min-height: 32px !important;
   padding: 4px 10px !important;
   border-radius: 6px !important;
-  color: #212121 !important;
+  color: var(--app-menu-copy) !important;
 }
 
 .simple-menu :deep(.v-list-item-title) {
-  color: #212121 !important;
+  color: var(--app-menu-copy) !important;
   font-size: 14px !important;
 }
 
 .simple-menu :deep(.v-list-item:hover) {
-  background-color: #f0f0f0 !important;
+  background-color: var(--app-menu-hover) !important;
 }
 
 .simple-menu :deep(.v-list-item--disabled) {

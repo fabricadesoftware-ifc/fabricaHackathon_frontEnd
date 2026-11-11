@@ -1,11 +1,11 @@
 <template>
-  <div v-if="props.score !== undefined" class="bg-[#DCFCE7] border border-[#DCFCE7] gap-1" :class="baseStyle">
+  <div v-if="props.score !== undefined" class="bg-app-score-success border border-app-score-success gap-1" :class="baseStyle">
     <p :class="textColor">{{ props.status }}</p>
     <p :class="textColor">-</p>
     <p :class="textColor"><slot name="score">{{ formattedScore }}</slot></p>
   </div>
 
-  <div v-else class="bg-[#FEF3C7] border border-[#FEF3C7]" :class="baseStyle">
+  <div v-else class="bg-app-score-pending border border-app-score-pending" :class="baseStyle">
     <p :class="textColor">{{ props.status }}</p>
   </div>
 </template>
@@ -34,6 +34,6 @@
   })
 
   const textColor = computed(() => {
-    return props.status === 'Avaliado' ? 'text-[#16A34A]' : 'text-[#D97706]'
+    return props.status === 'Avaliado' ? 'text-app-score-positive' : 'text-app-score-warning'
   })
 </script>

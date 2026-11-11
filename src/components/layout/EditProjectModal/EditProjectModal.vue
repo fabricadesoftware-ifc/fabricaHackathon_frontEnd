@@ -121,32 +121,32 @@
   <Teleport to="body">
     <div
       v-if="modelValue"
-      class="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4"
+      class="fixed inset-0 z-[1000] flex items-center justify-center bg-app-scrim/50 p-4"
       @click.self="closeModal"
       @keydown="handleKeydown"
     >
       <div
         aria-labelledby="edit-project-title"
         aria-modal="true"
-        class="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        class="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-xl bg-app-surface p-6 shadow-xl"
         role="dialog"
         tabindex="-1"
       >
         <!-- Cabeçalho -->
         <div class="mb-6 flex items-start justify-between">
           <div>
-            <h2 id="edit-project-title" class="text-xl font-semibold text-gray-900">
+            <h2 id="edit-project-title" class="text-xl font-semibold text-app-text-strong-neutral">
               Editar projeto
             </h2>
 
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-sm text-app-text-muted-neutral">
               Atualize as informações da sua equipe e projeto.
             </p>
           </div>
 
           <button
             aria-label="Fechar modal"
-            class="text-xl text-gray-400 hover:text-gray-700"
+            class="text-xl text-app-text-placeholder-neutral hover:text-app-text-body-strong-neutral"
             :disabled="loading"
             type="button"
             @click="closeModal"
@@ -159,14 +159,14 @@
         <form class="flex flex-col gap-5" @submit.prevent>
           <!-- Nome da equipe -->
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="edit-team-name">
+            <label class="mb-2 block text-sm font-medium text-app-text-body-strong-neutral" for="edit-team-name">
               Nome da equipe
             </label>
 
             <input
               id="edit-team-name"
               v-model="form.nome_equipe"
-              class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500"
+              class="w-full rounded-lg border border-app-border-strong-neutral px-4 py-3 text-sm text-app-text-strong-neutral outline-none focus:border-app-brand-border-500"
               :disabled="loading || teamNameLocked"
               required
               type="text"
@@ -175,14 +175,14 @@
 
           <!-- Nome do projeto -->
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="edit-project-name">
+            <label class="mb-2 block text-sm font-medium text-app-text-body-strong-neutral" for="edit-project-name">
               Nome do projeto
             </label>
 
             <input
               id="edit-project-name"
               v-model="form.nome_projeto"
-              class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500"
+              class="w-full rounded-lg border border-app-border-strong-neutral px-4 py-3 text-sm text-app-text-strong-neutral outline-none focus:border-app-brand-border-500"
               :disabled="loading"
               required
               type="text"
@@ -191,14 +191,14 @@
 
           <!-- Tema -->
           <div v-if="temas.length > 0">
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="edit-tema">
+            <label class="mb-2 block text-sm font-medium text-app-text-body-strong-neutral" for="edit-tema">
               Tema do projeto
             </label>
 
             <select
               id="edit-tema"
               v-model="form.tema"
-              class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500"
+              class="w-full rounded-lg border border-app-border-strong-neutral bg-app-surface px-4 py-3 text-sm text-app-text-strong-neutral outline-none focus:border-app-brand-border-500"
               :disabled="loading"
             >
               <option disabled :value="null">Selecione um tema</option>
@@ -208,27 +208,27 @@
 
           <!-- Descrição -->
           <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="edit-description">
+            <label class="mb-2 block text-sm font-medium text-app-text-body-strong-neutral" for="edit-description">
               Descrição do projeto
             </label>
 
             <textarea
               id="edit-description"
               v-model="form.descricao_projeto"
-              class="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 outline-none focus:border-blue-500"
+              class="w-full resize-none rounded-lg border border-app-border-strong-neutral px-4 py-3 text-sm text-app-text-strong-neutral outline-none focus:border-app-brand-border-500"
               :disabled="loading"
               placeholder="Conte o que o sistema faz e para quem."
               rows="4"
             />
           </div>
 
-          <p class="rounded-lg bg-blue-50 px-4 py-3 text-xs text-blue-800">
+          <p class="rounded-lg bg-app-selection-soft px-4 py-3 text-xs text-app-link-strong">
             O link do sistema é informado na <strong>pré-avaliação</strong> e aparece automaticamente no projeto.
           </p>
 
           <!-- Logo -->
           <div>
-            <span class="mb-2 block text-sm font-medium text-gray-700">Logo do projeto</span>
+            <span class="mb-2 block text-sm font-medium text-app-text-body-strong-neutral">Logo do projeto</span>
 
             <LogoUpload
               :key="logoKey"
@@ -241,7 +241,7 @@
 
             <button
               v-if="logoUrl && !form.removerLogo && !form.logo"
-              class="mt-2 text-sm text-red-600 hover:underline"
+              class="mt-2 text-sm text-app-danger-text-600 hover:underline"
               :disabled="loading"
               type="button"
               @click="removerLogoAtual"
@@ -249,20 +249,20 @@
               Remover logo atual
             </button>
 
-            <p v-if="form.removerLogo" class="mt-2 text-sm text-gray-500">
+            <p v-if="form.removerLogo" class="mt-2 text-sm text-app-text-muted-neutral">
               A logo será removida ao salvar.
             </p>
 
-            <p v-if="erroLogo" class="mt-1 text-sm text-red-600">{{ erroLogo }}</p>
+            <p v-if="erroLogo" class="mt-1 text-sm text-app-danger-text-600">{{ erroLogo }}</p>
           </div>
 
           <!-- Erro -->
-          <p v-if="error" class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
+          <p v-if="error" class="rounded-lg bg-app-danger-surface-50 px-4 py-3 text-sm text-app-danger-text-600" role="alert">
             {{ error }}
           </p>
 
           <!-- Botões -->
-          <div class="mt-2 flex justify-end gap-3 border-t border-gray-100 pt-5">
+          <div class="mt-2 flex justify-end gap-3 border-t border-app-border-soft-neutral pt-5">
             <AppButton :disabled="loading" label="Cancelar" variant="secondary" @click="closeModal" />
 
             <AppButton

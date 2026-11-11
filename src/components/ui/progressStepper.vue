@@ -49,8 +49,8 @@
                  top-4 bottom-0 w-[2px]"
           :class="
             etapa.concluida
-              ? 'bg-blue-200'
-              : 'bg-slate-200'
+              ? 'bg-app-selection-strong'
+              : 'bg-app-surface-skeleton'
           "
         />
 
@@ -63,16 +63,16 @@
                  rounded-full border-2"
           :class="[
             etapa.atual
-              ? 'border-blue-500 bg-blue-500'
+              ? 'border-app-brand-border-500 bg-app-action-indicator'
               : etapa.concluida
-                ? 'border-blue-400 bg-blue-400'
-                : 'border-slate-300 bg-slate-300',
+                ? 'border-app-brand-border-400 bg-app-action-indicator-soft'
+                : 'border-app-border-strong bg-app-surface-step-pending',
           ]"
         >
           <span
             v-if="etapa.atual"
             class="h-1.5 w-1.5
-                   rounded-full bg-white"
+                   rounded-full bg-app-surface"
           />
         </div>
 
@@ -89,10 +89,10 @@
               class="text-sm font-medium leading-5"
               :class="[
                 etapa.atual
-                  ? 'text-blue-600'
+                  ? 'text-app-link'
                   : etapa.concluida
-                    ? 'text-slate-600'
-                    : 'text-slate-500',
+                    ? 'text-app-text-secondary'
+                    : 'text-app-text-muted',
               ]"
             >
               {{ etapa.nome }}
@@ -101,7 +101,7 @@
             <!-- Descrição -->
             <p
               class="mt-1 text-xs leading-4
-                     text-slate-500"
+                     text-app-text-muted"
             >
               {{
                 etapa.concluida
@@ -122,10 +122,10 @@
                    text-xs font-medium"
             :class="[
               etapa.atual
-                ? 'bg-emerald-50 text-emerald-600'
+                ? 'bg-app-positive-surface-50 text-app-positive-text-600'
                 : etapa.concluida
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'bg-slate-100 text-slate-500',
+                  ? 'bg-app-selection-soft text-app-link'
+                  : 'bg-app-surface-muted text-app-text-muted',
             ]"
           >
             <span
@@ -133,10 +133,10 @@
               class="h-1.5 w-1.5 rounded-full"
               :class="[
                 etapa.atual
-                  ? 'bg-emerald-500'
+                  ? 'bg-app-positive-surface-500'
                   : etapa.concluida
-                    ? 'bg-blue-400'
-                    : 'bg-slate-400',
+                    ? 'bg-app-action-indicator-soft'
+                    : 'bg-app-surface-step-marker',
               ]"
             />
 

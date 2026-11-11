@@ -10,39 +10,39 @@
   }>()
 
   const evaluationColors: Record<Status, string> = {
-    inscricoes: 'bg-[#f0fdf4] text-[#15803d]',
-    avaliacao: 'bg-[#eff6ff] text-[#2563eb]',
-    andamento: 'bg-[#eff6ff] text-[#2563eb]',
-    finalizado: 'bg-[#f1f5f9] text-[#475569]',
+    inscricoes: 'bg-app-success-surface text-app-success-strong',
+    avaliacao: 'bg-app-brand-surface text-app-brand-text',
+    andamento: 'bg-app-brand-surface text-app-brand-text',
+    finalizado: 'bg-app-surface-soft text-app-ink-secondary',
   }
   const cardDots: Record<Status, string> = {
-    inscricoes: 'bg-[#15803d]',
-    avaliacao: 'bg-[#7c3aed]',
-    andamento: 'bg-[#2563eb]',
-    finalizado: 'bg-[#64748b]',
+    inscricoes: 'bg-app-success-strong',
+    avaliacao: 'bg-app-evaluation-marker',
+    andamento: 'bg-app-brand-action',
+    finalizado: 'bg-app-ink-muted-surface',
   }
 
   const dotClasses = computed(() => {
     if (props.variant === 'card') return cardDots[props.status]
-    return props.variant === 'evaluation' ? 'bg-current text-inherit' : 'bg-white'
+    return props.variant === 'evaluation' ? 'bg-current text-inherit' : 'bg-app-surface'
   })
 
   const badgeClasses = computed(() => {
     if (props.variant === 'card') {
-      return 'inline-flex w-fit items-center gap-[.45rem] rounded-[5px] bg-[#fff] px-[.65rem] py-[.4rem] text-[.6875rem] font-bold leading-[1.4] text-[#172331]'
+      return 'inline-flex w-fit items-center gap-[.45rem] rounded-[5px] bg-app-surface-plain px-[.65rem] py-[.4rem] text-[.6875rem] font-bold leading-[1.4] text-app-ink-on-control'
     }
     if (props.variant === 'evaluation') {
       return `inline-flex items-center gap-1.5 whitespace-nowrap rounded-[.375rem] px-2 py-[.125rem] text-xs font-medium leading-[1.5] shadow-none ${evaluationColors[props.status]}`
     }
 
     const base
-      = 'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-white whitespace-nowrap shadow-sm'
+      = 'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-app-on-brand whitespace-nowrap shadow-sm'
 
     const variants: Record<Status, string> = {
-      inscricoes: 'bg-[#1DA422]',
-      avaliacao: 'bg-[#6238CF]',
-      andamento: 'bg-[#1C74FB]',
-      finalizado: 'bg-[#161B22]',
+      inscricoes: 'bg-app-registration-marker',
+      avaliacao: 'bg-app-evaluation-solid',
+      andamento: 'bg-app-progress-solid',
+      finalizado: 'bg-app-finished-solid',
     }
 
     return `${base} ${variants[props.status]}`

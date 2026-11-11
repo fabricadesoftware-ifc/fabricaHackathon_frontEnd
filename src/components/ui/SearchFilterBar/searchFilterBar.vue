@@ -55,12 +55,12 @@
     <div :class="isToolbar ? 'flex min-w-0 flex-col gap-3 xl:flex-row xl:items-center' : 'contents'">
       <div :class="isToolbar ? hasOptions ? 'relative min-w-0 flex-1' : 'relative w-full max-w-[420px]' : 'w-full sm:w-72 lg:w-96'">
         <template v-if="isToolbar">
-          <span aria-hidden="true" class="mdi mdi-magnify pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xl text-blue-600" />
+          <span aria-hidden="true" class="mdi mdi-magnify pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-xl text-app-link" />
 
           <input
             v-model="search"
             :aria-label="props.placeholder"
-            class="h-11 w-full min-w-0 rounded-lg border border-slate-200 bg-white py-2 pl-11 pr-10 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            class="h-11 w-full min-w-0 rounded-lg border border-app-border-default bg-app-surface py-2 pl-11 pr-10 text-sm text-app-text-body-strong outline-none placeholder:text-app-text-placeholder focus:border-app-brand-border-500 focus:ring-2 focus:ring-app-focus-halo"
             :placeholder="props.placeholder"
             type="search"
           >
@@ -68,7 +68,7 @@
           <button
             v-if="search"
             aria-label="Limpar busca"
-            class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+            class="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-app-text-placeholder hover:bg-app-surface-muted hover:text-app-text-body-strong"
             type="button"
             @click="search = ''"
           >
@@ -120,7 +120,7 @@
 
         <button
           v-if="isToolbar && hasActiveFilters"
-          class="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-medium text-blue-700 hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+          class="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-medium text-app-link-hover hover:bg-app-selection-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus"
           type="button"
           @click="clearAll"
         >

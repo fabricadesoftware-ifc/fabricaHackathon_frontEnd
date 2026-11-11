@@ -1,9 +1,9 @@
 <template>
-  <section class="min-w-0 rounded-lg border border-slate-200 bg-white p-4 sm:p-5">
+  <section class="min-w-0 rounded-lg border border-app-border-default bg-app-surface p-4 sm:p-5">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <div class="min-w-0 flex-1">
-        <h3 :id="`${fieldId}-title`" class="break-words text-base font-semibold text-slate-700">{{ criteriaName }}</h3>
-        <p class="mt-1 text-xs text-slate-500">{{ modelValue === null ? 'Aguardando nota' : 'Nota preenchida' }} · de {{ min }} a {{ max }}</p>
+        <h3 :id="`${fieldId}-title`" class="break-words text-base font-semibold text-app-text-body-strong">{{ criteriaName }}</h3>
+        <p class="mt-1 text-xs text-app-text-muted">{{ modelValue === null ? 'Aguardando nota' : 'Nota preenchida' }} · de {{ min }} a {{ max }}</p>
       </div>
 
       <NumberStepper
@@ -21,22 +21,22 @@
     <button
       :aria-controls="`${fieldId}-comment`"
       :aria-expanded="isCommentVisible"
-      class="mt-2 inline-flex min-h-9 items-center gap-1.5 text-sm text-blue-600 hover:underline disabled:opacity-50"
+      class="mt-2 inline-flex min-h-9 items-center gap-1.5 text-sm text-app-link hover:underline disabled:opacity-50"
       :disabled="disabled"
       type="button"
       @click="toggleComment"
     >
       <span aria-hidden="true" class="mdi mdi-comment-text-outline" />
       {{ isCommentVisible ? 'Ocultar comentário' : 'Adicionar comentário' }}
-      <span class="text-xs text-slate-500">(opcional)</span>
+      <span class="text-xs text-app-text-muted">(opcional)</span>
     </button>
 
     <div v-if="isCommentVisible" :id="`${fieldId}-comment`" class="mt-3">
-      <label class="mb-2 block text-sm text-slate-600" :for="`${fieldId}-input`">Comentário sobre {{ criteriaName }}</label>
+      <label class="mb-2 block text-sm text-app-text-secondary" :for="`${fieldId}-input`">Comentário sobre {{ criteriaName }}</label>
 
       <textarea
         :id="`${fieldId}-input`"
-        class="w-full resize-y rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-700 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
+        class="w-full resize-y rounded-lg border border-app-border-default bg-app-surface p-3 text-sm text-app-text-body-strong focus:border-app-brand-border-600 focus:outline-none focus:ring-2 focus:ring-app-focus-halo"
         :disabled="disabled"
         placeholder="Inclua uma observação sobre este critério"
         rows="3"

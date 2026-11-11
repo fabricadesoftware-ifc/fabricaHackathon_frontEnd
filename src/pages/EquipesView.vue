@@ -108,13 +108,13 @@
         <section
           v-for="e in equipesFiltradas"
           :key="e.id"
-          class="w-full max-w-[900px] rounded-lg border border-slate-200 bg-white p-5 sm:p-6"
+          class="w-full max-w-[900px] rounded-lg border border-app-border-default bg-app-surface p-5 sm:p-6"
         >
           <header class="flex flex-wrap items-start justify-between gap-2">
             <div>
-              <h2 class="text-lg font-semibold text-[#111827]">{{ e.nome_equipe }}</h2>
+              <h2 class="text-lg font-semibold text-app-ink-strong-neutral">{{ e.nome_equipe }}</h2>
 
-              <p class="text-sm text-[#4B5563]">
+              <p class="text-sm text-app-ink-secondary-neutral">
                 <span v-if="e.projeto">Projeto: {{ e.projeto.nome_projeto }} · </span>
                 <span v-if="e.tema">Tema: {{ e.tema }} · </span>
                 {{ STATUS_LABEL[e.edicao_status] ?? e.edicao_status }}
@@ -123,40 +123,40 @@
 
             <span
               v-if="e.sou_criador"
-              class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
+              class="rounded-full bg-app-selection-soft px-3 py-1 text-xs font-medium text-app-link-hover"
             >Você criou esta equipe</span>
           </header>
 
-          <ul class="mt-4 divide-y divide-[#E5E7EB]">
+          <ul class="mt-4 divide-y divide-app-line-neutral">
             <li
               v-for="m in e.membros"
               :key="m.id"
               class="flex flex-wrap items-center justify-between gap-2 py-2"
             >
               <div>
-                <p class="text-sm font-medium text-[#111827]">
+                <p class="text-sm font-medium text-app-ink-strong-neutral">
                   {{ nomeCompleto(m) }}
-                  <span v-if="m.id === e.criador" class="ml-1 text-xs text-[#4B5563]">(criador)</span>
+                  <span v-if="m.id === e.criador" class="ml-1 text-xs text-app-ink-secondary-neutral">(criador)</span>
                 </p>
 
-                <p class="text-xs text-[#4B5563]">{{ m.email }}</p>
+                <p class="text-xs text-app-ink-secondary-neutral">{{ m.email }}</p>
               </div>
 
               <template v-if="podeGerenciar(e) && m.id !== e.criador">
                 <span v-if="confirmando === `rm-${e.id}-${m.id}`" class="flex items-center gap-2 text-sm">
                   <button
-                    class="rounded border border-red-300 bg-red-50 px-3 py-1 text-red-700 hover:bg-red-100"
+                    class="rounded border border-app-danger-border-300 bg-app-danger-surface-50 px-3 py-1 text-app-danger-text-700 hover:bg-app-danger-surface-100"
                     :disabled="ocupada !== null"
                     type="button"
                     @click="executar(e.id, () => removerMembro(e.id, m.id))"
                   >Confirmar remoção</button>
 
-                  <button class="text-[#4B5563] hover:underline" type="button" @click="confirmando = null">Cancelar</button>
+                  <button class="text-app-ink-secondary-neutral hover:underline" type="button" @click="confirmando = null">Cancelar</button>
                 </span>
 
                 <button
                   v-else
-                  class="text-sm text-red-600 hover:underline"
+                  class="text-sm text-app-danger-text-600 hover:underline"
                   type="button"
                   @click="pedir(`rm-${e.id}-${m.id}`)"
                 >Remover</button>
@@ -172,41 +172,41 @@
             <input
               v-model="emails[e.id]"
               aria-label="E-mail do novo integrante"
-              class="min-w-[16rem] flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm outline-none focus:border-blue-500"
+              class="min-w-[16rem] flex-1 rounded-lg border border-app-border-strong-neutral px-4 py-2 text-sm outline-none focus:border-app-brand-border-500"
               placeholder="email@exemplo.com"
               type="email"
             >
 
             <button
-              class="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#2054C6] disabled:opacity-50"
+              class="rounded-lg bg-app-brand-action px-4 py-2 text-sm font-medium text-app-on-brand hover:bg-app-brand-pressed disabled:opacity-50"
               :disabled="ocupada !== null"
               type="submit"
             >Adicionar integrante</button>
           </form>
 
-          <p v-if="erros[e.id]" class="mt-3 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600" role="alert">
+          <p v-if="erros[e.id]" class="mt-3 rounded-lg bg-app-danger-surface-50 px-4 py-2 text-sm text-app-danger-text-600" role="alert">
             {{ erros[e.id] }}
           </p>
 
-          <footer class="mt-5 flex flex-wrap items-center gap-3 border-t border-[#E5E7EB] pt-4 text-sm">
-            <RouterLink class="text-blue-600 hover:underline" :to="`/edicoes/${e.edicao}`">Ver edição</RouterLink>
+          <footer class="mt-5 flex flex-wrap items-center gap-3 border-t border-app-line-neutral pt-4 text-sm">
+            <RouterLink class="text-app-link hover:underline" :to="`/edicoes/${e.edicao}`">Ver edição</RouterLink>
 
             <!-- Criador: excluir a inscrição -->
             <template v-if="podeGerenciar(e)">
               <span v-if="confirmando === `del-${e.id}`" class="flex items-center gap-2">
-                <span class="text-[#4B5563]">Excluir a equipe e o projeto?</span>
+                <span class="text-app-ink-secondary-neutral">Excluir a equipe e o projeto?</span>
 
                 <button
-                  class="rounded border border-red-300 bg-red-50 px-3 py-1 text-red-700 hover:bg-red-100"
+                  class="rounded border border-app-danger-border-300 bg-app-danger-surface-50 px-3 py-1 text-app-danger-text-700 hover:bg-app-danger-surface-100"
                   :disabled="ocupada !== null"
                   type="button"
                   @click="executar(e.id, () => excluirInscricao(e.id))"
                 >Sim, excluir</button>
 
-                <button class="text-[#4B5563] hover:underline" type="button" @click="confirmando = null">Cancelar</button>
+                <button class="text-app-ink-secondary-neutral hover:underline" type="button" @click="confirmando = null">Cancelar</button>
               </span>
 
-              <button v-else class="text-red-600 hover:underline" type="button" @click="pedir(`del-${e.id}`)">
+              <button v-else class="text-app-danger-text-600 hover:underline" type="button" @click="pedir(`del-${e.id}`)">
                 Excluir inscrição
               </button>
             </template>
@@ -214,24 +214,24 @@
             <!-- Integrante: sair da equipe -->
             <template v-else-if="!e.sou_criador && e.edicao_status === 'INSCRICAO'">
               <span v-if="confirmando === `out-${e.id}`" class="flex items-center gap-2">
-                <span class="text-[#4B5563]">Sair desta equipe?</span>
+                <span class="text-app-ink-secondary-neutral">Sair desta equipe?</span>
 
                 <button
-                  class="rounded border border-red-300 bg-red-50 px-3 py-1 text-red-700 hover:bg-red-100"
+                  class="rounded border border-app-danger-border-300 bg-app-danger-surface-50 px-3 py-1 text-app-danger-text-700 hover:bg-app-danger-surface-100"
                   :disabled="ocupada !== null"
                   type="button"
                   @click="executar(e.id, () => sairDaEquipe(e.id))"
                 >Sim, sair</button>
 
-                <button class="text-[#4B5563] hover:underline" type="button" @click="confirmando = null">Cancelar</button>
+                <button class="text-app-ink-secondary-neutral hover:underline" type="button" @click="confirmando = null">Cancelar</button>
               </span>
 
-              <button v-else class="text-red-600 hover:underline" type="button" @click="pedir(`out-${e.id}`)">
+              <button v-else class="text-app-danger-text-600 hover:underline" type="button" @click="pedir(`out-${e.id}`)">
                 Sair da equipe
               </button>
             </template>
 
-            <span v-else-if="e.edicao_status !== 'INSCRICAO'" class="text-xs text-[#4B5563]">
+            <span v-else-if="e.edicao_status !== 'INSCRICAO'" class="text-xs text-app-ink-secondary-neutral">
               Equipe fechada: a edição já saiu da fase de inscrições.
             </span>
           </footer>

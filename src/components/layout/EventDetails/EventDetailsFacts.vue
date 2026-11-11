@@ -42,24 +42,24 @@
       :key="informacao.id"
       class="flex min-w-0 items-center gap-3 px-2 sm:px-4 lg:px-5"
       :class="{
-        'lg:border-l lg:border-slate-200': index > 0,
+        'lg:border-l lg:border-app-border-default': index > 0,
         'lg:pl-0': index === 0,
       }"
     >
       <!-- Ícone -->
       <span
         aria-hidden="true"
-        class="shrink-0 text-xl text-blue-500"
+        class="shrink-0 text-xl text-app-link-soft"
         :class="['mdi', informacao.icon]"
       />
 
       <!-- Informações -->
       <div class="min-w-0">
-        <p class="text-xs font-medium text-slate-400">
+        <p class="text-xs font-medium text-app-text-placeholder">
           {{ informacao.label }}
         </p>
 
-        <p class="mt-1 text-sm font-medium leading-5 text-slate-600">
+        <p class="mt-1 text-sm font-medium leading-5 text-app-text-secondary">
           {{ informacao.value }}
         </p>
       </div>

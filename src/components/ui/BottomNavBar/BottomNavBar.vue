@@ -70,7 +70,7 @@
 <template>
   <nav
     aria-label="Navegação principal"
-    class="pb-[env(safe-area-inset-bottom)] fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white md:hidden"
+    class="pb-[env(safe-area-inset-bottom)] fixed inset-x-0 bottom-0 z-50 border-t border-app-border-default-neutral bg-app-surface md:hidden"
   >
     <div class="flex h-17 w-full items-center justify-around gap-1 px-2">
       <RouterLink
@@ -81,8 +81,8 @@
         class="flex min-w-0 flex-1 flex-col items-center justify-center rounded-xl px-1 py-2 transition-colors"
         :class="
           currentItem === item.id
-            ? 'bg-blue-50 text-blue-600'
-            : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-app-selection-soft text-app-link'
+            : 'text-app-text-muted-neutral hover:bg-app-surface-subtle-neutral'
         "
         :to="item.route"
         @click="handleNavigation(item.id)"

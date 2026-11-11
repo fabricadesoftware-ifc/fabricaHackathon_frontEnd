@@ -98,34 +98,34 @@
 
 <template>
   <article class="w-full min-w-0 py-4">
-    <header class="max-w-3xl mb-6 border-b border-gray-200 pb-4">
-      <h1 class="text-2xl font-semibold text-gray-900 sm:text-3xl">Termos de Uso</h1>
-      <p class="mt-1 text-sm text-gray-500">HackIFC // 24H · Última atualização: {{ ATUALIZADO_EM }}</p>
+    <header class="max-w-3xl mb-6 border-b border-app-border-default-neutral pb-4">
+      <h1 class="text-2xl font-semibold text-app-text-strong-neutral sm:text-3xl">Termos de Uso</h1>
+      <p class="mt-1 text-sm text-app-text-muted-neutral">HackIFC // 24H · Última atualização: {{ ATUALIZADO_EM }}</p>
     </header>
 
-    <nav aria-label="Seções" class="max-w-3xl mb-8 rounded-lg bg-gray-50 p-4 text-sm">
+    <nav aria-label="Seções" class="max-w-3xl mb-8 rounded-lg bg-app-surface-subtle-neutral p-4 text-sm">
       <ul class="grid grid-cols-1 gap-1 sm:grid-cols-2">
         <li v-for="s in secoes" :key="s.id">
-          <a class="text-blue-600 hover:underline" :href="`#${s.id}`">{{ s.titulo }}</a>
+          <a class="text-app-link hover:underline" :href="`#${s.id}`">{{ s.titulo }}</a>
         </li>
       </ul>
     </nav>
 
     <section v-for="s in secoes" :id="s.id" :key="s.id" class="max-w-3xl mb-7 scroll-mt-6">
-      <h2 class="mb-2 text-lg font-semibold text-gray-900">{{ s.titulo }}</h2>
-      <p v-for="(p, i) in s.paragrafos" :key="i" class="mb-2 leading-relaxed text-gray-700">{{ p }}</p>
+      <h2 class="mb-2 text-lg font-semibold text-app-text-strong-neutral">{{ s.titulo }}</h2>
+      <p v-for="(p, i) in s.paragrafos" :key="i" class="mb-2 leading-relaxed text-app-text-body-strong-neutral">{{ p }}</p>
 
-      <ul v-if="s.itens" class="list-disc space-y-1 pl-5 text-gray-700">
+      <ul v-if="s.itens" class="list-disc space-y-1 pl-5 text-app-text-body-strong-neutral">
         <li v-for="(it, i) in s.itens" :key="i" class="leading-relaxed">{{ it }}</li>
       </ul>
     </section>
 
-    <footer class="max-w-3xl mt-10 flex flex-wrap items-center gap-4 border-t border-gray-200 pt-6">
-      <RouterLink class="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700" to="/registro">
+    <footer class="max-w-3xl mt-10 flex flex-wrap items-center gap-4 border-t border-app-border-default-neutral pt-6">
+      <RouterLink class="rounded-lg bg-app-action px-5 py-2.5 text-sm font-medium text-app-on-brand hover:bg-app-action-hover" to="/registro">
         Voltar ao cadastro
       </RouterLink>
 
-      <RouterLink class="text-sm text-blue-600 hover:underline" to="/home">Ir para a Home</RouterLink>
+      <RouterLink class="text-sm text-app-link hover:underline" to="/home">Ir para a Home</RouterLink>
     </footer>
   </article>
 </template>

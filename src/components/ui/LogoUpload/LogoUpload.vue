@@ -4,8 +4,8 @@
       class="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border p-0"
       :class="
         previewUrl
-          ? 'border-[#E5E7EB] bg-white'
-          : 'border-dashed border-[#E5E7EB] bg-[#F9FAFB]'
+          ? 'border-app-line-neutral bg-app-surface'
+          : 'border-dashed border-app-line-neutral bg-app-surface-faint-neutral'
       "
     >
       <img
@@ -17,7 +17,7 @@
 
       <span
         v-else
-        class="mdi mdi-image-outline text-2xl text-[#9CA3AF]"
+        class="mdi mdi-image-outline text-2xl text-app-ink-placeholder"
       />
     </div>
 
@@ -38,13 +38,13 @@
       />
 
       <div class="flex flex-col gap-0.5">
-        <span class="text-[15px] text-[#4B5563]">
+        <span class="text-[15px] text-app-ink-secondary-neutral">
           PNG ou JPG · quadrado · até {{ maxSizeMb }}MB
         </span>
 
         <span
           v-if="errorMessage && aviso"
-          class="text-[15px] text-red-500"
+          class="text-[15px] text-app-danger-text-500"
         >
           {{ errorMessage }}
         </span>

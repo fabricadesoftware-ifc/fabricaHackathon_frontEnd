@@ -26,9 +26,9 @@
 
   const buttonClasses = computed(() => {
     const variants: Record<Variant, string> = {
-      primary: '!bg-[#2563EB] !text-white hover:!bg-[#2054C6]',
-      text: '!bg-transparent !text-[#111827] !shadow-none hover:!bg-gray-200',
-      secondary: '!bg-white !text-[#4B5563] hover:!bg-indigo-100',
+      primary: '!bg-app-brand-action !text-app-on-brand hover:!bg-app-brand-pressed',
+      text: '!bg-transparent !text-app-ink-strong-neutral !shadow-none hover:!bg-app-surface-skeleton-neutral',
+      secondary: '!bg-app-surface !text-app-ink-secondary-neutral hover:!bg-app-secondary-hover',
     }
 
     return `${base} ${variants[props.variant]}`

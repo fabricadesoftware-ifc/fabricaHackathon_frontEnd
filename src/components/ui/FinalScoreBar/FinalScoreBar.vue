@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-between gap-4 py-2">
-    <p class="text-sm text-slate-600">{{ props.label }}</p>
-    <p class="text-3xl font-semibold tabular-nums text-blue-600">{{ formattedScore }}</p>
+    <p class="text-sm text-app-text-secondary">{{ props.label }}</p>
+    <p class="text-3xl font-semibold tabular-nums text-app-link">{{ formattedScore }}</p>
   </div>
 </template>
 

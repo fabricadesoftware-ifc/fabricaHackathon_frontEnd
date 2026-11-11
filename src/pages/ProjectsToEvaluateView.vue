@@ -81,21 +81,21 @@
 </script>
 
 <template>
-  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0">
+  <div class="evaluation-flow pt-4 text-app-ink-heading w-full min-w-0">
     <nav aria-label="Navegação de avaliações" class="mb-5">
-      <RouterLink class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-[#475569] [&:hover]:text-[#2563eb]" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
+      <RouterLink class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-app-ink-secondary [&:hover]:text-app-brand-text" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
     </nav>
 
     <header class="mb-5">
-      <h1 class="text-xl font-semibold tracking-tight text-slate-700 sm:text-2xl">
+      <h1 class="text-xl font-semibold tracking-tight text-app-text-body-strong sm:text-2xl">
         {{ isAvaliador ? 'Projetos para avaliar' : 'Projetos da edição' }}
       </h1>
 
-      <p v-if="isAvaliador" class="mt-1 text-sm text-slate-500">
+      <p v-if="isAvaliador" class="mt-1 text-sm text-app-text-muted">
         Acompanhe o progresso e avalie os projetos pendentes da edição.
       </p>
 
-      <p v-else class="mt-1 text-sm text-slate-500">
+      <p v-else class="mt-1 text-sm text-app-text-muted">
         Visão somente leitura.
       </p>
     </header>
@@ -111,7 +111,7 @@
 
     <p
       v-if="isAvaliador && !loading && !error && totalCount > 0 && !aberta"
-      class="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+      class="mb-5 rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800"
       role="status"
     >
       A avaliação desta edição não está aberta. Você só pode lançar ou alterar notas enquanto a edição estiver em "Avaliação".
@@ -120,7 +120,7 @@
     <AsyncView :error="error" :loading="loading" @retry="run">
       <!-- Professor / admin -->
       <template v-if="!isAvaliador">
-        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-slate-500">
+        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-app-text-muted">
           Não há equipes cadastradas nesta edição.
         </p>
 
@@ -129,15 +129,15 @@
 
       <!-- Avaliador -->
       <template v-else>
-        <div class="evaluation-filters mb-5 border-b border-slate-200 pb-3">
+        <div class="evaluation-filters mb-5 border-b border-app-border-default pb-3">
           <FilterChipGroup v-model="selectedFilter" :options="filterOptions" />
         </div>
 
-        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-slate-500">
+        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-app-text-muted">
           {{ totalCount === 0 ? 'Não há projetos nesta edição.' : 'Nenhum projeto neste filtro.' }}
         </p>
 
-        <div v-else class="overflow-hidden rounded-lg border border-slate-200 bg-white divide-y divide-slate-200">
+        <div v-else class="overflow-hidden rounded-lg border border-app-border-default bg-app-surface divide-y divide-app-border-default">
           <template v-for="item in filteredProjects" :key="item.projeto.id">
             <EvaluationProjectCardList
               v-if="item.concluido"

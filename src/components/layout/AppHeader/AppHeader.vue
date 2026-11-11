@@ -3,6 +3,7 @@
   import AppButton from '@/components/ui/AppButton'
   import HeaderActions from '@/components/ui/HeaderActions/HeaderActions.vue'
   import HeaderSearch from '@/components/ui/HeaderSearch/HeaderSearch.vue'
+  import ThemeToggle from '@/components/ui/ThemeToggle.vue'
 
   const router = useRouter()
 
@@ -27,17 +28,19 @@
 
 <template>
   <header
-    class="flex h-16 w-full items-center justify-between bg-white px-4 sm:px-5 md:h-16 md:px-2 xl:px-10"
+    class="flex h-16 w-full items-center justify-between bg-app-surface px-4 sm:px-5 md:h-16 md:px-2 xl:px-10"
   >
     <!-- Logo mobile -->
     <span
-      class="whitespace-nowrap text-lg font-bold text-blue-600 md:hidden"
+      class="whitespace-nowrap text-lg font-bold text-app-link md:hidden"
     >
       // 24H
     </span>
 
     <!-- Lupa: abre o campo ao passar o mouse ou focar -->
     <HeaderSearch class="ml-auto mr-3" />
+
+    <ThemeToggle class="mr-2 max-[380px]:mr-0 max-[380px]:w-6" />
 
     <!-- Usuário logado -->
     <HeaderActions

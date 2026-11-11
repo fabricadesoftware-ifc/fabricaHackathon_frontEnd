@@ -21,13 +21,13 @@
     const selected = props.modelValue === value
     if (props.variant === 'underline') {
       return [
-        'filter-underline min-h-11 -mb-px rounded-none [border-width:0_0_2px] bg-[transparent] px-[1rem] py-[.75rem] text-sm font-normal transition-[color,border-color,background-color] duration-150 whitespace-nowrap hover:bg-[#f8fafc] hover:text-[#334155]',
-        selected ? 'border-[#2563eb] text-[#2563eb]' : 'border-transparent text-[#64748b]',
+        'filter-underline min-h-11 -mb-px rounded-none [border-width:0_0_2px] bg-[transparent] px-[1rem] py-[.75rem] text-sm font-normal transition-[color,border-color,background-color] duration-150 whitespace-nowrap hover:bg-app-surface-faint hover:text-app-ink-heading',
+        selected ? 'border-app-brand-accent text-app-brand-text' : 'border-transparent text-app-ink-muted',
       ]
     }
     return [
       'px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap min-h-11',
-      selected ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-white border border-slate-200 text-slate-600 hover:bg-gray-50',
+      selected ? 'bg-app-selection-soft text-app-link-hover border border-app-brand-border-200' : 'bg-app-surface border border-app-border-default text-app-text-secondary hover:bg-app-surface-subtle-neutral',
     ]
   }
 
@@ -56,7 +56,7 @@
 
 <style scoped>
 /* Preserve these properties above Vuetify's unlayered button reset. */
-.filter-underline { font-size: .875rem; color: #64748b; }
-.filter-underline[aria-pressed="true"] { color: #2563eb; }
-.filter-underline:hover { color: #334155; }
+.filter-underline { font-size: .875rem; color: var(--app-ink-muted); }
+.filter-underline[aria-pressed="true"] { color: var(--app-brand-text); }
+.filter-underline:hover { color: var(--app-ink-heading); }
 </style>

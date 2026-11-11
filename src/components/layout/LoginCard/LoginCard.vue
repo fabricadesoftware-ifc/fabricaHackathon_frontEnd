@@ -45,20 +45,20 @@
 <template>
   <div>
     <div class="mb-8">
-      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-blue-600">Acesse sua conta</p>
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-app-link">Acesse sua conta</p>
 
-      <h1 class="text-[30px] font-bold leading-tight tracking-tight text-slate-800 sm:text-[34px]">
+      <h1 class="text-[30px] font-bold leading-tight tracking-tight text-app-text-heading sm:text-[34px]">
         Bem-vindo de volta
       </h1>
 
-      <p class="mt-2 text-sm leading-6 text-slate-500 sm:text-base">
+      <p class="mt-2 text-sm leading-6 text-app-text-muted sm:text-base">
         Entre para acompanhar suas edições e projetos.
       </p>
     </div>
 
     <form class="space-y-5" novalidate @submit.prevent="handleSubmit">
       <div>
-        <label class="mb-2 block text-sm font-medium text-slate-700" for="login-email">E-mail</label>
+        <label class="mb-2 block text-sm font-medium text-app-text-body-strong" for="login-email">E-mail</label>
 
         <input
           id="login-email"
@@ -66,8 +66,8 @@
           :aria-describedby="errors.email ? 'login-email-error' : undefined"
           :aria-invalid="Boolean(errors.email)"
           autocomplete="email"
-          class="h-12 w-full rounded-lg border bg-white px-4 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
-          :class="errors.email ? 'border-red-400' : 'border-slate-300'"
+          class="h-12 w-full rounded-lg border bg-app-surface px-4 text-sm text-app-text-heading outline-none transition-colors placeholder:text-app-text-placeholder hover:border-app-border-active focus:border-app-brand-border-500 focus:ring-2 focus:ring-app-focus-halo disabled:bg-app-surface-subtle disabled:text-app-text-muted"
+          :class="errors.email ? 'border-app-danger-border-400' : 'border-app-border-strong'"
           :disabled="isLoading"
           inputmode="email"
           placeholder="seuemail@exemplo.com"
@@ -75,11 +75,11 @@
           @input="errors.email = ''"
         >
 
-        <p v-if="errors.email" id="login-email-error" class="mt-1.5 text-xs text-red-600">{{ errors.email }}</p>
+        <p v-if="errors.email" id="login-email-error" class="mt-1.5 text-xs text-app-danger-text-600">{{ errors.email }}</p>
       </div>
 
       <div>
-        <label class="mb-2 block text-sm font-medium text-slate-700" for="login-password">Senha</label>
+        <label class="mb-2 block text-sm font-medium text-app-text-body-strong" for="login-password">Senha</label>
 
         <div class="relative">
           <input
@@ -88,8 +88,8 @@
             :aria-describedby="errors.password ? 'login-password-error' : undefined"
             :aria-invalid="Boolean(errors.password)"
             autocomplete="current-password"
-            class="h-12 w-full rounded-lg border bg-white px-4 pr-12 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
-            :class="errors.password ? 'border-red-400' : 'border-slate-300'"
+            class="h-12 w-full rounded-lg border bg-app-surface px-4 pr-12 text-sm text-app-text-heading outline-none transition-colors placeholder:text-app-text-placeholder hover:border-app-border-active focus:border-app-brand-border-500 focus:ring-2 focus:ring-app-focus-halo disabled:bg-app-surface-subtle disabled:text-app-text-muted"
+            :class="errors.password ? 'border-app-danger-border-400' : 'border-app-border-strong'"
             :disabled="isLoading"
             placeholder="Digite sua senha"
             :type="showPassword ? 'text' : 'password'"
@@ -99,7 +99,7 @@
           <button
             :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
             :aria-pressed="showPassword"
-            class="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-lg text-slate-500 transition-colors hover:text-blue-600 disabled:opacity-50"
+            class="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-lg text-app-text-muted transition-colors hover:text-app-link disabled:opacity-50"
             :disabled="isLoading"
             type="button"
             @click="showPassword = !showPassword"
@@ -108,20 +108,20 @@
           </button>
         </div>
 
-        <p v-if="errors.password" id="login-password-error" class="mt-1.5 text-xs text-red-600">{{ errors.password }}</p>
+        <p v-if="errors.password" id="login-password-error" class="mt-1.5 text-xs text-app-danger-text-600">{{ errors.password }}</p>
       </div>
 
-      <label class="inline-flex min-h-6 cursor-pointer items-center gap-3 text-sm text-slate-600">
-        <input v-model="form.rememberMe" class="h-4 w-4 rounded border-slate-300 accent-[#2563EB]" :disabled="isLoading" type="checkbox">
+      <label class="inline-flex min-h-6 cursor-pointer items-center gap-3 text-sm text-app-text-secondary">
+        <input v-model="form.rememberMe" class="h-4 w-4 rounded border-app-border-strong accent-app-brand-text" :disabled="isLoading" type="checkbox">
         Lembrar sessão
       </label>
 
-      <p v-if="error" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm leading-5 text-red-700" role="alert">
+      <p v-if="error" class="rounded-lg border border-app-danger-border-200 bg-app-danger-surface-50 px-4 py-3 text-sm leading-5 text-app-danger-text-700" role="alert">
         {{ error }}
       </p>
 
       <button
-        class="flex h-12 w-full items-center justify-center rounded-lg bg-[#2563EB] px-5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+        class="flex h-12 w-full items-center justify-center rounded-lg bg-app-brand-action px-5 text-sm font-semibold text-app-on-brand transition-colors hover:bg-app-action-hover disabled:cursor-not-allowed disabled:opacity-70"
         :disabled="isLoading"
         type="submit"
       >
@@ -130,13 +130,13 @@
       </button>
     </form>
 
-    <p class="mt-5 text-center text-xs leading-5 text-slate-500">
+    <p class="mt-5 text-center text-xs leading-5 text-app-text-muted">
       Esqueceu a senha? Fale com a organização do evento para redefini-la.
     </p>
 
-    <div class="mt-8 border-t border-slate-200 pt-6 text-center text-sm text-slate-600">
+    <div class="mt-8 border-t border-app-border-default pt-6 text-center text-sm text-app-text-secondary">
       Ainda não tem uma conta?
-      <button class="ml-1 font-semibold text-blue-600 hover:text-blue-700 hover:underline disabled:opacity-50" :disabled="isLoading" type="button" @click="emit('create-account')">
+      <button class="ml-1 font-semibold text-app-link hover:text-app-link-hover hover:underline disabled:opacity-50" :disabled="isLoading" type="button" @click="emit('create-account')">
         Criar conta
       </button>
     </div>

@@ -159,9 +159,9 @@
 </script>
 
 <template>
-  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0 pt-0">
+  <div class="evaluation-flow pt-4 text-app-ink-heading w-full min-w-0 pt-0">
     <nav v-if="!isSubmitted" aria-label="Navegação de avaliações" class="mb-5">
-      <button class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-[#475569] [&:hover]:text-[#2563eb]" :disabled="isSubmitting" type="button" @click="voltar"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Projetos da edição</button>
+      <button class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-app-ink-secondary [&:hover]:text-app-brand-text" :disabled="isSubmitting" type="button" @click="voltar"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Projetos da edição</button>
     </nav>
 
     <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
@@ -192,7 +192,7 @@
 
         <p
           v-if="!aberta"
-          class="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          class="rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800"
           role="status"
         >
           A avaliação desta edição não está aberta: as notas abaixo são somente leitura.
@@ -200,13 +200,13 @@
 
         <div class="grid min-w-0 grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
           <section aria-labelledby="criteria-title" class="min-w-0">
-            <h2 id="criteria-title" class="text-lg font-semibold text-slate-700">
+            <h2 id="criteria-title" class="text-lg font-semibold text-app-text-body-strong">
               Critérios de avaliação
             </h2>
 
-            <p class="mb-4 mt-1 text-sm leading-6 text-slate-500">Atribua uma nota de 0 a 10 para cada critério, em intervalos de 0,5.</p>
+            <p class="mb-4 mt-1 text-sm leading-6 text-app-text-muted">Atribua uma nota de 0 a 10 para cada critério, em intervalos de 0,5.</p>
 
-            <p v-if="criteria.length === 0" class="text-gray-500">
+            <p v-if="criteria.length === 0" class="text-app-text-muted-neutral">
               Esta edição ainda não tem critérios cadastrados.
             </p>
 
@@ -230,35 +230,35 @@
               <li
                 v-for="criterion in criteria"
                 :key="criterion.id"
-                class="flex items-center justify-between gap-4 rounded-lg border border-slate-200 bg-white p-4"
+                class="flex items-center justify-between gap-4 rounded-lg border border-app-border-default bg-app-surface p-4"
               >
-                <span class="break-words font-semibold text-slate-700">{{ criterion.name }}</span>
-                <span class="shrink-0 tabular-nums text-slate-600">{{ criterion.score === null ? 'Sem nota' : criterion.score.toFixed(1) }}</span>
+                <span class="break-words font-semibold text-app-text-body-strong">{{ criterion.name }}</span>
+                <span class="shrink-0 tabular-nums text-app-text-secondary">{{ criterion.score === null ? 'Sem nota' : criterion.score.toFixed(1) }}</span>
               </li>
             </ul>
           </section>
 
-          <aside aria-labelledby="summary-title" class="evaluation-summary rounded-lg border border-slate-200 bg-white p-5 xl:sticky xl:top-6">
-            <h2 id="summary-title" class="text-base font-semibold text-slate-700">Resumo da avaliação</h2>
+          <aside aria-labelledby="summary-title" class="evaluation-summary rounded-lg border border-app-border-default bg-app-surface p-5 xl:sticky xl:top-6">
+            <h2 id="summary-title" class="text-base font-semibold text-app-text-body-strong">Resumo da avaliação</h2>
 
-            <p class="mt-5 flex items-baseline justify-between gap-2 text-sm text-slate-600" role="status">
+            <p class="mt-5 flex items-baseline justify-between gap-2 text-sm text-app-text-secondary" role="status">
               <span>Critérios preenchidos</span>
-              <span class="shrink-0 font-semibold tabular-nums text-slate-700">{{ scoredCount }} de {{ criteria.length }}</span>
+              <span class="shrink-0 font-semibold tabular-nums text-app-text-body-strong">{{ scoredCount }} de {{ criteria.length }}</span>
             </p>
 
             <progress
               v-if="criteria.length > 0"
               aria-label="Critérios preenchidos"
-              class="mt-2 mb-5 h-1.5 w-full overflow-hidden rounded-full accent-blue-600"
+              class="mt-2 mb-5 h-1.5 w-full overflow-hidden rounded-full accent-app-focus"
               :max="criteria.length"
               :value="scoredCount"
             />
 
             <FinalScoreBar :label="scoredCount < criteria.length ? 'Média parcial' : 'Média desta avaliação'" :score="finalScore" />
-            <p v-if="aberta && !allCriteriaScored" class="mt-4 text-sm leading-6 text-slate-600">Preencha todos os critérios com notas válidas para enviar. Digite o valor ou use os botões de ajuste.</p>
-            <p v-else-if="aberta" class="mt-4 text-sm leading-6 text-slate-500">Revise as notas antes de {{ avaliacao.concluido ? 'salvar as alterações' : 'enviar a avaliação' }}.</p>
+            <p v-if="aberta && !allCriteriaScored" class="mt-4 text-sm leading-6 text-app-text-secondary">Preencha todos os critérios com notas válidas para enviar. Digite o valor ou use os botões de ajuste.</p>
+            <p v-else-if="aberta" class="mt-4 text-sm leading-6 text-app-text-muted">Revise as notas antes de {{ avaliacao.concluido ? 'salvar as alterações' : 'enviar a avaliação' }}.</p>
 
-            <p v-if="submitError" class="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700" role="alert">
+            <p v-if="submitError" class="mt-4 rounded-lg bg-app-danger-surface-50 p-3 text-sm text-app-danger-text-700" role="alert">
               {{ submitError }}
             </p>
 
@@ -292,11 +292,11 @@
 <style scoped>
 .evaluation-summary :deep(.evaluation-secondary-action) {
   background: transparent !important;
-  color: #64748b !important;
+  color: var(--app-ink-muted) !important;
 }
 
 .evaluation-summary :deep(.evaluation-secondary-action:hover) {
-  background: #f8fafc !important;
-  color: #334155 !important;
+  background: var(--app-surface-faint) !important;
+  color: var(--app-ink-heading) !important;
 }
 </style>

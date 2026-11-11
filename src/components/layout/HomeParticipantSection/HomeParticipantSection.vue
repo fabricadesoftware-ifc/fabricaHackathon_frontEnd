@@ -240,18 +240,18 @@
           v-if="!temProjetoAtivo"
           class="group flex min-h-64 w-full max-w-[360px] flex-col items-center
                  justify-center rounded-lg border
-                 border-dashed border-blue-200
-                 bg-blue-50/30 px-6 py-8 text-center
+                 border-dashed border-app-brand-border-200
+                 bg-app-selection-soft/30 px-6 py-8 text-center
                  transition-colors
-                 hover:border-blue-400 hover:bg-blue-50"
+                 hover:border-app-brand-border-400 hover:bg-app-selection-soft"
           to="/edicoes"
         >
           <!-- Ícone -->
           <span
             class="mb-4 flex h-12 w-12
                    items-center justify-center
-                   rounded-full border border-blue-200
-                   bg-white text-blue-600"
+                   rounded-full border border-app-brand-border-200
+                   bg-app-surface text-app-link"
           >
             <span
               aria-hidden="true"
@@ -261,7 +261,7 @@
 
           <!-- Título -->
           <h3
-            class="text-sm font-semibold text-slate-900"
+            class="text-sm font-semibold text-app-text-strong"
           >
             Ainda não tem um projeto ativo?
           </h3>
@@ -269,7 +269,7 @@
           <!-- Descrição -->
           <p
             class="mt-2 max-w-56 text-sm leading-5
-                   text-slate-500"
+                   text-app-text-muted"
           >
             Participe de uma edição e desenvolva
             seu projeto com uma equipe.
@@ -278,11 +278,11 @@
           <!-- Ação -->
           <span
             class="mt-5 inline-flex items-center
-                   rounded-lg border border-blue-200
-                   bg-white px-4 py-2
-                   text-sm font-medium text-blue-600
+                   rounded-lg border border-app-brand-border-200
+                   bg-app-surface px-4 py-2
+                   text-sm font-medium text-app-link
                    transition-colors
-                   group-hover:bg-blue-50"
+                   group-hover:bg-app-selection-soft"
           >
             Explorar edições
           </span>
