@@ -1,2 +1,1 @@
-import sucessState from "./sucessState.vue";
-export {sucessState};
+export { default as sucessState } from './sucessState.vue'

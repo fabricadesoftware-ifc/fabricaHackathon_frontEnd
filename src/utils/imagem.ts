@@ -4,17 +4,23 @@
 const MAX_LADO = 1600
 const MAX_BYTES = 900 * 1024
 
-function carregar(arquivo: File): Promise<HTMLImageElement> {
+function carregar (arquivo: File): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(arquivo)
     const img = new Image()
-    img.onload = () => { URL.revokeObjectURL(url); resolve(img) }
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Não foi possível ler a imagem.')) }
+    img.addEventListener('load', () => {
+      URL.revokeObjectURL(url)
+      resolve(img)
+    })
+    img.addEventListener('error', () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Não foi possível ler a imagem.'))
+    })
     img.src = url
   })
 }
 
-function paraBlob(canvas: HTMLCanvasElement, tipo: string, qualidade: number): Promise<Blob | null> {
+function paraBlob (canvas: HTMLCanvasElement, tipo: string, qualidade: number): Promise<Blob | null> {
   return new Promise(resolve => canvas.toBlob(resolve, tipo, qualidade))
 }
 
@@ -22,9 +28,13 @@ function paraBlob(canvas: HTMLCanvasElement, tipo: string, qualidade: number): P
  * Redimensiona (lado maior ≤ 1600 px) e comprime a imagem quando ela passa de ~900 KB.
  * Imagens pequenas seguem intactas. Se algo falhar, devolve o arquivo original.
  */
-export async function prepararImagem(arquivo: File): Promise<File> {
-  if (!arquivo.type.startsWith('image/')) return arquivo
-  if (arquivo.size <= MAX_BYTES) return arquivo
+export async function prepararImagem (arquivo: File): Promise<File> {
+  if (!arquivo.type.startsWith('image/')) {
+    return arquivo
+  }
+  if (arquivo.size <= MAX_BYTES) {
+    return arquivo
+  }
 
   try {
     const img = await carregar(arquivo)
@@ -37,7 +47,9 @@ export async function prepararImagem(arquivo: File): Promise<File> {
       canvas.width = Math.max(1, Math.round(img.width * base * fator))
       canvas.height = Math.max(1, Math.round(img.height * base * fator))
       const ctx = canvas.getContext('2d')
-      if (!ctx) return arquivo
+      if (!ctx) {
+        return arquivo
+      }
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
       for (const qualidade of [0.85, 0.7, 0.55, 0.4]) {

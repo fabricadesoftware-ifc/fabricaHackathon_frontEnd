@@ -10,21 +10,21 @@
       v-model:search="search"
       v-model:status="status"
       v-model:tipo="tipo"
+      appearance="toolbar"
       :options-ano="opcoesAno"
       :options-status="opcoesStatus"
       :options-tipo="opcoesTipo"
-      appearance="toolbar"
       placeholder="Buscar edições por nome ou local"
     />
 
     <AsyncView
-      skeleton="cards"
       :empty="!loading && !error && filtradas.length === 0"
       :empty-message="search || tipo || status || ano
         ? 'Nenhuma edição corresponde aos critérios informados.'
         : 'Nenhuma edição encontrada.'"
       :error="error"
       :loading="loading"
+      skeleton="cards"
       @retry="run"
     >
       <ResultsBar
@@ -34,7 +34,7 @@
       />
 
       <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
-        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" class="w-full max-w-[360px]" />
+        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" />
       </div>
 
       <AppPagination v-model="currentPage" :length="totalPages" />

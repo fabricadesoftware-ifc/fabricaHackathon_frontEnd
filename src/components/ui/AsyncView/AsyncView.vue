@@ -27,10 +27,12 @@
 
 <template>
   <ErrorMessage v-if="error" :message="error.message" @retry="$emit('retry')" />
+
   <template v-else-if="loading">
     <CardGridSkeleton v-if="skeleton === 'cards'" :count="skeletonCount" />
     <LoadingSkeleton v-else :lines="lines" />
   </template>
+
   <p v-else-if="empty" class="py-8 text-center text-gray-500">{{ emptyMessage }}</p>
   <slot v-else />
 </template>

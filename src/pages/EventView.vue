@@ -1,253 +1,246 @@
 <script setup lang="ts">
-import {
-  computed,
-  onBeforeUnmount,
-  ref,
-  watch,
-} from 'vue'
+  import {
+    computed,
+    onBeforeUnmount,
+    ref,
+    watch,
+  } from 'vue'
+  import {
+    RouterLink,
+    useRoute,
+  } from 'vue-router'
 
-import {
-  RouterLink,
-  useRoute,
-} from 'vue-router'
+  import EventDetailsFacts from '@/components/layout/EventDetails/EventDetailsFacts.vue'
+  // Componentes da edição
+  import EventDetailsHero from '@/components/layout/EventDetails/EventDetailsHero.vue'
+  import EventDetailsSidebar from '@/components/layout/EventDetails/EventDetailsSidebar.vue'
+  // Componentes reutilizáveis
+  import TeamsSection from '@/components/layout/TeamsSection'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import ProgressStepper from '@/components/ui/progressStepper.vue'
+  import SponsorList from '@/components/ui/SponsorList'
+  // Composables e stores
+  import { useAsync } from '@/composables/useAsync'
+  // Serviços e mapeadores
+  import {
+    listarRanking,
+    obterEdicao,
+  } from '@/services'
+  import { useAuthStore } from '@/stores/auth'
+  import {
+    equipeParaCard,
+    mapearStatus,
+  } from '@/types'
 
-// Componentes da edição
-import EventDetailsHero from '@/components/layout/EventDetails/EventDetailsHero.vue'
-import EventDetailsFacts from '@/components/layout/EventDetails/EventDetailsFacts.vue'
-import EventDetailsSidebar from '@/components/layout/EventDetails/EventDetailsSidebar.vue'
+  type Aba = 'visao' | 'equipes' | 'ranking'
 
-// Componentes reutilizáveis
-import TeamsSection from '@/components/layout/TeamsSection'
-import SponsorList from '@/components/ui/SponsorList'
-import ProgressStepper from '@/components/ui/progressStepper.vue'
-import { AsyncView } from '@/components/ui/AsyncView'
+  const route = useRoute()
+  const auth = useAuthStore()
 
-// Composables e stores
-import { useAsync } from '@/composables/useAsync'
-import { useAuthStore } from '@/stores/auth'
-
-// Serviços e mapeadores
-import {
-  listarRanking,
-  obterEdicao,
-} from '@/services'
-
-import {
-  equipeParaCard,
-  mapearStatus,
-} from '@/types'
-
-type Aba = 'visao' | 'equipes' | 'ranking'
-
-const route = useRoute()
-const auth = useAuthStore()
-
-// Edição acessada pela rota
-const edicaoId = computed(() =>
-  String(route.params.id),
-)
-
-// Controle das abas
-const abaAtiva = ref<Aba>('visao')
-
-// Compartilhamento
-const linkCopiado = ref(false)
-
-let temporizador: ReturnType<typeof setTimeout> | null = null
-
-// ==============================
-// DADOS DA EDIÇÃO
-// ==============================
-
-const {
-  data: edicao,
-  loading,
-  error,
-  run,
-} = useAsync(() =>
-  obterEdicao(edicaoId.value),
-)
-
-// Status atual da edição
-const status = computed(() =>
-  edicao.value
-    ? mapearStatus(edicao.value.status)
-    : null,
-)
-
-// Permissão para inscrição
-const podeInscrever = computed(() =>
-  !auth.isAuthenticated ||
-  auth.userRole === 'PARTICIPANTE',
-)
-
-// ==============================
-// ETAPAS
-// ==============================
-
-const STEPS = {
-  inscricoes: 0,
-  andamento: 1,
-  avaliacao: 2,
-  finalizado: 3,
-} as const
-
-const step = computed(() =>
-  status.value
-    ? STEPS[status.value]
-    : 0,
-)
-
-// ==============================
-// EQUIPES
-// ==============================
-
-const equipes = computed(() => {
-  const e = edicao.value
-
-  if (!e) return []
-
-  return e.equipes.map(equipe =>
-    equipeParaCard(equipe, {
-      nome: e.nome,
-      status: e.status,
-    }),
+  // Edição acessada pela rota
+  const edicaoId = computed(() =>
+    String(route.params.id),
   )
-})
 
-// ==============================
-// APOIADORES
-// ==============================
+  // Controle das abas
+  const abaAtiva = ref<Aba>('visao')
 
-const patrocinadores = computed(() =>
-  (edicao.value?.apoiadores ?? [])
-    .filter(apoiador =>
-      Boolean(apoiador.logo_apoiador),
+  // Compartilhamento
+  const linkCopiado = ref(false)
+
+  let temporizador: ReturnType<typeof setTimeout> | null = null
+
+  // ==============================
+  // DADOS DA EDIÇÃO
+  // ==============================
+
+  const {
+    data: edicao,
+    loading,
+    error,
+    run,
+  } = useAsync(() =>
+    obterEdicao(edicaoId.value),
+  )
+
+  // Status atual da edição
+  const status = computed(() =>
+    edicao.value
+      ? mapearStatus(edicao.value.status)
+      : null,
+  )
+
+  // Permissão para inscrição
+  const podeInscrever = computed(() =>
+    !auth.isAuthenticated
+    || auth.userRole === 'PARTICIPANTE',
+  )
+
+  // ==============================
+  // ETAPAS
+  // ==============================
+
+  const STEPS = {
+    inscricoes: 0,
+    andamento: 1,
+    avaliacao: 2,
+    finalizado: 3,
+  } as const
+
+  const step = computed(() =>
+    status.value
+      ? STEPS[status.value]
+      : 0,
+  )
+
+  // ==============================
+  // EQUIPES
+  // ==============================
+
+  const equipes = computed(() => {
+    const e = edicao.value
+
+    if (!e) return []
+
+    return e.equipes.map(equipe =>
+      equipeParaCard(equipe, {
+        nome: e.nome,
+        status: e.status,
+      }),
     )
-    .map(apoiador => ({
-      name: apoiador.nome,
-      imageUrl: apoiador.logo_apoiador as string,
-    })),
-)
+  })
 
-// ==============================
-// RANKING
-// ==============================
+  // ==============================
+  // APOIADORES
+  // ==============================
 
-const ranking = useAsync(
-  () => listarRanking(edicaoId.value),
-  false,
-)
+  const patrocinadores = computed(() =>
+    (edicao.value?.apoiadores ?? [])
+      .filter(apoiador =>
+        Boolean(apoiador.logo_apoiador),
+      )
+      .map(apoiador => ({
+        name: apoiador.nome,
+        imageUrl: apoiador.logo_apoiador as string,
+      })),
+  )
 
-// ==============================
-// ABAS
-// ==============================
+  // ==============================
+  // RANKING
+  // ==============================
 
-const abas = computed<Array<{
-  id: Aba
-  label: string
-  icon: string
-}>>(() => {
-  const items: Array<{
+  const ranking = useAsync(
+    () => listarRanking(edicaoId.value),
+    false,
+  )
+
+  // ==============================
+  // ABAS
+  // ==============================
+
+  const abas = computed<Array<{
     id: Aba
     label: string
     icon: string
-  }> = [
-    {
-      id: 'visao',
-      label: 'Visão geral',
-      icon: 'mdi-information-outline',
-    },
-    {
-      id: 'equipes',
-      label: `Equipes (${edicao.value?.equipes.length ?? 0})`,
-      icon: 'mdi-account-group-outline',
-    },
-  ]
+  }>>(() => {
+    const items: Array<{
+      id: Aba
+      label: string
+      icon: string
+    }> = [
+      {
+        id: 'visao',
+        label: 'Visão geral',
+        icon: 'mdi-information-outline',
+      },
+      {
+        id: 'equipes',
+        label: `Equipes (${edicao.value?.equipes.length ?? 0})`,
+        icon: 'mdi-account-group-outline',
+      },
+    ]
 
-  // Ranking disponível somente após a finalização
-  if (status.value === 'finalizado') {
-    items.push({
-      id: 'ranking',
-      label: 'Ranking',
-      icon: 'mdi-trophy-outline',
-    })
+    // Ranking disponível somente após a finalização
+    if (status.value === 'finalizado') {
+      items.push({
+        id: 'ranking',
+        label: 'Ranking',
+        icon: 'mdi-trophy-outline',
+      })
+    }
+
+    return items
+  })
+
+  // ==============================
+  // COMPARTILHAMENTO
+  // ==============================
+
+  async function compartilhar () {
+    const url = window.location.href
+
+    try {
+      await navigator.clipboard.writeText(url)
+
+      linkCopiado.value = true
+
+      if (temporizador) {
+        clearTimeout(temporizador)
+      }
+
+      temporizador = setTimeout(() => {
+        linkCopiado.value = false
+      }, 2500)
+    } catch {
+      // Alternativa quando a área de transferência
+      // não está disponível.
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: edicao.value?.nome,
+            url,
+          })
+        } catch {
+        // O usuário pode cancelar o compartilhamento.
+        }
+      } else {
+        window.prompt('Copie o link da edição:', url)
+      }
+    }
   }
 
-  return items
-})
+  // ==============================
+  // ATUALIZAÇÃO DOS DADOS
+  // ==============================
 
-// ==============================
-// COMPARTILHAMENTO
-// ==============================
+  // Atualiza quando o usuário navega entre edições.
+  watch(edicaoId, () => {
+    abaAtiva.value = 'visao'
+    linkCopiado.value = false
 
-async function compartilhar() {
-  const url = window.location.href
+    void run()
+  })
 
-  try {
-    await navigator.clipboard.writeText(url)
+  // Consulta o ranking somente quando disponível.
+  watch(status, novoStatus => {
+    if (novoStatus === 'finalizado') {
+      void ranking.run()
+    }
+  })
 
-    linkCopiado.value = true
-
+  onBeforeUnmount(() => {
     if (temporizador) {
       clearTimeout(temporizador)
     }
-
-    temporizador = setTimeout(() => {
-      linkCopiado.value = false
-    }, 2500)
-  } catch {
-    // Alternativa quando a área de transferência
-    // não está disponível.
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: edicao.value?.nome,
-          url,
-        })
-      } catch {
-        // O usuário pode cancelar o compartilhamento.
-      }
-    } else {
-      window.prompt('Copie o link da edição:', url)
-    }
-  }
-}
-
-// ==============================
-// ATUALIZAÇÃO DOS DADOS
-// ==============================
-
-// Atualiza quando o usuário navega entre edições.
-watch(edicaoId, () => {
-  abaAtiva.value = 'visao'
-  linkCopiado.value = false
-
-  void run()
-})
-
-// Consulta o ranking somente quando disponível.
-watch(status, novoStatus => {
-  if (novoStatus === 'finalizado') {
-    void ranking.run()
-  }
-})
-
-onBeforeUnmount(() => {
-  if (temporizador) {
-    clearTimeout(temporizador)
-  }
-})
+  })
 </script>
 
 <template>
-  <main
-    class=""
-  >
+  <section class="w-full min-w-0">
     <AsyncView
       :error="error"
-      :loading="loading"
       :lines="8"
+      :loading="loading"
       @retry="run"
     >
       <template v-if="edicao && status">
@@ -257,63 +250,63 @@ onBeforeUnmount(() => {
         <!-- ============================== -->
 
         <!-- Navegação da edição -->
-<div class="mb-5 flex flex-wrap items-center gap-4">
+        <div class="mb-5 flex flex-wrap items-center gap-4">
 
-  <!-- Botão voltar -->
-  <RouterLink
-    to="/edicoes"
-    class="group inline-flex items-center gap-1.5
+          <!-- Botão voltar -->
+          <RouterLink
+            class="group inline-flex items-center gap-1.5
            text-sm font-medium text-slate-500
            transition-colors hover:text-blue-600"
-  >
-    <span
-      class="mdi mdi-arrow-left text-lg
+            to="/edicoes"
+          >
+            <span
+              aria-hidden="true"
+              class="mdi mdi-arrow-left text-lg
              transition-transform duration-200
              group-hover:-translate-x-0.5"
-      aria-hidden="true"
-    />
+            />
 
-    Voltar
-  </RouterLink>
+            Voltar
+          </RouterLink>
 
-  <!-- Divisória -->
-  <span
-    class="hidden h-4 w-px bg-slate-200 sm:block"
-    aria-hidden="true"
-  />
+          <!-- Divisória -->
+          <span
+            aria-hidden="true"
+            class="hidden h-4 w-px bg-slate-200 sm:block"
+          />
 
-  <!-- Breadcrumb -->
-  <nav
-    aria-label="Navegação da edição"
-    class="flex min-w-0 items-center gap-2 text-sm"
-  >
-    <RouterLink
-      to="/edicoes"
-      class="text-slate-400 transition-colors hover:text-blue-600"
-    >
-      Edições
-    </RouterLink>
+          <!-- Breadcrumb -->
+          <nav
+            aria-label="Navegação da edição"
+            class="flex min-w-0 items-center gap-2 text-sm"
+          >
+            <RouterLink
+              class="text-slate-400 transition-colors hover:text-blue-600"
+              to="/edicoes"
+            >
+              Edições
+            </RouterLink>
 
-    <span
-      class="mdi mdi-chevron-right text-base text-slate-400"
-      aria-hidden="true"
-    />
+            <span
+              aria-hidden="true"
+              class="mdi mdi-chevron-right text-base text-slate-400"
+            />
 
-    <span class="truncate font-medium text-slate-600">
-      {{ edicao.nome }}
-    </span>
-  </nav>
+            <span class="truncate font-medium text-slate-600">
+              {{ edicao.nome }}
+            </span>
+          </nav>
 
-</div>
+        </div>
         <!-- ============================== -->
         <!-- CAPA E TÍTULO                   -->
         <!-- ============================== -->
 
         <EventDetailsHero
           :edicao="edicao"
-          :status="status"
-          :pode-inscrever="podeInscrever"
           :link-copiado="linkCopiado"
+          :pode-inscrever="podeInscrever"
+          :status="status"
           @compartilhar="compartilhar"
         />
 
@@ -338,7 +331,6 @@ onBeforeUnmount(() => {
           <button
             v-for="aba in abas"
             :key="aba.id"
-            type="button"
             :aria-pressed="abaAtiva === aba.id"
             :class="[
               'inline-flex min-h-11 shrink-0',
@@ -350,12 +342,13 @@ onBeforeUnmount(() => {
                 ? 'border-blue-500 text-blue-600'
                 : 'border-transparent text-slate-500 hover:text-slate-700',
             ]"
+            type="button"
             @click="abaAtiva = aba.id"
           >
             <span
-              :class="['mdi', aba.icon]"
-              class="text-lg"
               aria-hidden="true"
+              class="text-lg"
+              :class="['mdi', aba.icon]"
             />
 
             {{ aba.label }}
@@ -396,13 +389,13 @@ onBeforeUnmount(() => {
               >
                 {{
                   edicao.descricao ||
-                  'Esta edição ainda não possui uma descrição.'
+                    'Esta edição ainda não possui uma descrição.'
                 }}
               </p>
 
               <!-- CRITÉRIOS -->
               <div
-                v-if="edicao.criterios.length"
+                v-if="edicao.criterios.length > 0"
                 class="mt-6"
               >
                 <h3
@@ -463,7 +456,7 @@ onBeforeUnmount(() => {
 
             <!-- APOIADORES -->
             <section
-              v-if="patrocinadores.length"
+              v-if="patrocinadores.length > 0"
               class="rounded-lg border border-slate-200
                      bg-white p-5 sm:p-6"
             >
@@ -484,8 +477,8 @@ onBeforeUnmount(() => {
           <!-- Coluna lateral -->
           <EventDetailsSidebar
             :edicao="edicao"
-            :status="status"
             :pode-inscrever="podeInscrever"
+            :status="status"
             @ver-equipes="abaAtiva = 'equipes'"
           />
         </div>
@@ -511,7 +504,7 @@ onBeforeUnmount(() => {
         <section
           v-else-if="
             abaAtiva === 'ranking' &&
-            status === 'finalizado'
+              status === 'finalizado'
           "
           class="mt-6"
         >
@@ -528,14 +521,14 @@ onBeforeUnmount(() => {
             </h2>
 
             <AsyncView
-              :loading="ranking.loading.value"
-              :error="ranking.error.value"
               :empty="
                 !ranking.loading.value &&
-                !ranking.error.value &&
-                (ranking.data.value?.length ?? 0) === 0
+                  !ranking.error.value &&
+                  (ranking.data.value?.length ?? 0) === 0
               "
               empty-message="O ranking ainda não está disponível."
+              :error="ranking.error.value"
+              :loading="ranking.loading.value"
               @retry="ranking.run"
             >
               <ol class="space-y-3">
@@ -594,5 +587,5 @@ onBeforeUnmount(() => {
 
       </template>
     </AsyncView>
-  </main>
+  </section>
 </template>

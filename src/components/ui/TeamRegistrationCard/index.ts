@@ -1,2 +1,1 @@
-import TeamRegistrationCard from './teamRegistrationCard.vue'
-export { TeamRegistrationCard };
+export { default as TeamRegistrationCard } from './teamRegistrationCard.vue'

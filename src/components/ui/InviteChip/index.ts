@@ -1,2 +1,1 @@
-import inviteChip from "./inviteChip.vue";
-export {inviteChip}
+export { default as inviteChip } from './inviteChip.vue'

@@ -1,4 +1,1 @@
-import ResultsBar from './ResultsBar.vue'
-
-export { ResultsBar }
-export default ResultsBar
+export { default, default as ResultsBar } from './ResultsBar.vue'

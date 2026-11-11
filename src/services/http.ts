@@ -4,10 +4,10 @@ const TOKEN_KEY = 'access_token'
 const REFRESH_KEY = 'refresh_token'
 
 // Identifica onde os tokens estão armazenados.
-function getAuthStorage(): Storage {
+function getAuthStorage (): Storage {
   if (
-    localStorage.getItem(TOKEN_KEY) ||
-    localStorage.getItem(REFRESH_KEY)
+    localStorage.getItem(TOKEN_KEY)
+    || localStorage.getItem(REFRESH_KEY)
   ) {
     return localStorage
   }
@@ -16,12 +16,12 @@ function getAuthStorage(): Storage {
 }
 
 // Recupera o access token.
-export function getToken(): string | null {
+export function getToken (): string | null {
   return getAuthStorage().getItem(TOKEN_KEY)
 }
 
 // Salva ou remove o access token.
-export function setToken(token: string | null) {
+export function setToken (token: string | null) {
   if (token) {
     getAuthStorage().setItem(TOKEN_KEY, token)
   } else {
@@ -31,12 +31,12 @@ export function setToken(token: string | null) {
 }
 
 // Recupera o refresh token.
-export function getRefreshToken(): string | null {
+export function getRefreshToken (): string | null {
   return getAuthStorage().getItem(REFRESH_KEY)
 }
 
 // Salva ou remove o refresh token.
-export function setRefreshToken(token: string | null) {
+export function setRefreshToken (token: string | null) {
   if (token) {
     getAuthStorage().setItem(REFRESH_KEY, token)
   } else {
@@ -46,8 +46,8 @@ export function setRefreshToken(token: string | null) {
 }
 
 // Salva os tokens conforme a opção "Lembrar-me".
-export function setTokens(
-  tokens: { access: string; refresh: string } | null,
+export function setTokens (
+  tokens: { access: string, refresh: string } | null,
   rememberMe = true,
 ) {
   // Limpa tokens anteriores.
@@ -57,7 +57,9 @@ export function setTokens(
   sessionStorage.removeItem(TOKEN_KEY)
   sessionStorage.removeItem(REFRESH_KEY)
 
-  if (!tokens) return
+  if (!tokens) {
+    return
+  }
 
   const storage = rememberMe ? localStorage : sessionStorage
 
@@ -68,10 +70,12 @@ export function setTokens(
 // Evita múltiplas tentativas de renovação simultâneas.
 let refreshPromise: Promise<string | null> | null = null
 
-async function renovarAccessToken(): Promise<string | null> {
+async function renovarAccessToken (): Promise<string | null> {
   const refresh = getRefreshToken()
 
-  if (!refresh) return null
+  if (!refresh) {
+    return null
+  }
 
   if (!refreshPromise) {
     refreshPromise = (async () => {
@@ -79,7 +83,7 @@ async function renovarAccessToken(): Promise<string | null> {
         const response = await fetch(buildUrl('/token/refresh/'), {
           method: 'POST',
           headers: {
-            Accept: 'application/json',
+            'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ refresh }),
@@ -88,8 +92,8 @@ async function renovarAccessToken(): Promise<string | null> {
         // Refresh expirado ou inválido.
         if (!response.ok) {
           if (
-            response.status === 400 ||
-            response.status === 401
+            response.status === 400
+            || response.status === 401
           ) {
             setTokens(null)
           }
@@ -97,8 +101,8 @@ async function renovarAccessToken(): Promise<string | null> {
           return null
         }
 
-        const data: { access: string; refresh?: string } =
-          await response.json()
+        const data: { access: string, refresh?: string }
+          = await response.json()
 
         if (!data.access) {
           return null
@@ -136,7 +140,7 @@ export class ApiError extends Error {
   // Mensagens de validação por campo.
   readonly fields: FieldErrors
 
-  constructor(
+  constructor (
     kind: ApiErrorKind,
     message: string,
     status: number | null = null,
@@ -151,10 +155,10 @@ export class ApiError extends Error {
   }
 
   // Ranking indisponível antes da finalização da edição.
-  get isRankingIndisponivel(): boolean {
+  get isRankingIndisponivel (): boolean {
     return (
-      this.status === 403 &&
-      this.message.includes('ranking')
+      this.status === 403
+      && this.message.includes('ranking')
     )
   }
 }
@@ -172,10 +176,11 @@ interface RequestOptions {
 }
 
 // URL base: /config.js (gerado pelo container em produção) ou .env (desenvolvimento).
-function baseUrl(): string {
-  const url =
-    (window as unknown as { __APP_CONFIG__?: { API_URL?: string } })
-      .__APP_CONFIG__?.API_URL || import.meta.env.VITE_API_URL
+function baseUrl (): string {
+  const url
+    = (window as unknown as { __APP_CONFIG__?: { API_URL?: string } })
+      .__APP_CONFIG__
+      ?.API_URL || import.meta.env.VITE_API_URL
 
   if (!url) {
     throw new Error(
@@ -187,7 +192,7 @@ function baseUrl(): string {
 }
 
 // Aceita caminhos relativos e URLs absolutas da paginação.
-export function buildUrl(
+export function buildUrl (
   path: string,
   query?: Query,
 ): string {
@@ -207,7 +212,7 @@ export function buildUrl(
 }
 
 // Extrai mensagens de erro retornadas pela API.
-function extrairErros(
+function extrairErros (
   data: unknown,
 ): {
   message: string | null
@@ -224,8 +229,8 @@ function extrairErros(
 
   const obj = data as Record<string, unknown>
 
-  const message =
-    typeof obj.detail === 'string'
+  const message
+    = typeof obj.detail === 'string'
       ? obj.detail
       : null
 
@@ -237,16 +242,22 @@ function extrairErros(
           ? Object.values(item).flat().map(String)
           : [String(item)],
       )
-      if (textos.length) fields[chave] = [...(fields[chave] ?? []), ...textos]
+      if (textos.length > 0) {
+        fields[chave] = [...(fields[chave] ?? []), ...textos]
+      }
     } else if (typeof valor === 'string') {
       fields[chave] = [...(fields[chave] ?? []), valor]
     } else if (valor && typeof valor === 'object') {
-      for (const [sub, v] of Object.entries(valor)) coletar(v, sub)
+      for (const [sub, v] of Object.entries(valor)) {
+        coletar(v, sub)
+      }
     }
   }
 
   for (const [key, value] of Object.entries(obj)) {
-    if (key === 'detail') continue
+    if (key === 'detail') {
+      continue
+    }
     coletar(value, key)
   }
 
@@ -257,7 +268,7 @@ function extrairErros(
 }
 
 // Realiza as requisições HTTP.
-export async function request<T>(
+export async function request<T> (
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
@@ -298,8 +309,8 @@ export async function request<T>(
     response = await fetch(url, fetchOptions)
   } catch (error) {
     if (
-      error instanceof DOMException &&
-      error.name === 'AbortError'
+      error instanceof DOMException
+      && error.name === 'AbortError'
     ) {
       throw error
     }
@@ -312,16 +323,16 @@ export async function request<T>(
 
   // Renova o JWT se a API retornar 401.
   if (
-    response.status === 401 &&
-    getRefreshToken() &&
-    !path.includes('/token/')
+    response.status === 401
+    && getRefreshToken()
+    && !path.includes('/token/')
   ) {
     // Se outra requisição já renovou o token, utiliza o novo.
     // Caso contrário, inicia uma renovação.
     const currentToken = getToken()
 
-    const newToken =
-      currentToken && currentToken !== token
+    const newToken
+      = currentToken && currentToken !== token
         ? currentToken
         : await renovarAccessToken()
 
@@ -333,8 +344,8 @@ export async function request<T>(
         response = await fetch(url, fetchOptions)
       } catch (error) {
         if (
-          error instanceof DOMException &&
-          error.name === 'AbortError'
+          error instanceof DOMException
+          && error.name === 'AbortError'
         ) {
           throw error
         }
@@ -381,12 +392,12 @@ export async function request<T>(
   // Erros de validação e autenticação.
   const { message, fields } = extrairErros(data)
 
-  const fallback =
-    response.status === 401
+  const fallback
+    = response.status === 401
       ? 'Sua sessão expirou. Entre novamente.'
-      : response.status === 404
-        ? 'Recurso não encontrado.'
-        : 'Não foi possível concluir a solicitação.'
+      : (response.status === 404
+          ? 'Recurso não encontrado.'
+          : 'Não foi possível concluir a solicitação.')
 
   throw new ApiError(
     'client',

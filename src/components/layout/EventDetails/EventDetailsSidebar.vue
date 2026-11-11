@@ -1,43 +1,35 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { RouterLink } from 'vue-router'
+  import type {
+    EdicaoDetalhe,
+    EdicaoStatus,
+  } from '@/types/edicao'
+  import { computed } from 'vue'
+  import { RouterLink } from 'vue-router'
 
-import StatusBadge from '@/components/ui/statusSelect.vue'
+  import StatusBadge from '@/components/ui/statusSelect.vue'
 
-import type {
-  EdicaoDetalhe,
-  EdicaoStatus,
-} from '@/types/edicao'
+  const props = defineProps<{
+    edicao: EdicaoDetalhe
+    status: EdicaoStatus
+    podeInscrever: boolean
+  }>()
 
-const props = defineProps<{
-  edicao: EdicaoDetalhe
-  status: EdicaoStatus
-  podeInscrever: boolean
-}>()
+  defineEmits<{
+    (e: 'ver-equipes'): void
+  }>()
 
-defineEmits<{
-  (e: 'ver-equipes'): void
-}>()
+  const equipesDestaque = computed(() =>
+    props.edicao.equipes.slice(0, 3),
+  )
 
-const equipesDestaque = computed(() =>
-  props.edicao.equipes.slice(0, 3),
-)
-
-const mensagemStatus = computed(() => {
-  switch (props.status) {
-    case 'inscricoes':
-      return 'As inscrições estão abertas para esta edição.'
-
-    case 'andamento':
-      return 'Esta edição está em andamento.'
-
-    case 'avaliacao':
-      return 'Os projetos estão na etapa de avaliação.'
-
-    case 'finalizado':
-      return 'Esta edição foi finalizada.'
+  const mensagensStatus: Record<EdicaoStatus, string> = {
+    inscricoes: 'As inscrições estão abertas para esta edição.',
+    andamento: 'Esta edição está em andamento.',
+    avaliacao: 'Os projetos estão na etapa de avaliação.',
+    finalizado: 'Esta edição foi finalizada.',
   }
-})
+  const mensagemStatus = computed(() => mensagensStatus[props.status])
+
 </script>
 
 <template>
@@ -53,8 +45,8 @@ const mensagemStatus = computed(() => {
         </h2>
 
         <StatusBadge
-          :status="status"
           :label="edicao.status_label"
+          :status="status"
         />
       </div>
 
@@ -67,18 +59,18 @@ const mensagemStatus = computed(() => {
 
       <RouterLink
         v-if="status === 'inscricoes' && podeInscrever"
-        :to="{
-          path: '/novo',
-          query: { edicao_id: edicao.id },
-        }"
         class="mt-4 flex min-h-11 w-full items-center
                justify-center gap-2 rounded-lg bg-blue-600
                px-4 py-2.5 text-sm font-semibold text-white
                transition-colors hover:bg-blue-700"
+        :to="{
+          path: '/novo',
+          query: { edicao_id: edicao.id },
+        }"
       >
         <span
-          class="mdi mdi-ticket-outline text-lg"
           aria-hidden="true"
+          class="mdi mdi-ticket-outline text-lg"
         />
 
         Inscrever-se nesta edição
@@ -98,32 +90,32 @@ const mensagemStatus = computed(() => {
 
         <button
           v-if="edicao.equipes.length > 0"
-          type="button"
           class="inline-flex shrink-0 items-center gap-1
                  text-xs font-medium text-blue-600
                  transition-colors hover:text-blue-700"
+          type="button"
           @click="$emit('ver-equipes')"
         >
           Ver todas ({{ edicao.equipes.length }})
 
           <span
-            class="mdi mdi-arrow-right text-sm"
             aria-hidden="true"
+            class="mdi mdi-arrow-right text-sm"
           />
         </button>
       </div>
 
       <!-- Lista de equipes -->
       <div
-        v-if="equipesDestaque.length"
+        v-if="equipesDestaque.length > 0"
         class="mt-4 space-y-2"
       >
         <article
-  v-for="equipe in equipesDestaque"
-  :key="equipe.id"
-  class="flex items-start gap-3 rounded-lg
+          v-for="equipe in equipesDestaque"
+          :key="equipe.id"
+          class="flex items-start gap-3 rounded-lg
          bg-slate-50/60 p-3"
->
+        >
           <!-- Logo / inicial do projeto -->
           <div
             class="flex h-9 w-9 shrink-0 items-center
@@ -132,9 +124,9 @@ const mensagemStatus = computed(() => {
           >
             <img
               v-if="equipe.projeto?.logo_projeto"
-              :src="equipe.projeto.logo_projeto"
               :alt="`Logo de ${equipe.projeto.nome_projeto}`"
               class="h-full w-full object-cover"
+              :src="equipe.projeto.logo_projeto"
             >
 
             <span v-else>
@@ -157,7 +149,7 @@ const mensagemStatus = computed(() => {
             >
               {{
                 equipe.projeto?.nome_projeto ||
-                equipe.nome_equipe
+                  equipe.nome_equipe
               }}
             </h3>
 
@@ -176,9 +168,9 @@ const mensagemStatus = computed(() => {
                      gap-1.5 text-xs text-slate-500"
             >
               <span
+                aria-hidden="true"
                 class="mdi mdi-account-group-outline
                        shrink-0 text-sm text-slate-400"
-                aria-hidden="true"
               />
 
               <span class="truncate">
@@ -196,9 +188,9 @@ const mensagemStatus = computed(() => {
                px-4 py-6 text-center"
       >
         <span
+          aria-hidden="true"
           class="mdi mdi-account-group-outline
                  text-2xl text-slate-400"
-          aria-hidden="true"
         />
 
         <p class="mt-2 text-sm text-slate-500">

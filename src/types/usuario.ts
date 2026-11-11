@@ -1,8 +1,8 @@
-export type TipoUsuario =
-  | 'PARTICIPANTE'
-  | 'AVALIADOR'
-  | 'PROFESSOR'
-  | 'ADMIN'
+export type TipoUsuario
+  = | 'PARTICIPANTE'
+    | 'AVALIADOR'
+    | 'PROFESSOR'
+    | 'ADMIN'
 
 export interface SolicitacaoPerfil {
   id: number

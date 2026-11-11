@@ -1,17 +1,15 @@
-import { computed, ref } from 'vue'
+import type { Usuario } from '@/types/usuario'
 import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
 
 import {
   login,
   obterUsuarioAtual,
 } from '@/services/auth'
-
 import {
   getToken,
   setTokens,
 } from '@/services/http'
-
-import type { Usuario } from '@/types/usuario'
 
 export const useAuthStore = defineStore('auth', () => {
   // Estado da autenticação
@@ -30,19 +28,21 @@ export const useAuthStore = defineStore('auth', () => {
   const userRole = computed(() => user.value?.tipoUser ?? null)
 
   // Busca os dados do usuário autenticado
-  async function fetchUser() {
-    if (!accessToken.value) return
+  async function fetchUser () {
+    if (!accessToken.value) {
+      return
+    }
 
     user.value = await obterUsuarioAtual()
   }
 
   // Atualiza o usuário em memória (ex.: depois de salvar o perfil)
-  function setUser(novo: Usuario) {
+  function setUser (novo: Usuario) {
     user.value = novo
   }
 
   // Realiza o login
-  async function signIn(
+  async function signIn (
     username: string,
     password: string,
     rememberMe = false,
@@ -68,31 +68,32 @@ export const useAuthStore = defineStore('auth', () => {
       isInitialized.value = true
 
       return user.value
-    } catch (err) {
+    } catch (error_) {
       signOut()
 
-      error.value =
-        err instanceof Error
-          ? err.message
+      error.value
+        = error_ instanceof Error
+          ? error_.message
           : 'Não foi possível realizar o login.'
 
-      throw err
+      throw error_
     } finally {
       isLoading.value = false
     }
   }
 
   // Encerra a sessão
-  function signOut() {
+  function signOut () {
     setTokens(null)
 
     accessToken.value = null
     user.value = null
   }
 
-
-  async function restoreSession() {
-    if (isInitialized.value) return
+  async function restoreSession () {
+    if (isInitialized.value) {
+      return
+    }
 
     accessToken.value = getToken()
 

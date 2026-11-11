@@ -2,6 +2,8 @@
   import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useTemplateRef, watch } from 'vue'
   import { RouterLink } from 'vue-router'
   import { useCardReveal } from '@/composables/useCardReveal'
+  import { resolveMediaUrl } from '@/utils/media'
+  import StatusProject from './statusProject.vue'
 
   type Status = 'finalizado' | 'ativo'
 
@@ -28,19 +30,7 @@
 
   const emit = defineEmits<{ (e: 'edit'): void }>()
   const logoFailed = ref(false)
-  const logoSource = computed(() => {
-    const source = props.logo?.trim() ?? ''
-    if (!source || /^(https?:|data:|blob:|\/\/)/i.test(source) || source.startsWith('/images/')) return source
-
-    const apiUrl = (window as unknown as { __APP_CONFIG__?: { API_URL?: string } }).__APP_CONFIG__?.API_URL
-      || import.meta.env.VITE_API_URL
-
-    try {
-      return new URL(source, apiUrl).href
-    } catch {
-      return source
-    }
-  })
+  const logoSource = computed(() => resolveMediaUrl(props.logo))
   const hasLogo = computed(() => Boolean(logoSource.value) && !logoFailed.value)
   watch(logoSource, () => {
     logoFailed.value = false
@@ -100,7 +90,7 @@
 
 <template>
   <article
-    class="project-card"
+    class="project-card [@media(max-width:400px)]:min-h-[380px] [@media(max-width:400px)]:p-[1rem] relative flex w-full max-w-[320px] min-w-0 min-h-[384px] aspect-[5_/_6] flex-col self-start overflow-hidden p-[1.25rem] border-[1px] border-[#e2e8f0] rounded-lg bg-[#fff] text-[#0f172a]"
     :class="{ 'is-revealed': isRevealed, 'has-more': hasMore, 'has-management': props.preAvaliacaoTo || props.editavel }"
     tabindex="0"
     @focusin="onFocusIn"
@@ -109,14 +99,20 @@
     @pointerenter="onPointerEnter"
     @pointerleave="onPointerLeave"
   >
-    <span v-if="props.statusLabel" class="project-status" :data-status="props.status">{{ props.statusLabel }}</span>
+    <StatusProject
+      v-if="props.statusLabel"
+      class="project-status absolute top-[.85rem] right-[.9rem] max-w-[calc(100%-1.8rem)]"
+      :label="props.statusLabel"
+      :status="props.status"
+      variant="card"
+    />
 
-    <div class="project-heading">
-      <div class="project-mark" :class="{ 'project-mark--logo': hasLogo }">
+    <div class="project-heading [@media(max-width:400px)]:mt-[2.9rem] flex min-w-0 shrink-0 items-center gap-[.8rem] mt-[2.85rem]">
+      <div class="project-mark flex-[0_0_56px] grid w-[56px] h-[56px] place-items-center border-[1px] border-[#172331] rounded-[10px] bg-[#172331]" :class="{ 'project-mark--logo': hasLogo }">
         <img
           v-if="hasLogo"
           :alt="'Logo de ' + props.title"
-          class="project-logo"
+          class="project-logo block w-[44px] h-[44px] object-contain"
           height="56"
           loading="lazy"
           :src="logoSource"
@@ -124,13 +120,13 @@
           @error="logoFailed = true"
         >
 
-        <span v-else aria-hidden="true" class="project-monogram">{{ initials.charAt(0) }}<span>{{ initials.slice(1) }}</span></span>
+        <span v-else aria-hidden="true" class="project-monogram text-white text-[1.45rem] font-bold tracking-[-.05em]">{{ initials.charAt(0) }}<span class="text-[#2563eb]">{{ initials.slice(1) }}</span></span>
       </div>
 
-      <div class="project-heading-copy">
-        <h3 class="project-title" :title="props.title">{{ props.title }}</h3>
+      <div class="project-heading-copy min-w-0">
+        <h3 class="project-title [@media(max-width:400px)]:text-[1.25rem] line-clamp-2 overflow-hidden m-0 text-[#0f172a] text-[1.375rem] font-bold leading-[1.18] tracking-[-.025em] [overflow-wrap:anywhere] text-pretty" :title="props.title">{{ props.title }}</h3>
 
-        <span v-if="props.notaFinal !== null && props.notaFinal !== undefined" class="project-grade">
+        <span v-if="props.notaFinal !== null && props.notaFinal !== undefined" class="project-grade inline-flex items-center gap-[.3rem] mt-[.3rem] text-[#475569] text-[.6875rem] leading-[1.4]">
           <span aria-hidden="true" class="mdi mdi-star-outline" />Nota final: {{ props.notaFinal }}
         </span>
       </div>
@@ -140,40 +136,41 @@
       v-if="props.description"
       :id="descriptionId"
       ref="summary"
-      class="project-description"
+      class="project-description min-h-0 max-h-[3.15em] overflow-hidden m-[1.25rem_0_0] text-[#475569] text-[.875rem] leading-[1.55] [overflow-wrap:anywhere] whitespace-pre-line"
       :tabindex="hasMore ? 0 : undefined"
     >{{ props.description }}</p>
 
-    <div class="project-footer">
-      <dl class="project-context">
-        <div v-if="props.team">
-          <dt><span aria-hidden="true" class="mdi mdi-account-group-outline" /><span class="sr-only">Equipe</span></dt>
-          <dd :title="props.team">{{ props.team }}</dd>
+    <div class="project-footer flex min-h-0 shrink-0 flex-col mt-auto pt-[.65rem]">
+      <dl class="project-context grid gap-2 m-0">
+
+        <div v-if="props.team" class="flex min-w-0 items-center gap-[.65rem]">
+          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-[#334155]"><span aria-hidden="true" class="mdi mdi-account-group-outline text-[1.15rem] leading-none" /><span class="sr-only">Equipe</span></dt>
+          <dd class="min-w-0 overflow-hidden m-0 text-[#0f172a] text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.team">{{ props.team }}</dd>
         </div>
 
-        <div v-if="props.event">
-          <dt><span aria-hidden="true" class="mdi mdi-layers-outline" /><span class="sr-only">Edição</span></dt>
-          <dd :title="props.event">{{ props.event }}</dd>
+        <div v-if="props.event" class="flex min-w-0 items-center gap-[.65rem]">
+          <dt class="inline-flex w-[1.15rem] flex-[0_0_1.15rem] items-center text-[#334155]"><span aria-hidden="true" class="mdi mdi-layers-outline text-[1.15rem] leading-none" /><span class="sr-only">Edição</span></dt>
+          <dd class="min-w-0 overflow-hidden m-0 text-[#0f172a] text-[.8125rem] leading-[1.45] text-ellipsis whitespace-nowrap" :title="props.event">{{ props.event }}</dd>
         </div>
       </dl>
 
-      <div v-if="hasActions" class="project-actions">
+      <div v-if="hasActions" class="project-actions flex max-h-0 flex-col items-start gap-[.45rem] overflow-hidden mt-0 opacity-0 invisible">
         <a
           v-if="deploy"
-          class="project-deploy"
+          class="project-deploy inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] hover:bg-[#f1f5f9] p-[.45rem_.7rem] bg-[#fff] text-[#0f172a]"
           :href="deploy"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Acessar sistema <span aria-hidden="true" class="mdi mdi-open-in-new" />
+          Acessar sistema <span aria-hidden="true" class="mdi mdi-open-in-new text-[#0f172a] text-[.875rem]" />
         </a>
 
-        <div v-if="props.preAvaliacaoTo || props.editavel" class="project-management">
-          <RouterLink v-if="props.preAvaliacaoTo" :to="props.preAvaliacaoTo">
+        <div v-if="props.preAvaliacaoTo || props.editavel" class="project-management flex flex-wrap items-center gap-[.1rem_.8rem]">
+          <RouterLink v-if="props.preAvaliacaoTo" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] cursor-pointer text-[#e2e8f0] hover:text-white" :to="props.preAvaliacaoTo">
             <span aria-hidden="true" class="mdi mdi-clipboard-text-outline" />Pré-avaliação
           </RouterLink>
 
-          <button v-if="props.editavel" type="button" @click="emit('edit')">
+          <button v-if="props.editavel" class="inline-flex min-h-9 items-center gap-[.45rem] rounded-[6px] text-xs font-medium leading-[1.4] no-underline focus-visible:outline-[#93c5fd] cursor-pointer text-[#e2e8f0] hover:text-white" type="button" @click="emit('edit')">
             <span aria-hidden="true" class="mdi mdi-pencil-outline" />Editar
           </button>
         </div>
@@ -184,7 +181,7 @@
         :aria-controls="props.description ? descriptionId : undefined"
         :aria-expanded="isRevealed"
         :aria-label="(isRevealed ? 'Ocultar' : 'Mostrar') + ' informações e ações de ' + props.title"
-        class="project-reveal"
+        class="project-reveal focus-visible:outline-[#93c5fd] hidden"
         type="button"
         @click="toggleReveal"
       >
@@ -196,129 +193,34 @@
 </template>
 
 <style scoped>
+/* Vuetify's unlayered button reset overrides utility fonts and colors. */
+.project-management button { font-size: .75rem; font-weight: 500; line-height: 1.4; color: #e2e8f0; }
+.project-management button:hover { color: #fff; }
+
 .project-card {
-  position: relative;
-  display: flex;
-  width: 100%;
-  max-width: 320px;
-  min-width: 0;
-  min-height: 384px;
-  aspect-ratio: 5 / 6;
-  flex-direction: column;
-  align-self: start;
-  overflow: hidden;
-  padding: 1.25rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background: #fff;
-  color: #0f172a;
   transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
 .project-card.has-management { min-height: 430px; }
-.project-card:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-.project-status {
-  position: absolute;
-  top: .85rem;
-  right: .9rem;
-  display: inline-flex;
-  max-width: calc(100% - 1.8rem);
-  align-items: center;
-  gap: .45rem;
-  padding: .25rem .5rem;
-  border-radius: 999px;
-  background: transparent;
-  color: #334155;
-  font-size: .6875rem;
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-  transition: background-color 300ms ease-out, color 300ms ease-out;
-}
-.project-status::before { width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%; background: #2563eb; content: ''; }
-.project-status[data-status="finalizado"]::before { background: #94a3b8; }
-.project-heading {
-  display: flex;
-  min-width: 0;
-  flex-shrink: 0;
-  align-items: center;
-  gap: .8rem;
-  margin-top: 2.85rem;
-}
+.project-status { transition: background-color 300ms ease-out, color 300ms ease-out; }
 .project-mark {
-  display: grid;
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
-  place-items: center;
-  border: 1px solid #172331;
-  border-radius: 10px;
-  background: #172331;
   transition: background-color 300ms ease-out, border-color 300ms ease-out;
 }
 .project-mark--logo { padding: .3rem; border-color: #e2e8f0; background: #fff; }
-.project-logo { display: block; width: 44px; height: 44px; object-fit: contain; }
-.project-monogram { color: #fff; font-size: 1.45rem; font-weight: 700; letter-spacing: -.05em; }
-.project-monogram span { color: #2563eb; }
-.project-heading-copy { min-width: 0; }
 .project-title {
-  display: -webkit-box;
-  overflow: hidden;
-  margin: 0;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  color: #0f172a;
-  font-size: 1.375rem;
-  font-weight: 700;
-  line-height: 1.18;
-  letter-spacing: -.025em;
-  overflow-wrap: anywhere;
-  text-wrap: pretty;
   transition: color 300ms ease-out;
 }
-.project-grade { display: inline-flex; align-items: center; gap: .3rem; margin-top: .3rem; color: #475569; font-size: .6875rem; line-height: 1.4; transition: color 300ms ease-out; }
+.project-grade { transition: color 300ms ease-out; }
 .project-description {
-  min-height: 0;
-  max-height: 3.15em;
-  overflow: hidden;
-  margin: 1.25rem 0 0;
-  color: #475569;
-  font-size: .875rem;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-  white-space: pre-line;
   scrollbar-width: thin;
   scrollbar-color: #94a3b8 transparent;
   transition: color 300ms ease-out, max-height 300ms ease-out;
 }
-.project-description:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-.project-footer { display: flex; min-height: 0; flex-shrink: 0; flex-direction: column; margin-top: auto; padding-top: .65rem; }
-.project-context { display: grid; gap: .5rem; margin: 0; }
-.project-context > div { display: flex; min-width: 0; align-items: center; gap: .65rem; }
-.project-context dt { display: inline-flex; width: 1.15rem; flex: 0 0 1.15rem; align-items: center; color: #334155; transition: color 300ms ease-out; }
-.project-context dt .mdi { font-size: 1.15rem; line-height: 1; }
-.project-context dd { min-width: 0; overflow: hidden; margin: 0; color: #0f172a; font-size: .8125rem; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; transition: color 300ms ease-out; }
+.project-context dt, .project-context dd { transition: color 300ms ease-out; }
 .project-actions {
-  display: flex;
-  max-height: 0;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: .45rem;
-  overflow: hidden;
-  margin-top: 0;
-  opacity: 0;
   transform: translateY(8px);
-  visibility: hidden;
   transition: max-height 300ms ease-out, margin-top 300ms ease-out, opacity 250ms ease-out, transform 300ms ease-out, visibility 0s 300ms;
 }
-.project-actions a, .project-actions button { display: inline-flex; min-height: 36px; align-items: center; gap: .45rem; border-radius: 6px; font-size: .75rem; font-weight: 500; line-height: 1.4; text-decoration: none; }
-.project-deploy { padding: .45rem .7rem; background: #fff; color: #0f172a; transition: background-color 200ms ease-out; }
-.project-deploy .mdi { color: #0f172a; font-size: .875rem; }
-.project-deploy:hover { background: #f1f5f9; }
-.project-management { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem .8rem; }
-.project-management a, .project-management button { color: #e2e8f0; cursor: pointer; }
-.project-management a:hover, .project-management button:hover { color: #fff; }
-.project-actions a:focus-visible, .project-actions button:focus-visible, .project-reveal:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
-.project-reveal { display: none; }
+.project-deploy { transition: background-color 200ms ease-out; }
 .is-revealed.project-card { border-color: #172331; background: #172331; }
 .is-revealed .project-status { background: #334155; color: #f8fafc; }
 .is-revealed .project-mark { border-color: #334155; background: #334155; }
@@ -329,12 +231,6 @@
 .is-revealed .project-actions { max-height: 130px; margin-top: 1rem; opacity: 1; transform: translateY(0); visibility: visible; transition-delay: 0s; }
 .has-more.is-revealed .project-description { flex: 1; max-height: 100%; overflow: auto; }
 .project-card ::selection { background: #dbeafe; color: #172554; }
-@media (max-width: 400px) {
-  .project-card { min-height: 380px; padding: 1rem; }
-  .project-card.has-management { min-height: 430px; }
-  .project-heading { margin-top: 2.9rem; }
-  .project-title { font-size: 1.25rem; }
-}
 @media (hover: none), (pointer: coarse) {
   .project-reveal { display: inline-flex; min-height: 36px; align-items: center; align-self: flex-end; gap: .25rem; margin-top: .4rem; padding: .2rem 0; color: #475569; font-size: .75rem; cursor: pointer; }
   .project-reveal .mdi { font-size: 1rem; transition: transform 300ms ease-out; }

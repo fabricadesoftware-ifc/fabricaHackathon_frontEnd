@@ -1,1 +1,1 @@
-export { default as EvaluationCriteriaCard } from './EvaluationCriteriaCard.vue';
+export { default as EvaluationCriteriaCard } from './EvaluationCriteriaCard.vue'

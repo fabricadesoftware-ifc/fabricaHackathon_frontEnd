@@ -1,28 +1,28 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import AppButton from '@/components/ui/AppButton'
-import HeaderSearch from '@/components/ui/HeaderSearch/HeaderSearch.vue'
-import HeaderActions from '@/components/ui/HeaderActions/HeaderActions.vue'
+  import { useRouter } from 'vue-router'
+  import AppButton from '@/components/ui/AppButton'
+  import HeaderActions from '@/components/ui/HeaderActions/HeaderActions.vue'
+  import HeaderSearch from '@/components/ui/HeaderSearch/HeaderSearch.vue'
 
-const router = useRouter()
+  const router = useRouter()
 
-const props = withDefaults(
-  defineProps<{
-    isLogged: boolean
-    userAvatar?: string
-    userName?: string
-  }>(),
-  {
-    userName: '',
-  },
-)
+  const props = withDefaults(
+    defineProps<{
+      isLogged: boolean
+      userAvatar?: string
+      userName?: string
+    }>(),
+    {
+      userName: '',
+    },
+  )
 
-const emit = defineEmits<{
-  (
-    e: 'menu-option-click',
-    option: 'perfil' | 'configuracoes' | 'sair',
-  ): void
-}>()
+  const emit = defineEmits<{
+    (
+      e: 'menu-option-click',
+      option: 'perfil' | 'configuracoes' | 'sair',
+    ): void
+  }>()
 </script>
 
 <template>

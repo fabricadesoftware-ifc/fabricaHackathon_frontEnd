@@ -16,6 +16,7 @@
       <div class="h-28 w-full rounded-md bg-gray-200" />
       <div class="h-4 w-3/4 rounded bg-gray-200" />
       <div class="h-3 w-1/2 rounded bg-gray-200" />
+
       <div class="flex gap-2">
         <div class="h-5 w-16 rounded-full bg-gray-200" />
         <div class="h-5 w-12 rounded-full bg-gray-200" />

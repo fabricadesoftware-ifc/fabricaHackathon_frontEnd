@@ -80,7 +80,7 @@
 </script>
 
 <template>
-  <div class="evaluation-flow w-full min-w-0">
+  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0">
     <h1 class="mb-2 text-xl font-semibold text-slate-700 sm:text-2xl">
       Avaliações
     </h1>

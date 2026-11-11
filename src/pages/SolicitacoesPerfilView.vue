@@ -63,13 +63,13 @@
 <template>
   <div class="solicitacoes w-full min-w-0">
     <PageHeader
-      class="solicitacoes-header"
+      class="mt-[1rem] mb-[1.5rem] mx-0 [&_h1]:text-[#334155] [&_h1]:text-[1.5rem] [&_h1]:font-semibold [&_h1]:leading-[1.35] [&_p]:mt-[.25rem] [&_p]:text-[#475569] [&_p]:text-[.875rem] [&_p]:leading-[1.6]"
       subtitle="Aprove ou recuse pedidos de perfil de Avaliador e Professor."
       title="Solicitações de perfil"
     />
 
-    <div aria-label="Filtrar solicitações por situação" class="solicitacoes-filtros mb-6 border-b border-slate-200" role="group">
-      <FilterChipGroup v-model="filtro" :options="filtros" />
+    <div aria-label="Filtrar solicitações por situação" class="mb-6 border-b border-slate-200" role="group">
+      <FilterChipGroup v-model="filtro" :options="filtros" variant="underline" />
     </div>
 
     <p v-if="mensagem" class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">
@@ -81,7 +81,7 @@
     </p>
 
     <section :aria-busy="loading" aria-label="Lista de solicitações de perfil" class="overflow-hidden rounded-lg border border-slate-200 bg-white">
-      <div v-if="!loading && !error && itens.length > 0" aria-hidden="true" class="solicitacao-grid hidden gap-5 border-b border-slate-200 bg-slate-50 px-5 py-3 text-xs font-medium text-slate-600 xl:grid">
+      <div v-if="!loading && !error && itens.length > 0" aria-hidden="true" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] hidden gap-5 border-b border-slate-200 bg-slate-50 px-5 py-3 text-xs font-medium text-slate-600 xl:grid">
         <span>Usuário</span>
         <span>Perfil solicitado</span>
         <span>Solicitada em</span>
@@ -97,7 +97,7 @@
           </div>
 
           <ul v-else class="divide-y divide-slate-200">
-            <li v-for="item in itens" :key="item.id" class="solicitacao-grid grid min-w-0 gap-4 px-4 py-5 transition-colors hover:bg-slate-50/60 sm:px-5 xl:items-center xl:gap-5">
+            <li v-for="item in itens" :key="item.id" class="solicitacao-grid xl:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_minmax(13rem,1fr)] grid min-w-0 gap-4 px-4 py-5 transition-colors hover:bg-slate-50/60 sm:px-5 xl:items-center xl:gap-5">
               <div class="min-w-0">
                 <p class="break-words text-sm font-semibold leading-6 text-slate-700">{{ item.usuario_nome || item.usuario_email }}</p>
                 <p v-if="item.usuario_nome" class="break-all text-sm leading-6 text-slate-500">{{ item.usuario_email }}</p>
@@ -118,6 +118,7 @@
                   :aria-label="`Recusar solicitação de ${item.usuario_nome || item.usuario_email}`"
                   :disabled="decidindo !== null"
                   :label="decidindo === item.id && acaoAtual === 'recusar' ? 'Recusando…' : 'Recusar'"
+                  :loading="decidindo === item.id && acaoAtual === 'recusar'"
                   variant="secondary"
                   @click="decidir(item, false)"
                 />
@@ -126,7 +127,7 @@
                   :aria-label="`Aprovar solicitação de ${item.usuario_nome || item.usuario_email}`"
                   :disabled="decidindo !== null"
                   :label="decidindo === item.id && acaoAtual === 'aprovar' ? 'Aprovando…' : 'Aprovar'"
-                  :loading="decidindo === item.id"
+                  :loading="decidindo === item.id && acaoAtual === 'aprovar'"
                   variant="primary"
                   @click="decidir(item, true)"
                 />
@@ -146,52 +147,6 @@
 </template>
 
 <style scoped>
-.solicitacoes-header {
-  margin: 1rem 0 1.5rem;
-}
-
-.solicitacoes-header :deep(h1) {
-  color: #334155;
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.solicitacoes-header :deep(p) {
-  margin-top: 0.25rem;
-  color: #475569;
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-.solicitacoes-filtros :deep(> div) {
-  flex-wrap: nowrap;
-  gap: 0;
-}
-
-.solicitacoes-filtros :deep(button) {
-  min-height: 44px;
-  margin-bottom: -1px;
-  padding: 0.75rem 1rem;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  border-radius: 0;
-  background: transparent;
-  color: #64748b;
-  font-size: 0.875rem;
-  transition: color 150ms, border-color 150ms, background-color 150ms;
-}
-
-.solicitacoes-filtros :deep(button.bg-blue-600) {
-  border-bottom-color: #2563eb;
-  color: #2563eb;
-}
-
-.solicitacoes-filtros :deep(button:hover) {
-  background: #f8fafc;
-  color: #334155;
-}
-
 .solicitacoes :deep(button:focus-visible) {
   outline: 2px solid #2563eb;
   outline-offset: -2px;
@@ -206,12 +161,6 @@
 
 .solicitacao-acoes :deep(.app-btn:first-child) {
   border: 1px solid #e2e8f0;
-}
-
-@media (min-width: 1280px) {
-  .solicitacao-grid {
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr) minmax(0, 0.8fr) minmax(13rem, 1fr);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

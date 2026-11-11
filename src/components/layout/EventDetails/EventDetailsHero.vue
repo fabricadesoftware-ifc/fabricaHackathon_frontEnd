@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router'
+  import type {
+    EdicaoDetalhe,
+    EdicaoStatus,
+  } from '@/types/edicao'
 
-import StatusBadge from '@/components/ui/statusSelect.vue'
+  import StatusBadge from '@/components/ui/statusSelect.vue'
 
-import type {
-  EdicaoDetalhe,
-  EdicaoStatus,
-} from '@/types/edicao'
+  defineProps<{
+    edicao: EdicaoDetalhe
+    status: EdicaoStatus
+    podeInscrever: boolean
+    linkCopiado: boolean
+  }>()
 
-defineProps<{
-  edicao: EdicaoDetalhe
-  status: EdicaoStatus
-  podeInscrever: boolean
-  linkCopiado: boolean
-}>()
-
-defineEmits<{
-  (e: 'compartilhar'): void
-}>()
+  defineEmits<{
+    (e: 'compartilhar'): void
+  }>()
 </script>
 
 <template>
@@ -27,21 +25,21 @@ defineEmits<{
   >
     <!-- Capa da edição -->
     <img
-      :src="
-        edicao.imagem_capa ||
-        '/images/fabricaHackathonThumb.png'
-      "
       alt=""
       class="absolute inset-0 h-full w-full object-cover"
+      :src="
+        edicao.imagem_capa ||
+          '/images/fabricaHackathonThumb.png'
+      "
     >
 
     <!-- Sobreposição escura -->
     <div
+      aria-hidden="true"
       class="absolute inset-0 bg-gradient-to-r
              from-slate-950/85
              via-slate-950/45
              to-slate-950/15"
-      aria-hidden="true"
     />
 
     <!-- Conteúdo -->
@@ -56,27 +54,27 @@ defineEmits<{
                justify-between gap-3"
       >
         <StatusBadge
-          :status="status"
           :label="edicao.status_label"
+          :status="status"
         />
 
         <button
-          type="button"
           class="inline-flex items-center gap-2
                  rounded-lg bg-white/95
                  px-4 py-2 text-sm font-medium
                  text-slate-800
                  transition-colors hover:bg-white"
+          type="button"
           @click="$emit('compartilhar')"
         >
           <span
+            aria-hidden="true"
             :class="[
               'mdi',
               linkCopiado
                 ? 'mdi-check'
                 : 'mdi-share-variant-outline',
             ]"
-            aria-hidden="true"
           />
 
           {{ linkCopiado ? 'Link copiado' : 'Compartilhar' }}
@@ -105,8 +103,8 @@ defineEmits<{
                    text-sm text-white/85"
           >
             <span
-              class="mdi mdi-domain text-lg"
               aria-hidden="true"
+              class="mdi mdi-domain text-lg"
             />
 
             Gerenciado por:

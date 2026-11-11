@@ -11,7 +11,14 @@
 
       <div class="min-w-0">
         <h2 class="break-words text-sm font-semibold leading-5 text-slate-700">{{ props.title }}</h2>
-        <StatusSelect class="edition-status mt-1" :data-status="props.status" :label="label" :status="props.status" />
+
+        <StatusSelect
+          class="edition-status mt-1"
+          :data-status="props.status"
+          :label="label"
+          :status="props.status"
+          variant="evaluation"
+        />
 
         <p class="mt-1 flex items-start gap-1.5 text-xs leading-4 text-slate-500">
           <span aria-hidden="true" class="mdi mdi-calendar-outline shrink-0 text-sm" />
@@ -80,32 +87,6 @@
 </script>
 
 <style scoped>
-.edition-status {
-  border-radius: 0.375rem;
-  background: #f1f5f9;
-  padding: 0.125rem 0.5rem;
-  color: #475569;
-  font-weight: 500;
-  line-height: 1.5;
-  box-shadow: none;
-}
-
-.edition-status[data-status="avaliacao"],
-.edition-status[data-status="andamento"] {
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.edition-status[data-status="inscricoes"] {
-  background: #f0fdf4;
-  color: #15803d;
-}
-
-.edition-status :deep(> span) {
-  color: inherit;
-  background-color: currentColor;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .edition-card,
   .edition-card :deep(*) {

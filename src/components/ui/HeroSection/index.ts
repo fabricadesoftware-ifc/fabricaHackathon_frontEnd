@@ -1,2 +1,1 @@
-import heroSection from "./heroSection.vue";
-export default heroSection
+export { default } from './heroSection.vue'

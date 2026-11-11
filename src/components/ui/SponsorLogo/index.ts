@@ -1,2 +1,1 @@
-import SponsorLogo from "./SponsorLogo.vue";
-export default SponsorLogo;
+export { default } from './SponsorLogo.vue'

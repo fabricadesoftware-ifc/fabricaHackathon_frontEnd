@@ -210,8 +210,8 @@
 </script>
 
 <template>
-  <div class="home-view w-full min-w-0 pb-10">
-    <a class="home-skip" href="#home-content">Ir para as edições e projetos</a>
+  <div class="home-view @container/home w-full min-w-0 pb-10 text-[#0f172a]">
+    <a class="absolute w-px h-px [overflow:hidden] [clip-path:inset(50%)] focus:relative focus:inline-flex focus:items-center focus:min-h-11 focus:w-auto focus:h-auto focus:p-2 focus:overflow-visible focus:[clip-path:none] focus:text-[#1d4ed8]" href="#home-content">Ir para as edições e projetos</a>
 
     <HeroSection
       v-model="search"
@@ -224,7 +224,7 @@
     />
 
     <!-- Conteúdo principal -->
-    <div id="home-content" class="home-content mt-8 space-y-10" tabindex="-1">
+    <div id="home-content" class="home-content scroll-mt-8 mt-8 space-y-10" tabindex="-1">
       <p aria-live="polite" class="sr-only" role="status">
         {{ loading ? 'Carregando edições e projetos…' : error ? 'Não foi possível carregar edições e projetos.' : `Edições com inscrições abertas nesta busca: ${edicoesAbertas.length}. Projetos em destaque: ${projetosComunidade.length}.` }}
       </p>
@@ -238,8 +238,8 @@
       />
 
       <div
-        class="home-editions"
-        :class="{ 'home-editions--paired': !loading && !error && edicoesAbertas.length === 1 && edicoesDestaque.length === 1 }"
+        class="home-editions grid gap-10"
+        :class="{ '[@container_home_(min-width:850px)]:grid-cols-2 [@container_home_(min-width:850px)]:gap-y-0 [@container_home_(min-width:850px)]:[&>section]:grid [@container_home_(min-width:850px)]:[&>section]:grid-rows-subgrid [@container_home_(min-width:850px)]:[&>section]:row-span-2': !loading && !error && edicoesAbertas.length === 1 && edicoesDestaque.length === 1 }"
       >
         <!-- ================================== -->
         <!-- INSCRIÇÕES ABERTAS                 -->
@@ -376,8 +376,7 @@
           @retry="run"
         >
           <CardGrid
-            class="home-projects"
-            :columns="3"
+            compact
             :items="projetosComunidade"
           />
         </AsyncView>
@@ -389,16 +388,6 @@
 </template>
 
 <style scoped>
-.home-skip { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.home-skip:focus { position: relative; display: inline-flex; align-items: center; min-height: 44px; width: auto; height: auto; padding: .5rem; overflow: visible; clip-path: none; color: #1d4ed8; }
-.home-content { scroll-margin-top: 2rem; }
-.home-projects { grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
-.home-view { container: home / inline-size; color: #0f172a; }
-.home-editions { display: grid; gap: 2.5rem; }
-@container home (min-width: 850px) {
-  .home-editions--paired { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 0; }
-  .home-editions--paired > section { display: grid; grid-template-rows: subgrid; grid-row: span 2; }
-}
 @media (prefers-reduced-motion: reduce) {
   .home-view :deep(.animate-pulse) { animation: none; }
 }

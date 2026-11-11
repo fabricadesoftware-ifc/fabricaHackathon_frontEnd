@@ -81,9 +81,9 @@
 </script>
 
 <template>
-  <div class="evaluation-flow w-full min-w-0">
+  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0">
     <nav aria-label="Navegação de avaliações" class="mb-5">
-      <RouterLink class="evaluation-back" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
+      <RouterLink class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-[#475569] [&:hover]:text-[#2563eb]" to="/avaliacao"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Edições para avaliação</RouterLink>
     </nav>
 
     <header class="mb-5">

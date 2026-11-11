@@ -2,7 +2,6 @@
 
 import { createThemePlugin } from '@vuetify/v0'
 import { createVuetify } from 'vuetify'
-
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
@@ -52,9 +51,9 @@ export const themePlugin = createThemePlugin({
         'on-surface-variant': '#4B5563',
 
         // 📝 Textos (hierarquia) — cores customizadas extras
-        'text-primary': '#111827',   // título / texto principal
+        'text-primary': '#111827', // título / texto principal
         'text-secondary': '#4B5563', // subtítulo / texto secundário
-        'text-weak': '#9CA3AF',      // label / informações menores
+        'text-weak': '#9CA3AF', // label / informações menores
       },
     },
     dark: {

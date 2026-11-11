@@ -20,8 +20,8 @@
   const cardsFiltrados = computed(() => {
     const termo = search.value.trim().toLowerCase()
     return (data.value ?? [])
-      .filter(edicao => !termo ||
-        `${edicao.nome} ${edicao.local} ${edicao.tipo_edicao} ${edicao.ano}`.toLowerCase().includes(termo),
+      .filter(edicao => !termo
+        || `${edicao.nome} ${edicao.local} ${edicao.tipo_edicao} ${edicao.ano}`.toLowerCase().includes(termo),
       )
       .map(edicao => edicaoParaCard(edicao))
   })
@@ -34,7 +34,9 @@
   watch(totalPages, v => {
     if (currentPage.value > v) currentPage.value = v
   })
-  watch(search, () => { currentPage.value = 1 })
+  watch(search, () => {
+    currentPage.value = 1
+  })
 </script>
 
 <template>
@@ -49,17 +51,17 @@
     />
 
     <AsyncView
-      skeleton="cards"
       :empty="!loading && !error && cardsFiltrados.length === 0"
       :empty-message="search ? 'Nenhuma edição aberta corresponde à sua busca.' : 'Nenhuma edição com inscrições abertas no momento.'"
       :error="error"
       :loading="loading"
+      skeleton="cards"
       @retry="run"
     >
       <ResultsBar :end="endIndex" :start="cardsFiltrados.length > 0 ? startIndex + 1 : 0" :total="cardsFiltrados.length" />
 
       <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
-        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" class="w-full max-w-[360px]" />
+        <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" />
       </div>
 
       <AppPagination v-model="currentPage" :length="totalPages" />

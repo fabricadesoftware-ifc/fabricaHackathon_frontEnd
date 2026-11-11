@@ -1,2 +1,1 @@
-import SponsorList from "./SponsorList.vue";
-export default SponsorList
+export { default } from './SponsorList.vue'

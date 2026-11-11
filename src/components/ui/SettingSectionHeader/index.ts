@@ -1,2 +1,1 @@
-import settingSectionHeader from "./settingSectionHeader.vue";
-export {settingSectionHeader}
+export { default as settingSectionHeader } from './settingSectionHeader.vue'

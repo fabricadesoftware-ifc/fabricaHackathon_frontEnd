@@ -1,2 +1,1 @@
-import HeroTitle from "./heroTitle.vue";
-export default HeroTitle  
+export { default } from './heroTitle.vue'

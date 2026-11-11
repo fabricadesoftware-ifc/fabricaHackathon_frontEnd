@@ -54,84 +54,84 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
+  import { onUnmounted, ref } from 'vue'
 
-import AppButton from '../AppButton'
+  import AppButton from '../AppButton'
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: File | string | null
-    maxSizeMb?: number
-    acceptedFormats?: string[]
-  }>(),
-  {
-    maxSizeMb: 2,
-    acceptedFormats: () => ['image/png', 'image/jpeg'],
-  },
-)
+  const props = withDefaults(
+    defineProps<{
+      modelValue: File | string | null
+      maxSizeMb?: number
+      acceptedFormats?: string[]
+    }>(),
+    {
+      maxSizeMb: 2,
+      acceptedFormats: () => ['image/png', 'image/jpeg'],
+    },
+  )
 
-const emit = defineEmits<{
-  'update:modelValue': [value: File | null]
-  'error': [message: string]
-}>()
+  const emit = defineEmits<{
+    'update:modelValue': [value: File | null]
+    'error': [message: string]
+  }>()
 
-const fileInput = ref<HTMLInputElement | null>(null)
+  const fileInput = ref<HTMLInputElement | null>(null)
 
-const previewUrl = ref<string | null>(
-  typeof props.modelValue === 'string'
-    ? props.modelValue
-    : null,
-)
+  const previewUrl = ref<string | null>(
+    typeof props.modelValue === 'string'
+      ? props.modelValue
+      : null,
+  )
 
-const errorMessage = ref<string | null>(null)
-const aviso = ref(false)
+  const errorMessage = ref<string | null>(null)
+  const aviso = ref(false)
 
-function handleFile(event: Event) {
-  const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
+  function handleFile (event: Event) {
+    const input = event.target as HTMLInputElement
+    const file = input.files?.[0]
 
-  if (!file) return
+    if (!file) return
 
-  errorMessage.value = null
-  aviso.value = false
-
-  if (!props.acceptedFormats.includes(file.type)) {
-    showError('Formato de arquivo não aceito.')
-    emit('error', errorMessage.value!)
-    return
-  }
-
-  const maxSize = props.maxSizeMb * 1024 * 1024
-
-  if (file.size > maxSize) {
-    const message = `O arquivo deve ter no máximo ${props.maxSizeMb}MB.`
-
-    showError(message)
-    emit('error', message)
-    return
-  }
-
-  if (previewUrl.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(previewUrl.value)
-  }
-
-  previewUrl.value = URL.createObjectURL(file)
-
-  emit('update:modelValue', file)
-}
-
-function showError(message: string) {
-  errorMessage.value = message
-  aviso.value = true
-
-  setTimeout(() => {
+    errorMessage.value = null
     aviso.value = false
-  }, 2000)
-}
 
-onUnmounted(() => {
-  if (previewUrl.value?.startsWith('blob:')) {
-    URL.revokeObjectURL(previewUrl.value)
+    if (!props.acceptedFormats.includes(file.type)) {
+      showError('Formato de arquivo não aceito.')
+      emit('error', errorMessage.value!)
+      return
+    }
+
+    const maxSize = props.maxSizeMb * 1024 * 1024
+
+    if (file.size > maxSize) {
+      const message = `O arquivo deve ter no máximo ${props.maxSizeMb}MB.`
+
+      showError(message)
+      emit('error', message)
+      return
+    }
+
+    if (previewUrl.value?.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl.value)
+    }
+
+    previewUrl.value = URL.createObjectURL(file)
+
+    emit('update:modelValue', file)
   }
-})
+
+  function showError (message: string) {
+    errorMessage.value = message
+    aviso.value = true
+
+    setTimeout(() => {
+      aviso.value = false
+    }, 2000)
+  }
+
+  onUnmounted(() => {
+    if (previewUrl.value?.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl.value)
+    }
+  })
 </script>

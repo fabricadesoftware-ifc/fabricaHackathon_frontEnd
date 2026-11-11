@@ -138,7 +138,7 @@
 </script>
 
 <template>
-  <div class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+  <div class="w-full min-w-0 py-6">
     <PageHeader
       subtitle="Responda antes da avaliação. Vale 10% da nota final e é pontuado automaticamente."
       title="Pré-avaliação"

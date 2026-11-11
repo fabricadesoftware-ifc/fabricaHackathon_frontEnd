@@ -8,20 +8,20 @@
     <SearchFilterBar
       v-model:search="search"
       v-model:tipo="edicaoId"
-      :options-tipo="opcoesEdicao"
       appearance="toolbar"
-      tipo-label="Edição"
+      :options-tipo="opcoesEdicao"
       placeholder="Buscar projetos por nome"
+      tipo-label="Edição"
     />
 
     <AsyncView
-      skeleton="cards"
       :empty="!loading && !error && itens.length === 0"
       :empty-message="search || edicaoId
         ? 'Nenhum projeto corresponde aos critérios informados.'
         : 'Nenhum projeto encontrado.'"
       :error="error"
       :loading="loading"
+      skeleton="cards"
       @retry="run"
     >
       <ResultsBar
@@ -32,7 +32,7 @@
       />
 
       <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
-        <projectCard v-for="p in itens" :key="p.id" v-bind="p" class="w-full max-w-[360px]" />
+        <projectCard v-for="p in itens" :key="p.id" v-bind="p" />
       </div>
 
       <AppPagination v-model="currentPage" :length="totalPages" />
@@ -58,7 +58,9 @@
   const route = useRoute()
   const search = ref(typeof route.query.q === 'string' ? route.query.q : '')
   // Busca vinda do campo do topo enquanto já está em /explorar.
-  watch(() => route.query.q, q => { search.value = typeof q === 'string' ? q : '' })
+  watch(() => route.query.q, q => {
+    search.value = typeof q === 'string' ? q : ''
+  })
   const edicaoId = ref('')
   const currentPage = ref(1)
 

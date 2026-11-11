@@ -1,63 +1,62 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+  import { computed, ref } from 'vue'
+  import {
+    navigationItems,
+    type NavItem,
+  } from '@/constants/navigation'
+  import { useAuthStore } from '@/stores/auth'
 
-import {
-  navigationItems,
-  type NavItem,
-} from '@/constants/navigation'
+  export type SidebarItem = NavItem
 
-export type SidebarItem = NavItem
+  const props = withDefaults(
+    defineProps<{
+      items?: NavItem[]
+      activeItem: string
+      isLoggedIn?: boolean
+    }>(),
+    {
+      isLoggedIn: true,
+      items: () => navigationItems,
+    },
+  )
 
-const props = withDefaults(
-  defineProps<{
-    items?: NavItem[]
-    activeItem: string
-    isLoggedIn?: boolean
-  }>(),
-  {
-    isLoggedIn: true,
-    items: () => navigationItems,
-  },
-)
+  const emit = defineEmits<{
+    'update:activeItem': [id: string]
+  }>()
 
-const emit = defineEmits<{
-  'update:activeItem': [id: string]
-}>()
+  const rail = ref(false)
+  const authStore = useAuthStore()
 
-const rail = ref(false)
-const authStore = useAuthStore()
+  const publicItems = computed(() =>
+    props.items.filter(item => !item.requiresAuth),
+  )
 
-const publicItems = computed(() =>
-  props.items.filter(item => !item.requiresAuth),
-)
+  const privateItems = computed(() =>
+    props.items.filter(item => {
+      if (!item.requiresAuth || !props.isLoggedIn) {
+        return false
+      }
 
-const privateItems = computed(() =>
-  props.items.filter(item => {
-    if (!item.requiresAuth || !props.isLoggedIn) {
-      return false
-    }
+      if (item.roles?.length) {
+        return (
+          authStore.userRole !== null
+          && item.roles.includes(authStore.userRole)
+        )
+      }
 
-    if (item.roles?.length) {
-      return (
-        authStore.userRole !== null &&
-        item.roles.includes(authStore.userRole)
-      )
-    }
+      return true
+    }),
+  )
 
-    return true
-  }),
-)
-
-function itemClasses(id: string) {
-  return [
-    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-    rail.value && 'justify-center px-0',
-    props.activeItem === id
-      ? 'bg-blue-600 text-white'
-      : 'text-gray-600 hover:bg-gray-100',
-  ]
-}
+  function itemClasses (id: string) {
+    return [
+      'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+      rail.value && 'justify-center px-0',
+      props.activeItem === id
+        ? 'bg-blue-600 text-white'
+        : 'text-gray-600 hover:bg-gray-100',
+    ]
+  }
 </script>
 
 <template>

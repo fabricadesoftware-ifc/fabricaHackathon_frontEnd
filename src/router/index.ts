@@ -1,24 +1,23 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/auth'
 import type { TipoUsuario } from '@/types/usuario'
-
-import HomeView from '@/pages/HomeView.vue'
-import EdicoesView from '@/pages/EdicoesView.vue'
-import MyProjectsView from '@/pages/MyProjectsView.vue'
-import InscricaoView from '@/pages/InscricaoView.vue'
-import EquipesView from '@/pages/EquipesView.vue'
-import ExplorarView from '@/pages/ExplorarView.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 import ConfiguracoesView from '@/pages/ConfiguracoesView.vue'
+import EdicoesView from '@/pages/EdicoesView.vue'
+import EquipesView from '@/pages/EquipesView.vue'
 import EvaluationsListView from '@/pages/EvaluationsListView.vue'
 import EventView from '@/pages/EventView.vue'
+import ExplorarView from '@/pages/ExplorarView.vue'
+import HomeView from '@/pages/HomeView.vue'
+import InscricaoView from '@/pages/InscricaoView.vue'
+import LoginView from '@/pages/LoginView.vue'
+import MyProjectsView from '@/pages/MyProjectsView.vue'
+import NotFoundView from '@/pages/NotFoundView.vue'
+import PreAvaliacaoView from '@/pages/PreAvaliacaoView.vue'
 import ProjectEvaluationView from '@/pages/ProjectEvaluationView.vue'
 import ProjectRegistrationView from '@/pages/ProjectRegistrationView.vue'
-import LoginView from '@/pages/LoginView.vue'
 import RegisterView from '@/pages/RegisterView.vue'
 import SolicitacoesPerfilView from '@/pages/SolicitacoesPerfilView.vue'
 import TermosView from '@/pages/TermosView.vue'
-import NotFoundView from '@/pages/NotFoundView.vue'
-import PreAvaliacaoView from '@/pages/PreAvaliacaoView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -119,10 +118,10 @@ const router = createRouter({
       component: LoginView,
     },
     {
-  path: '/registro',
-  name: 'registro',
-  component: RegisterView,
-},
+      path: '/registro',
+      name: 'registro',
+      component: RegisterView,
+    },
     {
       path: '/termos',
       name: 'termos',
@@ -136,7 +135,7 @@ const router = createRouter({
     },
   ],
 })
-router.beforeEach(async (to) => {
+router.beforeEach(async to => {
   const authStore = useAuthStore()
 
   // Recupera a sessão caso a página tenha sido atualizada.
@@ -161,8 +160,8 @@ router.beforeEach(async (to) => {
   const allowedRoles = to.meta.roles as TipoUsuario[] | undefined
 
   if (
-    allowedRoles?.length &&
-    (!authStore.userRole || !allowedRoles.includes(authStore.userRole))
+    allowedRoles?.length
+    && (!authStore.userRole || !allowedRoles.includes(authStore.userRole))
   ) {
     return '/home'
   }
@@ -191,7 +190,7 @@ const TITULOS: Array<[RegExp, string]> = [
   [/^\/termos/, 'Termos de Uso'],
 ]
 
-router.afterEach((to) => {
+router.afterEach(to => {
   const titulo = to.name === 'nao-encontrada'
     ? 'Página não encontrada'
     : TITULOS.find(([re]) => re.test(to.path))?.[1]

@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+  import { computed } from 'vue'
 
-const props = defineProps<{
-  steps: string[]
-  currentStep: number
-}>()
+  const props = defineProps<{
+    steps: string[]
+    currentStep: number
+  }>()
 
-// Organiza as etapas de acordo com o status.
-const etapas = computed(() =>
-  props.steps.map((nome, index) => {
-    const concluida = index < props.currentStep
-    const atual = index === props.currentStep
-    const pendente = index > props.currentStep
+  // Organiza as etapas de acordo com o status.
+  const etapas = computed(() =>
+    props.steps.map((nome, index) => {
+      const concluida = index < props.currentStep
+      const atual = index === props.currentStep
+      const pendente = index > props.currentStep
 
-    return {
-      nome,
-      concluida,
-      atual,
-      pendente,
+      return {
+        nome,
+        concluida,
+        atual,
+        pendente,
 
-      label: concluida
-        ? 'Concluída'
-        : atual
-          ? 'Em andamento'
-          : 'Não iniciada',
-    }
-  }),
-)
+        label: concluida
+          ? 'Concluída'
+          : (atual
+            ? 'Em andamento'
+            : 'Não iniciada'),
+      }
+    }),
+  )
 </script>
 
 <template>
@@ -35,15 +35,16 @@ const etapas = computed(() =>
       <li
         v-for="(etapa, index) in etapas"
         :key="index"
-        class="relative flex gap-4
-               pb-7 last:pb-0"
         :aria-current="
           etapa.atual ? 'step' : undefined
         "
+        class="relative flex gap-4
+               pb-7 last:pb-0"
       >
         <!-- Linha vertical -->
         <div
           v-if="index < etapas.length - 1"
+          aria-hidden="true"
           class="absolute left-[7px]
                  top-4 bottom-0 w-[2px]"
           :class="
@@ -51,11 +52,11 @@ const etapas = computed(() =>
               ? 'bg-blue-200'
               : 'bg-slate-200'
           "
-          aria-hidden="true"
         />
 
         <!-- Indicador -->
         <div
+          aria-hidden="true"
           class="relative z-10 mt-0.5
                  flex h-4 w-4 shrink-0
                  items-center justify-center
@@ -67,7 +68,6 @@ const etapas = computed(() =>
                 ? 'border-blue-400 bg-blue-400'
                 : 'border-slate-300 bg-slate-300',
           ]"
-          aria-hidden="true"
         >
           <span
             v-if="etapa.atual"
@@ -129,6 +129,7 @@ const etapas = computed(() =>
             ]"
           >
             <span
+              aria-hidden="true"
               class="h-1.5 w-1.5 rounded-full"
               :class="[
                 etapa.atual
@@ -137,7 +138,6 @@ const etapas = computed(() =>
                     ? 'bg-blue-400'
                     : 'bg-slate-400',
               ]"
-              aria-hidden="true"
             />
 
             {{ etapa.label }}

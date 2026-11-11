@@ -1,64 +1,52 @@
 <template>
   <div
-    class="journey-grid"
-    role="img"
     aria-label="Quatro momentos ilustrativos do HackIFC: conectar-se com pessoas, desenvolver soluções, evoluir durante o processo e apresentar o projeto."
+    class="journey-grid grid-cols-2 grid w-full max-w-[520px] gap-[14px]"
+    role="img"
   >
-    <div class="journey-card" aria-hidden="true">
-      <div class="card-top">
-        <span class="stage-icon mdi mdi-account-group-outline" />
-        <span class="stage-number">01</span>
+    <div aria-hidden="true" class="journey-card bg-[rgb(255_255_255/78%)] relative flex min-h-[132px] flex-col border-[1px] border-[#d7e5f7] rounded-[10px] p-[13px_16px_15px]">
+      <div class="card-top flex items-start justify-between mb-[8px]">
+        <span class="stage-icon mdi mdi-account-group-outline flex w-[32px] h-[32px] items-center justify-center rounded-lg bg-[#eaf2ff] text-[#2563eb] text-[19px]" />
+        <span class="stage-number text-[#a5bad6] text-[11px] font-bold tracking-[.08em]">01</span>
       </div>
-      <strong>Conecte-se</strong>
-      <p>Conheça pessoas e forme equipes.</p>
+
+      <strong class="text-[#334155] text-[14px] font-bold">Conecte-se</strong>
+      <p class="mt-[3px] text-[#64748b] text-[12px] leading-[1.4]">Conheça pessoas e forme equipes.</p>
     </div>
-    <div class="journey-card" aria-hidden="true">
-      <div class="card-top">
-        <span class="stage-icon mdi mdi-code-braces" />
-        <span class="stage-number">02</span>
+
+    <div aria-hidden="true" class="journey-card bg-[rgb(255_255_255/78%)] relative flex min-h-[132px] flex-col border-[1px] border-[#d7e5f7] rounded-[10px] p-[13px_16px_15px]">
+      <div class="card-top flex items-start justify-between mb-[8px]">
+        <span class="stage-icon mdi mdi-code-braces flex w-[32px] h-[32px] items-center justify-center rounded-lg bg-[#eaf2ff] text-[#2563eb] text-[19px]" />
+        <span class="stage-number text-[#a5bad6] text-[11px] font-bold tracking-[.08em]">02</span>
       </div>
-      <strong>Desenvolva</strong>
-      <p>Transforme ideias em soluções.</p>
+
+      <strong class="text-[#334155] text-[14px] font-bold">Desenvolva</strong>
+      <p class="mt-[3px] text-[#64748b] text-[12px] leading-[1.4]">Transforme ideias em soluções.</p>
     </div>
-    <div class="journey-card" aria-hidden="true">
-      <div class="card-top">
-        <span class="stage-icon mdi mdi-trending-up" />
-        <span class="stage-number">03</span>
+
+    <div aria-hidden="true" class="journey-card bg-[rgb(255_255_255/78%)] relative flex min-h-[132px] flex-col border-[1px] border-[#d7e5f7] rounded-[10px] p-[13px_16px_15px]">
+      <div class="card-top flex items-start justify-between mb-[8px]">
+        <span class="stage-icon mdi mdi-trending-up flex w-[32px] h-[32px] items-center justify-center rounded-lg bg-[#eaf2ff] text-[#2563eb] text-[19px]" />
+        <span class="stage-number text-[#a5bad6] text-[11px] font-bold tracking-[.08em]">03</span>
       </div>
-      <strong>Evolua</strong>
-      <p>Aprenda durante o desenvolvimento.</p>
+
+      <strong class="text-[#334155] text-[14px] font-bold">Evolua</strong>
+      <p class="mt-[3px] text-[#64748b] text-[12px] leading-[1.4]">Aprenda durante o desenvolvimento.</p>
     </div>
-    <div class="journey-card" aria-hidden="true">
-      <div class="card-top">
-        <span class="stage-icon mdi mdi-presentation" />
-        <span class="stage-number">04</span>
+
+    <div aria-hidden="true" class="journey-card bg-[rgb(255_255_255/78%)] relative flex min-h-[132px] flex-col border-[1px] border-[#d7e5f7] rounded-[10px] p-[13px_16px_15px]">
+      <div class="card-top flex items-start justify-between mb-[8px]">
+        <span class="stage-icon mdi mdi-presentation flex w-[32px] h-[32px] items-center justify-center rounded-lg bg-[#eaf2ff] text-[#2563eb] text-[19px]" />
+        <span class="stage-number text-[#a5bad6] text-[11px] font-bold tracking-[.08em]">04</span>
       </div>
-      <strong>Apresente</strong>
-      <p>Compartilhe seu projeto e suas conquistas.</p>
+
+      <strong class="text-[#334155] text-[14px] font-bold">Apresente</strong>
+      <p class="mt-[3px] text-[#64748b] text-[12px] leading-[1.4]">Compartilhe seu projeto e suas conquistas.</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.journey-grid {
-  display: grid;
-  width: 100%;
-  max-width: 520px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.journey-card {
-  position: relative;
-  display: flex;
-  min-height: 132px;
-  flex-direction: column;
-  border: 1px solid #d7e5f7;
-  border-radius: 10px;
-  background: rgb(255 255 255 / 78%);
-  padding: 13px 16px 15px;
-}
-
 .journey-card:nth-child(1)::after,
 .journey-card:nth-child(3)::after {
   position: absolute;
@@ -81,42 +69,4 @@
   content: '';
 }
 
-.card-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.stage-icon {
-  display: flex;
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  background: #eaf2ff;
-  color: #2563eb;
-  font-size: 19px;
-}
-
-.stage-number {
-  color: #a5bad6;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .08em;
-}
-
-.journey-card strong {
-  color: #334155;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.journey-card p {
-  margin-top: 3px;
-  color: #64748b;
-  font-size: 12px;
-  line-height: 1.4;
-}
 </style>

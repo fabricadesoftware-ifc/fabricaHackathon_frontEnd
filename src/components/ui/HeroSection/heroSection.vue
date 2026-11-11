@@ -27,34 +27,34 @@
 </script>
 
 <template>
-  <section aria-labelledby="hero-title" class="home-hero">
-    <div class="hero-composition">
-      <div class="hero-copy">
-        <p class="hero-identification">Plataforma de Hackathons do IFC</p>
+  <section aria-labelledby="hero-title" class="home-hero @container/hero w-full min-w-0">
+    <div class="hero-composition grid-cols-[1.04fr_1fr] [@container_hero_(max-width:850px)]:grid-cols-1 [@container_hero_(420px<width<=850px)]:gap-7 [@container_hero_(420px<width<=850px)]:py-[1.75rem_2rem] [@container_hero_(max-width:420px)]:gap-6 [@container_hero_(max-width:420px)]:py-[1.25rem_1.5rem] grid items-center gap-8 py-[3rem_3.5rem]">
+      <div class="hero-copy relative min-w-0">
+        <p class="hero-identification [@container_hero_(max-width:420px)]:px-3 [@container_hero_(max-width:420px)]:text-[.75rem] inline-flex items-center min-h-[34px] p-[.4rem_.9rem] rounded-[999px] bg-[#eff4ff] text-[#1d4ed8] text-[.8125rem] leading-[1.4] font-medium">Plataforma de Hackathons do IFC</p>
 
-        <h1 id="hero-title">
-          <span v-for="line in title.split('\n')" :key="line" class="hero-title-line">{{ line }}</span>
-          <span class="hero-title-accent">no IFC.</span>
+        <h1 id="hero-title" class="mt-[1.6rem] text-[#0f172a] text-[clamp(2.5rem,4.55cqi,4.5rem)] font-black leading-[1.06] tracking-[-.035em] [@container_hero_(420px<width<=850px)]:text-[clamp(2.25rem,7cqi,3.75rem)] [@container_hero_(max-width:420px)]:mt-5 [@container_hero_(max-width:420px)]:text-[clamp(1.875rem,9cqi,2.5rem)]">
+          <span v-for="line in title.split('\n')" :key="line" class="hero-title-line block">{{ line }}</span>
+          <span class="hero-title-accent block text-[#2563eb]">no IFC.</span>
         </h1>
 
-        <p class="hero-description">{{ subtitle }}</p>
+        <p class="hero-description [@container_hero_(max-width:420px)]:mt-5 [@container_hero_(max-width:420px)]:text-[.9375rem] max-w-[48ch] mt-[1.75rem] text-[#475569] text-base leading-[1.65] text-pretty">{{ subtitle }}</p>
 
-        <div class="hero-actions">
-          <RouterLink class="hero-primary" to="/edicoes">
+        <div class="hero-actions [@container_hero_(max-width:420px)]:mt-5 flex flex-wrap items-center gap-3 mt-[1.75rem]">
+          <RouterLink class="hero-primary inline-flex items-center justify-center gap-3 min-h-12 px-[1.15rem] py-3 border-[1px] border-transparent rounded-lg text-[.875rem] leading-[1.5] font-medium transition-[background-color,border-color] duration-150 [@container_hero_(max-width:420px)]:flex-auto [@container_hero_(max-width:420px)]:px-[.9rem] [@container_hero_(max-width:420px)]:text-[.8125rem] [&:hover]:bg-[#1d4ed8] [&_.mdi]:text-[1.125rem] bg-[#2563eb] text-white" to="/edicoes">
             Explorar edições
             <span aria-hidden="true" class="mdi mdi-arrow-right" />
           </RouterLink>
 
-          <RouterLink class="hero-secondary" to="/explorar">
+          <RouterLink class="hero-secondary inline-flex items-center justify-center gap-3 min-h-12 px-[1.15rem] py-3 border-[1px] rounded-lg text-[.875rem] leading-[1.5] font-medium transition-[background-color,border-color] duration-150 [@container_hero_(max-width:420px)]:flex-auto [@container_hero_(max-width:420px)]:px-[.9rem] [@container_hero_(max-width:420px)]:text-[.8125rem] [&:hover]:bg-[#f8fafc] [&:hover]:border-[#94a3b8] border-[#cbd5e1] bg-[#fff] text-[#0f172a]" to="/explorar">
             Conhecer projetos
           </RouterLink>
         </div>
       </div>
 
-      <figure class="hero-visual">
+      <figure class="hero-visual [@container_hero_(max-width:850px)]:max-w-[600px] [@container_hero_(max-width:850px)]:justify-self-center min-w-0 w-full m-0">
         <svg
           :aria-labelledby="`${visualId}-title ${visualId}-description`"
-          class="hero-artwork"
+          class="hero-artwork block w-full h-auto overflow-visible"
           fill="none"
           role="img"
           viewBox="0 0 760 560"
@@ -105,7 +105,7 @@
               <rect fill="#EFF3F9" height="560" width="760" />
 
               <text
-                class="placeholder-label"
+                class="placeholder-label text-[17px]"
                 fill="#64748B"
                 text-anchor="middle"
                 x="400"
@@ -113,7 +113,7 @@
               >Espaço provisório</text>
 
               <text
-                class="placeholder-title"
+                class="placeholder-title text-[30px] font-semibold"
                 fill="#334155"
                 text-anchor="middle"
                 x="400"
@@ -121,7 +121,7 @@
               >IFC Campus Araquari</text>
 
               <text
-                class="placeholder-note"
+                class="placeholder-note text-[17px]"
                 fill="#64748B"
                 text-anchor="middle"
                 x="400"
@@ -139,29 +139,29 @@
           <!-- Um único elemento complementar, como no mockup. -->
           <path d="M573 365H731Q751 365 741 385L681 495Q669 517 643 517H506Q486 517 496 495L557 385Q567 365 573 365Z" fill="#2563EB" />
 
-          <text class="visual-caption" fill="white" x="573" y="413">
+          <text class="visual-caption text-[25px] font-medium" fill="white" x="573" y="413">
             <tspan x="573">Desenvolva</tspan>
             <tspan dy="27" x="573">Colabore</tspan>
             <tspan dy="27" x="573">Inove</tspan>
           </text>
         </svg>
 
-        <figcaption v-if="photo?.credit" class="hero-photo-credit">
+        <figcaption v-if="photo?.credit" class="hero-photo-credit [&_a]:underline [&_a]:underline-offset-2 mt-2 text-[#64748b] text-[.6875rem] leading-[1.5] text-right">
           Foto:
           <a v-if="photo.sourceUrl" :href="photo.sourceUrl" rel="noopener noreferrer" target="_blank">{{ photo.credit }}</a>
           <span v-else>{{ photo.credit }}</span>.
           <a v-if="photo.licenseUrl" :href="photo.licenseUrl" rel="noopener noreferrer" target="_blank">Condições de uso</a>.
         </figcaption>
 
-        <figcaption v-else-if="!photo" class="hero-photo-placeholder">
+        <figcaption v-else-if="!photo" class="hero-photo-placeholder [&_span]:text-[#64748b] mt-1 text-[#475569] text-xs leading-[1.5] text-center">
           Fotografia do IFC Campus Araquari<br>
           <span>Espaço provisório. Aguardando fotografia com uso autorizado.</span>
         </figcaption>
       </figure>
     </div>
 
-    <div class="hero-discovery">
-      <div class="discovery-search">
+    <div class="hero-discovery border-b-[1px] border-[#e2e8f0] [@container_hero_(max-width:650px)]:items-stretch [@container_hero_(max-width:650px)]:flex-col [@container_hero_(max-width:650px)]:gap-2 flex items-center gap-8 py-5">
+      <div class="discovery-search flex-1 min-w-0">
         <label class="sr-only" for="home-search">Buscar edições, projetos ou equipes</label>
 
         <SearchBar
@@ -173,63 +173,15 @@
         />
       </div>
 
-      <nav aria-label="Seções da Home" class="discovery-nav">
-        <a href="#inscricoes">Inscrições abertas <span aria-hidden="true" class="mdi mdi-arrow-down" /></a>
-        <a href="#projetos">Projetos das edições <span aria-hidden="true" class="mdi mdi-arrow-down" /></a>
+      <nav aria-label="Seções da Home" class="discovery-nav [@container_hero_(max-width:600px)]:gap-5 [@container_hero_(max-width:600px)]:flex-wrap flex gap-6">
+        <a class="inline-flex items-center gap-2 min-h-11 text-[#475569] text-[.8125rem] font-medium [&:hover]:text-[#1d4ed8] [@container_hero_(max-width:600px)]:text-[.75rem]" href="#inscricoes">Inscrições abertas <span aria-hidden="true" class="mdi mdi-arrow-down" /></a>
+        <a class="inline-flex items-center gap-2 min-h-11 text-[#475569] text-[.8125rem] font-medium [&:hover]:text-[#1d4ed8] [@container_hero_(max-width:600px)]:text-[.75rem]" href="#projetos">Projetos das edições <span aria-hidden="true" class="mdi mdi-arrow-down" /></a>
       </nav>
     </div>
   </section>
 </template>
 
 <style scoped>
-.home-hero { width: 100%; min-width: 0; container: hero / inline-size; }
-.hero-composition { display: grid; grid-template-columns: 1.04fr 1fr; align-items: center; gap: 2rem; padding-block: 3rem 3.5rem; }
-.hero-copy { position: relative; min-width: 0; }
-.hero-identification { display: inline-flex; align-items: center; min-height: 34px; padding: .4rem .9rem; border-radius: 999px; background: #eff4ff; color: #1d4ed8; font-size: .8125rem; line-height: 1.4; font-weight: 500; }
-h1 { margin-top: 1.6rem; color: #0f172a; font-size: clamp(2.5rem, 4.55cqi, 4.5rem); font-weight: 900; line-height: 1.06; letter-spacing: -.035em; }
-.hero-title-line, .hero-title-accent { display: block; }
-.hero-title-accent { color: #2563eb; }
-.hero-description { max-width: 48ch; margin-top: 1.75rem; color: #475569; font-size: 1rem; line-height: 1.65; text-wrap: pretty; }
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-top: 1.75rem; }
-.hero-primary, .hero-secondary { display: inline-flex; align-items: center; justify-content: center; gap: .75rem; min-height: 48px; padding: .75rem 1.15rem; border: 1px solid transparent; border-radius: 8px; font-size: .875rem; line-height: 1.5; font-weight: 500; transition: background-color 150ms, border-color 150ms; }
-.hero-primary { background: #2563eb; color: #fff; }
-.hero-primary:hover { background: #1d4ed8; }
-.hero-primary .mdi { font-size: 1.125rem; }
-.hero-secondary { border-color: #cbd5e1; background: #fff; color: #0f172a; }
-.hero-secondary:hover { background: #f8fafc; border-color: #94a3b8; }
-.hero-visual { min-width: 0; width: 100%; margin: 0; }
-.hero-artwork { display: block; width: 100%; height: auto; overflow: visible; }
-.placeholder-label { font-size: 17px; }
-.placeholder-title { font-size: 30px; font-weight: 600; }
-.placeholder-note { font-size: 17px; }
-.visual-caption { font-size: 25px; font-weight: 500; }
-.hero-photo-placeholder { margin-top: .25rem; color: #475569; font-size: .75rem; line-height: 1.5; text-align: center; }
-.hero-photo-placeholder span { color: #64748b; }
-.hero-photo-credit { margin-top: .5rem; color: #64748b; font-size: .6875rem; line-height: 1.5; text-align: right; }
-.hero-photo-credit a { text-decoration: underline; text-underline-offset: 2px; }
-.hero-discovery { display: flex; align-items: center; gap: 2rem; padding-block: 1.25rem; border-bottom: 1px solid #e2e8f0; }
-.discovery-search { min-width: 0; flex: 1; }
-.discovery-nav { display: flex; gap: 1.5rem; }
-.discovery-nav a { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; color: #475569; font-size: .8125rem; font-weight: 500; }
-.discovery-nav a:hover { color: #1d4ed8; }
+/* Preserve focus outlines above the existing global focus reset. */
 a:focus-visible, button:focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
-@container hero (max-width: 650px) { .hero-discovery { align-items: stretch; flex-direction: column; gap: .5rem; } }
-@container hero (max-width: 850px) {
-  .hero-composition { grid-template-columns: 1fr; gap: 1.75rem; padding-block: 1.75rem 2rem; }
-  h1 { font-size: clamp(2.25rem, 7cqi, 3.75rem); }
-  .hero-description { max-width: 48ch; }
-  .hero-visual { max-width: 600px; justify-self: center; }
-}
-@container hero (max-width: 420px) {
-  .hero-composition { gap: 1.5rem; padding-block: 1.25rem 1.5rem; }
-  .hero-identification { padding-inline: .75rem; font-size: .75rem; }
-  h1 { margin-top: 1.25rem; font-size: clamp(1.875rem, 9cqi, 2.5rem); }
-  .hero-description { margin-top: 1.25rem; font-size: .9375rem; }
-  .hero-actions { margin-top: 1.25rem; }
-  .hero-primary, .hero-secondary { flex: 1 1 auto; padding-inline: .9rem; font-size: .8125rem; }
-}
-@container hero (max-width: 600px) {
-  .discovery-nav { gap: 1.25rem; flex-wrap: wrap; }
-  .discovery-nav a { font-size: .75rem; }
-}
 </style>

@@ -159,9 +159,9 @@
 </script>
 
 <template>
-  <div class="evaluation-flow w-full min-w-0">
+  <div class="evaluation-flow pt-4 text-[#334155] w-full min-w-0 pt-0">
     <nav v-if="!isSubmitted" aria-label="Navegação de avaliações" class="mb-5">
-      <button class="evaluation-back" :disabled="isSubmitting" type="button" @click="voltar"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Projetos da edição</button>
+      <button class="evaluation-back inline-flex min-h-11 items-center gap-2 text-sm text-[#475569] [&:hover]:text-[#2563eb]" :disabled="isSubmitting" type="button" @click="voltar"><span aria-hidden="true" class="mdi mdi-arrow-left" /> Projetos da edição</button>
     </nav>
 
     <AsyncView :error="error" :lines="6" :loading="loading" @retry="run">
@@ -290,10 +290,6 @@
 <style scoped src="./evaluation-flow.css"></style>
 
 <style scoped>
-.evaluation-flow {
-  padding-top: 0;
-}
-
 .evaluation-summary :deep(.evaluation-secondary-action) {
   background: transparent !important;
   color: #64748b !important;

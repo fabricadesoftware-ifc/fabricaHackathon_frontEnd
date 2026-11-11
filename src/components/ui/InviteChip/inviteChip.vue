@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const props = defineProps<{
+  const props = defineProps<{
     email: string
     status: string
-}>()
-const emits = defineEmits<{
-    remove: any
-}>()
+  }>()
+  const emits = defineEmits<{
+    remove: []
+  }>()
 </script>
 
 <template>
@@ -13,16 +13,18 @@ const emits = defineEmits<{
     <span class="text-sm text-gray-900 truncate">
       {{ props.email }}
     </span>
+
     <span class="text-xs text-blue-600 lowercase shrink-0">
       {{ props.status }}
     </span>
+
     <button
+      aria-label="Remover participante"
+      class="shrink-0 flex items-center text-gray-500 hover:text-gray-900 transition-colors"
       type="button"
       @click="emits('remove')"
-      class="shrink-0 flex items-center text-gray-500 hover:text-gray-900 transition-colors"
-      aria-label="Remover participante"
     >
-      <span class="mdi mdi-close text-base"></span>
+      <span class="mdi mdi-close text-base" />
     </button>
   </div>
 </template>

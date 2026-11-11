@@ -1,206 +1,204 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+  import type {
+    MeuProjeto,
+    MinhaEquipe,
+    StatusEdicao,
+  } from '@/services/inscricoes'
+  import type { Edicao } from '@/types'
 
-import HomeSectionHeader from '@/components/layout/HomeSectionHeader/HomeSectionHeader.vue'
+  import { computed, watch } from 'vue'
+  import { RouterLink } from 'vue-router'
+  import HomeSectionHeader from '@/components/layout/HomeSectionHeader/HomeSectionHeader.vue'
+  import { AsyncView } from '@/components/ui/AsyncView'
+  import EventCard from '@/components/ui/eventCard.vue'
+  import ProjectCard from '@/components/ui/projectCard.vue'
+  import { useAsync } from '@/composables/useAsync'
+  import {
+    listarMeusProjetos,
+    listarMinhasEquipes,
+  } from '@/services/inscricoes'
+  import { useAuthStore } from '@/stores/auth'
+  import { edicaoParaCard } from '@/types'
 
-import EventCard from '@/components/ui/eventCard.vue'
-import ProjectCard from '@/components/ui/projectCard.vue'
-import { AsyncView } from '@/components/ui/AsyncView'
+  const props = defineProps<{
+    edicoes: Edicao[]
+  }>()
 
-import { useAsync } from '@/composables/useAsync'
-import { useAuthStore } from '@/stores/auth'
+  const authStore = useAuthStore()
 
-import {
-  listarMinhasEquipes,
-  listarMeusProjetos,
-} from '@/services/inscricoes'
+  // A área pessoal aparece somente para participantes.
+  const podeExibir = computed(() =>
+    authStore.isAuthenticated
+    && authStore.userRole === 'PARTICIPANTE',
+  )
 
-import type {
-  MeuProjeto,
-  MinhaEquipe,
-  StatusEdicao,
-} from '@/services/inscricoes'
+  // Dados pessoais do usuário autenticado.
+  const {
+    data,
+    loading,
+    error,
+    run,
+  } = useAsync(async () => {
+    const [equipes, projetos] = await Promise.all([
+      listarMinhasEquipes(),
+      listarMeusProjetos(),
+    ])
 
-import type { Edicao } from '@/types'
-import { edicaoParaCard } from '@/types'
-
-const props = defineProps<{
-  edicoes: Edicao[]
-}>()
-
-const authStore = useAuthStore()
-
-// A área pessoal aparece somente para participantes.
-const podeExibir = computed(() =>
-  authStore.isAuthenticated &&
-  authStore.userRole === 'PARTICIPANTE',
-)
-
-// Dados pessoais do usuário autenticado.
-const {
-  data,
-  loading,
-  error,
-  run,
-} = useAsync(async () => {
-  const [equipes, projetos] = await Promise.all([
-    listarMinhasEquipes(),
-    listarMeusProjetos(),
-  ])
-
-  return {
-    equipes,
-    projetos,
-  }
-}, false)
-
-// Carrega os dados quando o participante estiver autenticado.
-watch(
-  podeExibir,
-  (permitido) => {
-    if (permitido) {
-      void run()
-    } else {
-      data.value = null
+    return {
+      equipes,
+      projetos,
     }
-  },
-  { immediate: true },
-)
+  }, false)
 
-// Prioridade dos status.
-const prioridadeStatus: Record<StatusEdicao, number> = {
-  EM_ANDAMENTO: 0,
-  INSCRICAO: 1,
-  AVALIACAO: 2,
-  FINALIZADO: 3,
-}
+  // Carrega os dados quando o participante estiver autenticado.
+  watch(
+    podeExibir,
+    permitido => {
+      if (permitido) {
+        void run()
+      } else {
+        data.value = null
+      }
+    },
+    { immediate: true },
+  )
 
-// Identifica projetos que ainda não foram finalizados.
-const projetosAtivos = computed(() =>
-  (data.value?.projetos ?? []).filter(
-    projeto => projeto.edicao_status !== 'FINALIZADO',
-  ),
-)
+  // Prioridade dos status.
+  const prioridadeStatus: Record<StatusEdicao, number> = {
+    EM_ANDAMENTO: 0,
+    INSCRICAO: 1,
+    AVALIACAO: 2,
+    FINALIZADO: 3,
+  }
 
-// Controla a exibição do quadrado de projeto ativo.
-const temProjetoAtivo = computed(() =>
-  projetosAtivos.value.length > 0,
-)
+  // Identifica projetos que ainda não foram finalizados.
+  const projetosAtivos = computed(() =>
+    (data.value?.projetos ?? []).filter(
+      projeto => projeto.edicao_status !== 'FINALIZADO',
+    ),
+  )
 
-// Seleciona o projeto mais relevante.
-// Projetos ativos têm prioridade sobre os finalizados.
-const projetoDestaque = computed<MeuProjeto | null>(() => {
-  const projetos = data.value?.projetos ?? []
+  // Controla a exibição do quadrado de projeto ativo.
+  const temProjetoAtivo = computed(() =>
+    projetosAtivos.value.length > 0,
+  )
 
-  return [...projetos].sort(
-    (a, b) =>
-      prioridadeStatus[a.edicao_status] -
-      prioridadeStatus[b.edicao_status],
-  )[0] ?? null
-})
+  // Seleciona o projeto mais relevante.
+  // Projetos ativos têm prioridade sobre os finalizados.
+  const projetoDestaque = computed<MeuProjeto | null>(() => {
+    const projetos = data.value?.projetos ?? []
 
-// Seleciona a equipe vinculada ao projeto destacado.
-// Se não houver projeto, utiliza uma equipe existente.
-const equipeDestaque = computed<MinhaEquipe | null>(() => {
-  const equipes = data.value?.equipes ?? []
+    return projetos.reduce<MeuProjeto | null>((destaque, projeto) =>
+      !destaque || prioridadeStatus[projeto.edicao_status] < prioridadeStatus[destaque.edicao_status]
+        ? projeto
+        : destaque, null)
+  })
 
-  if (projetoDestaque.value) {
-    const equipeDoProjeto = equipes.find(
-      equipe =>
-        equipe.id === projetoDestaque.value?.equipe.id,
-    )
+  // Seleciona a equipe vinculada ao projeto destacado.
+  // Se não houver projeto, utiliza uma equipe existente.
+  const equipeDestaque = computed<MinhaEquipe | null>(() => {
+    const equipes = data.value?.equipes ?? []
 
-    if (equipeDoProjeto) {
-      return equipeDoProjeto
+    if (projetoDestaque.value) {
+      const equipeDoProjeto = equipes.find(
+        equipe =>
+          equipe.id === projetoDestaque.value?.equipe.id,
+      )
+
+      if (equipeDoProjeto) {
+        return equipeDoProjeto
+      }
     }
-  }
 
-  return [...equipes].sort(
-    (a, b) =>
-      prioridadeStatus[a.edicao_status] -
-      prioridadeStatus[b.edicao_status],
-  )[0] ?? null
-})
+    return equipes.reduce<MinhaEquipe | null>((destaque, equipe) =>
+      !destaque || prioridadeStatus[equipe.edicao_status] < prioridadeStatus[destaque.edicao_status]
+        ? equipe
+        : destaque, null)
+  })
 
-// Edição vinculada à equipe destacada.
-const edicaoDestaque = computed<Edicao | null>(() => {
-  const equipe = equipeDestaque.value
+  // Edição vinculada à equipe destacada.
+  const edicaoDestaque = computed<Edicao | null>(() => {
+    const equipe = equipeDestaque.value
 
-  if (!equipe) return null
+    if (!equipe) return null
 
-  return props.edicoes.find(
-    edicao => edicao.id === equipe.edicao,
-  ) ?? null
-})
+    return props.edicoes.find(
+      edicao => edicao.id === equipe.edicao,
+    ) ?? null
+  })
 
-// Edição vinculada ao projeto destacado.
-const edicaoDoProjeto = computed<Edicao | null>(() => {
-  const projeto = projetoDestaque.value
+  // Edição vinculada ao projeto destacado.
+  const edicaoDoProjeto = computed<Edicao | null>(() => {
+    const projeto = projetoDestaque.value
 
-  if (!projeto) return null
+    if (!projeto) return null
 
-  return props.edicoes.find(
-    edicao => edicao.id === projeto.edicao,
-  ) ?? null
-})
+    return props.edicoes.find(
+      edicao => edicao.id === projeto.edicao,
+    ) ?? null
+  })
 
-// Nome apresentado no status do projeto.
-const statusLabel = computed(() => {
-  switch (projetoDestaque.value?.edicao_status) {
-    case 'INSCRICAO':
-      return 'Inscrições abertas'
+  // Nome apresentado no status do projeto.
+  const statusLabel = computed(() => {
+    switch (projetoDestaque.value?.edicao_status) {
+      case 'INSCRICAO': {
+        return 'Inscrições abertas'
+      }
 
-    case 'EM_ANDAMENTO':
-      return 'Em andamento'
+      case 'EM_ANDAMENTO': {
+        return 'Em andamento'
+      }
 
-    case 'AVALIACAO':
-      return 'Em avaliação'
+      case 'AVALIACAO': {
+        return 'Em avaliação'
+      }
 
-    case 'FINALIZADO':
-      return 'Finalizado'
+      case 'FINALIZADO': {
+        return 'Finalizado'
+      }
 
-    default:
-      return 'Projeto'
-  }
-})
+      default: {
+        return 'Projeto'
+      }
+    }
+  })
 
-// Converte o projeto para o formato do ProjectCard.
-const itemProjeto = computed(() => {
-  const projeto = projetoDestaque.value
+  // Converte o projeto para o formato do ProjectCard.
+  const itemProjeto = computed(() => {
+    const projeto = projetoDestaque.value
 
-  if (!projeto) return null
+    if (!projeto) return null
 
-  const finalizado = projeto.edicao_status === 'FINALIZADO'
+    const finalizado = projeto.edicao_status === 'FINALIZADO'
 
-  return {
-    title: projeto.nome_projeto,
+    return {
+      title: projeto.nome_projeto,
 
-    description: projeto.descricao_projeto ?? '',
+      description: projeto.descricao_projeto ?? '',
 
-    team: projeto.equipe.nome_equipe,
+      team: projeto.equipe.nome_equipe,
 
-    event:
-      edicaoDoProjeto.value?.nome ??
-      `Edição ${projeto.edicao}`,
+      event:
+        edicaoDoProjeto.value?.nome
+        ?? `Edição ${projeto.edicao}`,
 
-    logo: projeto.logo_projeto ?? '',
+      logo: projeto.logo_projeto ?? '',
 
-    cover: edicaoDoProjeto.value?.imagem_capa ?? null,
+      cover: edicaoDoProjeto.value?.imagem_capa ?? null,
 
-    status: finalizado
-      ? 'finalizado' as const
-      : 'ativo' as const,
+      status: finalizado
+        ? 'finalizado' as const
+        : 'ativo' as const,
 
-    statusLabel: statusLabel.value,
+      statusLabel: statusLabel.value,
 
-    deployUrl: projeto.link_deploy_projeto,
+      deployUrl: projeto.link_deploy_projeto,
 
-    notaFinal: finalizado
-      ? projeto.nota_final
-      : null,
-  }
-})
+      notaFinal: finalizado
+        ? projeto.nota_final
+        : null,
+    }
+  })
 </script>
 
 <template>
@@ -209,15 +207,15 @@ const itemProjeto = computed(() => {
     aria-labelledby="titulo-minha-participacao"
   >
     <HomeSectionHeader
-      title="Minhas edições e projetos"
-      subtitle="Acompanhe as edições e os projetos de que você participa."
-      to="/projetos"
       link-text="Ver meus projetos"
+      subtitle="Acompanhe as edições e os projetos de que você participa."
+      title="Minhas edições e projetos"
+      to="/projetos"
     />
 
     <AsyncView
-      :loading="loading"
       :error="error"
+      :loading="loading"
       skeleton="cards"
       :skeleton-count="3"
       @retry="run"
@@ -229,26 +227,24 @@ const itemProjeto = computed(() => {
         <EventCard
           v-if="edicaoDestaque"
           v-bind="edicaoParaCard(edicaoDestaque)"
-          class="w-full max-w-[360px]"
         />
 
         <!-- Meu projeto -->
         <ProjectCard
           v-if="itemProjeto"
           v-bind="itemProjeto"
-          class="w-full max-w-[360px]"
         />
 
         <!-- Aparece apenas quando não existe projeto ativo -->
         <RouterLink
           v-if="!temProjetoAtivo"
-          to="/edicoes"
           class="group flex min-h-64 w-full max-w-[360px] flex-col items-center
                  justify-center rounded-lg border
                  border-dashed border-blue-200
                  bg-blue-50/30 px-6 py-8 text-center
                  transition-colors
                  hover:border-blue-400 hover:bg-blue-50"
+          to="/edicoes"
         >
           <!-- Ícone -->
           <span
@@ -258,8 +254,8 @@ const itemProjeto = computed(() => {
                    bg-white text-blue-600"
           >
             <span
-              class="mdi mdi-plus text-2xl"
               aria-hidden="true"
+              class="mdi mdi-plus text-2xl"
             />
           </span>
 
