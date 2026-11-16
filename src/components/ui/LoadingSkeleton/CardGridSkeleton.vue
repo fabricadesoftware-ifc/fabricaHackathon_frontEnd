@@ -1,13 +1,10 @@
 <script setup lang="ts">
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   withDefaults(defineProps<{ count?: number }>(), { count: 4 })
 </script>
 
 <template>
-  <div
-    aria-label="Carregando"
-    class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    role="status"
-  >
+  <CardGrid aria-label="Carregando" compact role="status">
     <div
       v-for="n in count"
       :key="n"
@@ -22,5 +19,5 @@
         <div class="h-5 w-12 rounded-full bg-app-surface-skeleton-neutral" />
       </div>
     </div>
-  </div>
+  </CardGrid>
 </template>

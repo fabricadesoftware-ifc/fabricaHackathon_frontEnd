@@ -22,7 +22,7 @@ Mantenha CSS próprio para transições com temporizações específicas, ilustr
 - `statusSelect.vue`: status de edições; variantes `card` e `evaluation` preservam suas apresentações específicas.
 - `AppButton`: variantes e posições de ícone existentes; `loading` desabilita o botão, mostra o loader do Vuetify e comunica `aria-busy`.
 - `FilterChipGroup`: filtros padrão ou variante `underline`, com seleção comunicada por `aria-pressed`.
-- `CardGrid`: a opção `compact` distribui os projetos automaticamente conforme a largura disponível.
+- `CardGrid`: centraliza as listagens com 20 px nos dois eixos e colunas de até 340 px (`--container-card`), alinhadas à esquerda. Aceita `items` de projetos ou um slot para cards de outros tipos. A quantidade de colunas acompanha a largura real do container e o gap, sem teto de quatro por padrão; `columns` limita apenas quando informado. `compact` permite colunas a partir de 280 px (300 px no padrão). As linhas incompletas mantêm a largura e o alinhamento das demais. Evite grades locais com `1fr` que deixem espaço extra após cards limitados em largura.
 - `useCardReveal`: estados de expansão por mouse, teclado e toque.
 - `resolveMediaUrl`: resolução de caminhos de mídia relativos, preservando URLs fornecidas pela API.
 

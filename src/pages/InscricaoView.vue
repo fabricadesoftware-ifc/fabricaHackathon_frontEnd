@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import AppPagination from '@/components/layout/AppPagination/AppPagination.vue'
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import eventCard from '@/components/ui/eventCard.vue'
   import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
@@ -60,9 +61,9 @@
     >
       <ResultsBar :end="endIndex" :start="cardsFiltrados.length > 0 ? startIndex + 1 : 0" :total="cardsFiltrados.length" />
 
-      <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
+      <CardGrid class="mt-4" compact>
         <eventCard v-for="h in paginadas" :key="h.id" v-bind="h" />
-      </div>
+      </CardGrid>
 
       <AppPagination v-model="currentPage" :length="totalPages" />
     </AsyncView>

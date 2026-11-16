@@ -8,6 +8,7 @@
 
     <CardGrid
       v-if="props.items"
+      compact
       :items="props.items"
     />
   </div>

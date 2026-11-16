@@ -5,9 +5,9 @@
     StatusEdicao,
   } from '@/services/inscricoes'
   import type { Edicao } from '@/types'
-
   import { computed, watch } from 'vue'
   import { RouterLink } from 'vue-router'
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import HomeSectionHeader from '@/components/layout/HomeSectionHeader/HomeSectionHeader.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import EventCard from '@/components/ui/eventCard.vue'
@@ -220,9 +220,7 @@
       :skeleton-count="3"
       @retry="run"
     >
-      <div
-        class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
-      >
+      <CardGrid compact>
         <!-- Minha edição -->
         <EventCard
           v-if="edicaoDestaque"
@@ -287,7 +285,7 @@
             Explorar edições
           </span>
         </RouterLink>
-      </div>
+      </CardGrid>
     </AsyncView>
   </section>
 </template>

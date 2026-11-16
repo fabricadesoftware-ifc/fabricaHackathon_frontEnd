@@ -3,6 +3,7 @@
   import { ref } from 'vue'
   import { useTheme } from 'vuetify'
   import AppHeader from '@/components/layout/AppHeader/AppHeader.vue'
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import EditProjectModal from '@/components/layout/EditProjectModal/EditProjectModal.vue'
   import UnsavedChangesBar from '@/components/layout/UnsavedChangesBar/UnsavedChangesBar.vue'
   import AppButton from '@/components/ui/AppButton/AppButton.vue'
@@ -32,6 +33,14 @@
   const legacyTheme = useLegacyTheme()
   const vuetifyTheme = useTheme()
   const dialog = ref(false)
+  const gridQuery = new URLSearchParams(location.search)
+  const gridCount = Number(gridQuery.get('count') ?? 7)
+  const gridKind = gridQuery.get('kind') ?? 'events'
+  const gridColumns = gridQuery.get('columns') === '3' ? 3 : (gridQuery.get('columns') === '4' ? 4 : undefined)
+  const gridItems = Array.from({ length: gridCount }, (_, id) => ({
+    id, title: `Projeto ${id + 1}`, description: 'Descrição do projeto para conferir a distribuição dos cards.',
+    team: 'Equipe IFC', event: 'Edição de teste', logo: '', status: 'ativo' as const, statusLabel: 'Em andamento',
+  }))
   const loading = ref(false)
   const selected = ref('pending')
   const bio = ref('Descrição inicial')
@@ -47,7 +56,44 @@
     :data-theme-state="selectedTheme"
     :data-vuetify-theme="vuetifyTheme.name.value"
   >
-    <template v-if="showcase === 'shared'">
+    <template v-if="showcase === 'grids'">
+      <section data-grid-fixture>
+        <CardGrid v-if="gridKind === 'legacy'" :columns="gridColumns" compact :items="gridItems" />
+        <CardGridSkeleton v-else-if="gridKind === 'skeleton'" :count="gridCount" />
+
+        <CardGrid v-else :columns="gridColumns" compact>
+          <template v-for="(item, index) in gridItems" :key="item.id">
+            <EventCard
+              v-if="gridKind === 'events'"
+              :id="index + 1"
+              end-date="14/11/2026"
+              image=""
+              location="Campus IFC"
+              start-date="11/11/2026"
+              status="inscricoes"
+              status-label="Inscrições abertas"
+              :tags="[]"
+              :teams-counter="4"
+              title="Edição de teste"
+            />
+
+            <ProjectCard v-else-if="gridKind === 'projects'" v-bind="item" />
+
+            <EvaluationCard
+              v-else
+              :current="2"
+              deadline="14/11/2026"
+              image=""
+              status="avaliacao"
+              title="Edição de avaliação"
+              :total="5"
+            />
+          </template>
+        </CardGrid>
+      </section>
+    </template>
+
+    <template v-else-if="showcase === 'shared'">
       <div class="mb-6 border-b border-app-border-default" data-testid="filters">
         <FilterChipGroup v-model="selected" :options="filters" variant="underline" />
       </div>

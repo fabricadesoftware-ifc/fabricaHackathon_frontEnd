@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue'
   import AppPagination from '@/components/layout/AppPagination/AppPagination.vue'
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import EditProjectModal from '@/components/layout/EditProjectModal/EditProjectModal.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
@@ -277,7 +278,7 @@
     >
       <ResultsBar :end="endIndex" label="projeto(s)" :start="total ? startIndex + 1 : 0" :total="total" />
 
-      <div class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
+      <CardGrid class="mt-4" compact>
         <ProjectCard
           v-for="projeto in itens"
           :key="projeto.id"
@@ -285,7 +286,7 @@
 
           @edit="abrirEdicao(projeto.id)"
         />
-      </div>
+      </CardGrid>
 
       <AppPagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" />
     </AsyncView>

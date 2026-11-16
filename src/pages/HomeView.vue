@@ -238,8 +238,8 @@
       />
 
       <div
-        class="home-editions grid gap-10"
-        :class="{ '[@container_home_(min-width:850px)]:grid-cols-2 [@container_home_(min-width:850px)]:gap-y-0 [@container_home_(min-width:850px)]:[&>section]:grid [@container_home_(min-width:850px)]:[&>section]:grid-rows-subgrid [@container_home_(min-width:850px)]:[&>section]:row-span-2': !loading && !error && edicoesAbertas.length === 1 && edicoesDestaque.length === 1 }"
+        class="home-editions grid gap-x-5 gap-y-10"
+        :class="{ '[@container_home_(min-width:850px)]:grid-cols-[repeat(2,minmax(0,var(--container-card)))] [@container_home_(min-width:850px)]:gap-y-0 [@container_home_(min-width:850px)]:[&>section]:grid [@container_home_(min-width:850px)]:[&>section]:grid-rows-subgrid [@container_home_(min-width:850px)]:[&>section]:row-span-2': !loading && !error && edicoesAbertas.length === 1 && edicoesDestaque.length === 1 }"
       >
         <!-- ================================== -->
         <!-- INSCRIÇÕES ABERTAS                 -->
@@ -248,6 +248,7 @@
         <section id="inscricoes" aria-label="Inscrições abertas">
 
           <HomeSectionHeader
+            class="flex-wrap"
             link-text="Ver todas as edições"
             subtitle="Encontre uma edição para participar com sua equipe."
             title="Inscrições abertas"
@@ -271,16 +272,14 @@
             :skeleton-count="3"
             @retry="run"
           >
-            <div
-              class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
-            >
+            <CardGrid compact>
               <EventCard
                 v-for="edicao in edicoesAbertas"
                 :key="edicao.id"
                 v-bind="edicao"
                 class="w-full"
               />
-            </div>
+            </CardGrid>
           </AsyncView>
 
         </section>
@@ -295,6 +294,7 @@
         >
 
           <HomeSectionHeader
+            class="flex-wrap"
             link-text="Ver todas as edições"
             subtitle="Acompanhe os hackathons em andamento e outras edições."
             title="Edições em destaque"
@@ -314,16 +314,14 @@
             :skeleton-count="3"
             @retry="run"
           >
-            <div
-              class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5"
-            >
+            <CardGrid compact>
               <EventCard
                 v-for="edicao in edicoesDestaque"
                 :key="edicao.id"
                 v-bind="edicao"
                 class="w-full"
               />
-            </div>
+            </CardGrid>
           </AsyncView>
 
         </section>

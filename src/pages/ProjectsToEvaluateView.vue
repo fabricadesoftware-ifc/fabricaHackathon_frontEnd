@@ -124,7 +124,7 @@
           Não há equipes cadastradas nesta edição.
         </p>
 
-        <CardGrid v-else :items="equipesSomenteLeitura" />
+        <CardGrid v-else compact :items="equipesSomenteLeitura" />
       </template>
 
       <!-- Avaliador -->

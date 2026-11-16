@@ -37,8 +37,8 @@ async function evaluate (expression: string) {
   assert.equal(result.exceptionDetails, undefined, JSON.stringify(result.exceptionDetails))
   return result.result.value
 }
-async function navigate (showcase: string) {
-  await call('Page.navigate', { url: `${preview}?case=${showcase}` })
+async function navigate (showcase: string, suffix = '') {
+  await call('Page.navigate', { url: `${preview}?case=${showcase}${suffix}` })
   let mounted = false
   for (let attempt = 0; attempt < 100; attempt++) {
     await new Promise(resolve => setTimeout(resolve, 100))
@@ -127,6 +127,9 @@ try {
       await navigate('home')
       assert.ok(await evaluate(`document.querySelectorAll('.home-editions .edition-card').length===2`), 'home fixture exercises both edition sections')
       assert.ok(await evaluate(String.raw`(()=>{const grid=document.querySelector('.home-editions');const columns=getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/);return columns.length===${width >= 1000 ? 2 : 1}})()`), 'home paired sections keep their responsive columns')
+      if (width >= 1000) {
+        assert.ok(await evaluate(`(()=>{const cards=[...document.querySelectorAll('.home-editions .edition-card')].map(c=>c.getBoundingClientRect());return Math.abs(cards[1].left-cards[0].right-20)<1&&Math.abs(cards[0].top-cards[1].top)<1})()`), 'paired Home cards align with a real 20px gap')
+      }
       console.log(`PASS browser: ${theme} ${width}px — filters, loading, bio, keyboard, cards and containers`)
     }
   }
@@ -162,6 +165,30 @@ try {
       }
     }
     console.log(`PASS browser: ${width}px — theme keyboard toggle, persistence, providers, menus, dialogs and authentication forms`)
+  }
+  for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+    await call('Emulation.setDeviceMetricsOverride', { width, height: 900, deviceScaleFactor: 1, mobile: width < 500 })
+    for (const kind of ['events', 'projects', 'evaluations', 'legacy', 'skeleton']) {
+      for (const count of [1, 2, 3, 7]) {
+        await navigate('grids', `&kind=${kind}&count=${count}`)
+        assert.ok(await evaluate(String.raw`(()=>{const grid=document.querySelector('[data-grid-fixture] .card-grid');const style=getComputedStyle(grid);const cards=[...grid.children].map(c=>c.getBoundingClientRect());return cards.length===${count}&&style.columnGap==='20px'&&style.rowGap==='20px'&&style.gridTemplateColumns.trim().split(/\s+/).length===Math.max(1,Math.floor((grid.getBoundingClientRect().width+20)/300))&&cards.every((c,i)=>c.width<=340.5&&c.right<=grid.getBoundingClientRect().right+.5&&(!i||(Math.abs(c.y-cards[i-1].y)<1?Math.abs(c.left-cards[i-1].right-20)<1:Math.abs(c.left-cards[0].left)<1&&Math.abs(c.top-cards[i-1].bottom-20)<1)))&&document.documentElement.scrollWidth<=innerWidth})()`), `${kind} ${count} cards at ${width}px keep a real 20px gap and fit their container`)
+        if (count === 7 && [390, 768, 1440].includes(width) && ['events', 'projects', 'evaluations'].includes(kind)) {
+          const screenshot = await call<{ data: string }>('Page.captureScreenshot', { captureBeyondViewport: true })
+          await writeFile(`/tmp/hackifc-grid-${kind}-${width}.png`, Buffer.from(screenshot.data, 'base64'))
+        }
+      }
+    }
+    for (const limit of [3, 4]) {
+      await navigate('grids', `&kind=projects&count=7&columns=${limit}`)
+      assert.ok(await evaluate(String.raw`(()=>{const grid=document.querySelector('.card-grid');return getComputedStyle(grid).gridTemplateColumns.trim().split(/\s+/).length===Math.min(${limit},Math.max(1,Math.floor((grid.getBoundingClientRect().width+20)/300)))})()`), 'an explicit column limit never forces undersized columns')
+    }
+    if (width === 1440) {
+      await navigate('grids', '&kind=projects&count=7')
+      await evaluate(`document.querySelector('[data-grid-fixture]').style.width='620px'`)
+      await new Promise(resolve => setTimeout(resolve, 100))
+      assert.equal(await evaluate(String.raw`getComputedStyle(document.querySelector('.card-grid')).gridTemplateColumns.trim().split(/\s+/).length`), 2, 'container resizing updates columns without a viewport change')
+    }
+    console.log(`PASS card grids: ${width}px — 1, 2, 3 and 7 cards, column limits and bounded responsive widths`)
   }
   // Leave the isolated browser in the default theme.
   await evaluate('localStorage.removeItem(\'hackifc.theme\')')

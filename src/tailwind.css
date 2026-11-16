@@ -34,6 +34,7 @@ button:not(:disabled),
 
 /* Semantic Tailwind API; component colors follow the selected palette. */
 @theme inline {
+  --container-card: 340px;
   --color-app-action: var(--app-action);
   --color-app-action-hover: var(--app-action-hover);
   --color-app-action-indicator: var(--app-action-indicator);

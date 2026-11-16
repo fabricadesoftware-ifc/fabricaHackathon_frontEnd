@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed, ref } from 'vue'
   import { useRouter } from 'vue-router'
-
+  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
   import SearchFilterBar from '@/components/ui/SearchFilterBar'
@@ -123,7 +123,7 @@
       skeleton="cards"
       @retry="run"
     >
-      <div class="mt-5 grid grid-cols-[repeat(auto-fill,minmax(min(100%,300px),1fr))] gap-4">
+      <CardGrid class="mt-5" compact>
         <EvaluationCard
           v-for="edition in cards"
           :key="edition.id"
@@ -139,7 +139,7 @@
           :total="edition.total"
           @click="navigateToProjects(edition.id)"
         />
-      </div>
+      </CardGrid>
     </AsyncView>
   </div>
 </template>
