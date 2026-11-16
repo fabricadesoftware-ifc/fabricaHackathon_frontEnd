@@ -6,7 +6,7 @@
   import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
   import SearchFilterBar from '@/components/ui/SearchFilterBar'
   import { useAsync } from '@/composables/useAsync'
-  import { listarMinhasAvaliacoes, listarTodasEdicoes } from '@/services'
+  import { listarMinhasAvaliacoes, listarTodasEdicoes, listarTodosProjetos } from '@/services'
   import { useAuthStore } from '@/stores/auth'
   import { edicaoParaCard, mapearStatus } from '@/types'
   import { agruparPorEdicao } from '@/utils/avaliacao'
@@ -18,11 +18,17 @@
   const isAvaliador = computed(() => auth.userRole === 'AVALIADOR')
 
   const { data, loading, error, run } = useAsync(async () => {
-    const [edicoes, avaliacoes] = await Promise.all([
+    const [edicoes, avaliacoes, projetos] = await Promise.all([
       listarTodasEdicoes(),
       isAvaliador.value ? listarMinhasAvaliacoes() : Promise.resolve([]),
+      // A contagem é complementar: falhas não impedem o acesso às avaliações.
+      listarTodosProjetos().catch(() => null),
     ])
-    return { edicoes, avaliacoes }
+    const projetosPorEdicao = new Map<number, number>()
+    for (const projeto of projetos ?? []) {
+      projetosPorEdicao.set(projeto.edicao, (projetosPorEdicao.get(projeto.edicao) ?? 0) + 1)
+    }
+    return { edicoes, avaliacoes, projetosPorEdicao: projetos === null ? null : projetosPorEdicao }
   })
 
   // Filtros.
@@ -50,6 +56,7 @@
   // Edições exibidas, já com o progresso do avaliador.
   const cards = computed(() => {
     const edicoes = data.value?.edicoes ?? []
+    const projetosPorEdicao = data.value?.projetosPorEdicao
     const progresso = new Map(agruparPorEdicao(data.value?.avaliacoes ?? []).map(p => [p.id, p]))
     const termo = searchQuery.value.trim().toLowerCase()
 
@@ -68,6 +75,9 @@
           title: card.title,
           status: card.status,
           deadline: card.endDate,
+          startDate: card.startDate,
+          location: card.location,
+          projectCount: projetosPorEdicao ? projetosPorEdicao.get(e.id) ?? 0 : undefined,
           current: p?.avaliados,
           total: p?.total,
         }
@@ -120,7 +130,10 @@
           :current="edition.current"
           :deadline="edition.deadline"
           :image="edition.image"
+          :location="edition.location"
           progress-label="projetos avaliados"
+          :project-count="edition.projectCount"
+          :start-date="edition.startDate"
           :status="edition.status"
           :title="edition.title"
           :total="edition.total"

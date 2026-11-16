@@ -18,8 +18,18 @@ const editions = [
 }))
 window.fetch = async input => {
   const url = String(input instanceof Request ? input.url : input)
-  if (new URLSearchParams(location.search).get('case') === 'home') {
-    const results = url.includes('/edicoes/') ? editions : []
+  const showcase = new URLSearchParams(location.search).get('case')
+  if (showcase === 'home' || showcase === 'evaluations-list' || showcase === 'evaluations-count-unavailable') {
+    if (showcase === 'evaluations-count-unavailable' && url.includes('/projetos/')) {
+      return Response.json({ detail: 'Contagem indisponível' }, { status: 503 })
+    }
+    // Edition 1 has two registered projects, edition 2 has one.
+    const projects = showcase === 'home'
+      ? []
+      : [
+          { id: 10, edicao: 1 }, { id: 11, edicao: 1 }, { id: 12, edicao: 2 },
+        ]
+    const results = url.includes('/edicoes/') ? editions : projects
     return Response.json({ results, count: results.length, next: null, previous: null }, {
       headers: { 'Content-Type': 'application/json' },
     })

@@ -6,6 +6,7 @@
   import EditProjectModal from '@/components/layout/EditProjectModal/EditProjectModal.vue'
   import UnsavedChangesBar from '@/components/layout/UnsavedChangesBar/UnsavedChangesBar.vue'
   import AppButton from '@/components/ui/AppButton/AppButton.vue'
+  import EvaluationCard from '@/components/ui/EvaluationCard/EvaluationCard.vue'
   import EventCard from '@/components/ui/eventCard.vue'
   import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
   import CardGridSkeleton from '@/components/ui/LoadingSkeleton/CardGridSkeleton.vue'
@@ -16,6 +17,7 @@
   import StatusEdition from '@/components/ui/statusSelect.vue'
   import ThemeToggle from '@/components/ui/ThemeToggle.vue'
   import Configuracoes from '@/pages/ConfiguracoesView.vue'
+  import EvaluationsList from '@/pages/EvaluationsListView.vue'
   import EventView from '@/pages/EventView.vue'
   import Home from '@/pages/HomeView.vue'
   import LoginView from '@/pages/LoginView.vue'
@@ -106,6 +108,40 @@
       </div>
 
       <p data-testid="edits">{{ edits }}</p>
+    </template>
+
+    <template v-else-if="showcase === 'evaluations-list' || showcase === 'evaluations-count-unavailable'">
+      <EvaluationsList />
+    </template>
+
+    <template v-else-if="showcase === 'evaluations'">
+      <div class="grid max-w-[720px] grid-cols-1 items-start gap-6 sm:grid-cols-2">
+        <EvaluationCard
+          :current="2"
+          data-testid="evaluation-card"
+          deadline="14/11/2026"
+          image="/images/fabricaHackathonThumb.png"
+          location="Campus Videira · IFC"
+          :project-count="8"
+          start-date="11/11/2026"
+          status="avaliacao"
+          title="Hackathon Avaliação 2023"
+          :total="5"
+          @click="edits++"
+        />
+
+        <EvaluationCard
+          data-testid="evaluation-readonly"
+          deadline="14/11/2026"
+          image=""
+          location="Localização com um nome extenso para conferir a quebra de linhas no card de avaliação"
+          status="finalizado"
+          title="Edição com um título bastante extenso para conferir o comportamento responsivo"
+          @click="edits++"
+        />
+      </div>
+
+      <p data-testid="evaluation-clicks">{{ edits }}</p>
     </template>
 
     <template v-else-if="showcase === 'logos'">
