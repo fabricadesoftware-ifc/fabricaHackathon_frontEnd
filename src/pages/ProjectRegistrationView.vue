@@ -2,6 +2,7 @@
   import { computed, onUnmounted, reactive, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
+  import { AsyncView } from '@/components/ui/AsyncView'
   import PageHeader from '@/components/ui/PageHeader/PageHeader.vue'
   import RegistrationReviewCard from '@/components/ui/RegistrationReviewCard/RegistrationReviewCard.vue'
   import SuccessState from '@/components/ui/SucessState/sucessState.vue'
@@ -49,7 +50,7 @@
   })
 
   // Busca os dados da edição no backend
-  const { data: edicao } = useAsync(() => {
+  const { data: edicao, loading, error, run } = useAsync(() => {
     if (edicaoId.value === null) {
       return Promise.reject(new Error('Edição inválida.'))
     }
@@ -311,74 +312,76 @@
       <span>{{ submitError }}</span>
     </div>
 
-    <div
-      :aria-busy="isSubmitting"
-      class="relative mt-6"
-    >
-
-      <!-- Etapa 1: Cadastro da equipe -->
-      <TeamRegistrationCard
-        v-if="currentStep === 0"
-        v-model:participants="form.participants"
-        v-model:project-name="form.projectName"
-        v-model:team-name="form.teamName"
-        :edition-location="edicao?.local"
-        :edition-name="edicao?.nome"
-        :logo-preview="logoPreview"
-        :max-participants="TEAM_LIMITS.max"
-        :min-participants="TEAM_LIMITS.min"
-        :owner-email="ownerEmail"
-        :owner-label="ownerLabel"
-        @back="onTeamBack"
-        @continue="onTeamContinue"
-        @update:logo="logoFile = $event"
-      />
-
-      <!-- Etapa 2: Revisão da inscrição -->
-      <RegistrationReviewCard
-        v-else-if="currentStep === 1"
-        :edition="edition"
-        :edition-location="edicao?.local"
-        :image-url="logoPreview"
-        :max-participants="TEAM_LIMITS.max"
-        :min-participants="TEAM_LIMITS.min"
-        :owner-email="ownerEmail"
-        :owner-name="ownerLabel"
-        :participants="form.participants"
-        :project-name="form.projectName"
-        :submitting="isSubmitting"
-        :team-name="form.teamName"
-        @back="goToStep(0)"
-        @confirm="onConfirm"
-      />
-
-      <!-- Etapa 3: Inscrição concluída -->
+    <AsyncView :error="error" :lines="8" :loading="loading" @retry="run">
       <div
-        v-else
-        class="flex min-h-[45vh] flex-col items-center justify-center rounded-lg border border-app-border-default bg-app-surface p-6 sm:p-10"
+        :aria-busy="isSubmitting"
+        class="relative mt-6"
       >
-        <SuccessState
-          button-label="Ver meus projetos"
-          :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você pode completar e editar as informações do projeto.`"
-          title="Inscrição confirmada!"
-          @click="onFinish"
+
+        <!-- Etapa 1: Cadastro da equipe -->
+        <TeamRegistrationCard
+          v-if="currentStep === 0"
+          v-model:participants="form.participants"
+          v-model:project-name="form.projectName"
+          v-model:team-name="form.teamName"
+          :edition-location="edicao?.local"
+          :edition-name="edicao?.nome"
+          :logo-preview="logoPreview"
+          :max-participants="TEAM_LIMITS.max"
+          :min-participants="TEAM_LIMITS.min"
+          :owner-email="ownerEmail"
+          :owner-label="ownerLabel"
+          @back="onTeamBack"
+          @continue="onTeamContinue"
+          @update:logo="logoFile = $event"
         />
 
-        <p v-if="logoWarning" class="mt-4 rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800" role="status">{{ logoWarning }}</p>
-      </div>
+        <!-- Etapa 2: Revisão da inscrição -->
+        <RegistrationReviewCard
+          v-else-if="currentStep === 1"
+          :edition="edition"
+          :edition-location="edicao?.local"
+          :image-url="logoPreview"
+          :max-participants="TEAM_LIMITS.max"
+          :min-participants="TEAM_LIMITS.min"
+          :owner-email="ownerEmail"
+          :owner-name="ownerLabel"
+          :participants="form.participants"
+          :project-name="form.projectName"
+          :submitting="isSubmitting"
+          :team-name="form.teamName"
+          @back="goToStep(0)"
+          @confirm="onConfirm"
+        />
 
-      <!-- Carregamento durante o cadastro -->
-      <div
-        v-if="isSubmitting"
-        class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-app-surface/70"
-        role="status"
-      >
-        <span class="flex items-center gap-2 text-sm font-medium text-app-text-body-strong-neutral">
-          <span class="mdi mdi-loading mdi-spin text-xl text-app-link" />
-          Enviando inscrição...
-        </span>
-      </div>
+        <!-- Etapa 3: Inscrição concluída -->
+        <div
+          v-else
+          class="flex min-h-[45vh] flex-col items-center justify-center rounded-lg border border-app-border-default bg-app-surface p-6 sm:p-10"
+        >
+          <SuccessState
+            button-label="Ver meus projetos"
+            :description="`Sua equipe foi inscrita em ${edition}. Em Meus projetos você pode completar e editar as informações do projeto.`"
+            title="Inscrição confirmada!"
+            @click="onFinish"
+          />
 
-    </div>
+          <p v-if="logoWarning" class="mt-4 rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800" role="status">{{ logoWarning }}</p>
+        </div>
+
+        <!-- Carregamento durante o cadastro -->
+        <div
+          v-if="isSubmitting"
+          class="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-app-surface/70"
+          role="status"
+        >
+          <span class="flex items-center gap-2 text-sm font-medium text-app-text-body-strong-neutral">
+            <span class="mdi mdi-loading mdi-spin text-xl text-app-link" />
+            Enviando inscrição...
+          </span>
+        </div>
+
+      </div>
+    </AsyncView>
   </div>
 </template>

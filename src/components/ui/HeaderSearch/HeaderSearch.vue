@@ -21,7 +21,7 @@
 
 <template>
   <form
-    class="header-search flex h-10 items-center overflow-hidden rounded-full border-[1px] border-transparent bg-app-surface transition-all duration-300 [&:hover:not(:focus-within)]:border-app-line-neutral [&:hover:not(:focus-within)]:shadow-app-soft focus-within:border-app-brand-accent focus-within:shadow-app-search-focus [&:is(:hover,:focus-within)_input]:w-26 [&:is(:hover,:focus-within)_input]:pr-3 sm:[&:is(:hover,:focus-within)_input]:w-56"
+    class="header-search group/search flex h-10 items-center overflow-hidden rounded-full border-[1px] border-transparent bg-app-surface transition-all duration-300 focus-within:w-23 focus-within:shrink-0 sm:focus-within:w-66 [&:hover:not(:focus-within)]:border-app-line-neutral [&:hover:not(:focus-within)]:shadow-app-soft focus-within:border-app-brand-accent focus-within:shadow-app-search-focus"
     role="search"
     @submit.prevent="pesquisar"
   >
@@ -38,7 +38,7 @@
       ref="input"
       v-model="termo"
       aria-label="Pesquisar projetos"
-      class="header-search-input [&::-webkit-search-cancel-button]:hidden w-0 bg-transparent text-sm text-app-text-strong-neutral outline-none placeholder:text-app-text-muted-neutral transition-all duration-300 p-0 min-w-0"
+      class="header-search-input [&::-webkit-search-cancel-button]:hidden [width:0] min-w-0 flex-none bg-transparent p-0 text-sm text-app-text-strong-neutral outline-none placeholder:text-app-text-muted-neutral transition-all duration-300 group-hover/search:w-12 group-hover/search:pr-2 group-focus-within/search:w-12 group-focus-within/search:pr-2 sm:group-hover/search:w-56 sm:group-hover/search:pr-3 sm:group-focus-within/search:w-56 sm:group-focus-within/search:pr-3"
       placeholder="Pesquisar"
       type="search"
     >

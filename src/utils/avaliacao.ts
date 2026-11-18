@@ -1,5 +1,10 @@
 import type { MinhaAvaliacao } from '@/types'
 
+/** Exibe apenas projetos das edições que estão na etapa de avaliação. */
+export function avaliacoesEmAndamento (itens: MinhaAvaliacao[]): MinhaAvaliacao[] {
+  return itens.filter(item => item.edicao_status === 'AVALIACAO')
+}
+
 /** Média das notas já lançadas (0 se nenhuma). */
 export function mediaDasNotas (a: MinhaAvaliacao): number {
   const notas = a.criterios_avaliados.map(c => Number(c.nota))

@@ -13,7 +13,7 @@ export interface CriterioPendente {
   criterio: string
 }
 
-/** Um item de GET /me/avaliacoes/ (um por projeto das edições do avaliador). */
+/** Um item de GET /me/avaliacoes/ (um por projeto das edições em avaliação do avaliador). */
 export interface MinhaAvaliacao {
   edicao: number
   edicao_nome: string

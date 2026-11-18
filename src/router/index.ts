@@ -1,5 +1,6 @@
 import type { TipoUsuario } from '@/types/usuario'
 import { createRouter, createWebHistory } from 'vue-router'
+import { startNavigationLoading } from '@/composables/useNavigationLoading'
 import ConfiguracoesView from '@/pages/ConfiguracoesView.vue'
 import EdicoesView from '@/pages/EdicoesView.vue'
 import EquipesView from '@/pages/EquipesView.vue'
@@ -29,68 +30,74 @@ const router = createRouter({
     {
       path: '/home',
       component: HomeView,
+      meta: { title: 'Home' },
     },
     {
       path: '/edicoes',
       component: EdicoesView,
+      meta: { title: 'Edições' },
     },
     {
       path: '/edicoes/:id',
       name: 'edicoes',
       component: EventView,
+      meta: { title: 'Edição' },
     },
     {
       path: '/explorar',
       component: ExplorarView,
+      meta: { title: 'Explorar projetos' },
     },
     {
       path: '/projetos',
       component: MyProjectsView,
-      meta: { requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
+      meta: { title: 'Meus projetos', requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
     },
     {
       path: '/equipes',
       component: EquipesView,
-      meta: { requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
+      meta: { title: 'Equipes', requiresAuth: true, roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'] },
     },
     {
       path: '/projetos/:projetoId/pre-avaliacao',
       name: 'pre-avaliacao',
       component: PreAvaliacaoView,
-      meta: { requiresAuth: true },
+      meta: { title: 'Pré-avaliação', requiresAuth: true },
     },
     {
       path: '/inscricao',
       component: InscricaoView,
-      meta: { requiresAuth: true, roles: ['PARTICIPANTE'] },
+      meta: { title: 'Inscrição', requiresAuth: true, roles: ['PARTICIPANTE'] },
     },
     {
       path: '/configuracoes',
       component: ConfiguracoesView,
-      meta: { requiresAuth: true },
+      meta: { title: 'Configurações', requiresAuth: true },
     },
     {
       path: '/avaliacao',
       name: 'avaliacoes',
       component: EvaluationsListView,
       meta: {
+        title: 'Avaliações',
         requiresAuth: true,
-        roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
+        roles: ['AVALIADOR'],
       },
     },
     {
       path: '/novo',
       name: 'projeto-novo',
       component: ProjectRegistrationView,
-      meta: { requiresAuth: true, roles: ['PARTICIPANTE'] },
+      meta: { title: 'Novo projeto', requiresAuth: true, roles: ['PARTICIPANTE'] },
     },
     {
       path: '/avaliacao/:editionId',
       name: 'projetos-para-avaliar',
       component: () => import('@/pages/ProjectsToEvaluateView.vue'),
       meta: {
+        title: 'Projetos para avaliar',
         requiresAuth: true,
-        roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
+        roles: ['AVALIADOR'],
       },
     },
     {
@@ -99,6 +106,7 @@ const router = createRouter({
       component: ProjectEvaluationView,
       // Só o avaliador lança notas; professor e admin não têm ações de escrita aqui.
       meta: {
+        title: 'Avaliar projeto',
         requiresAuth: true,
         roles: ['AVALIADOR'],
       },
@@ -108,6 +116,7 @@ const router = createRouter({
       name: 'solicitacoes-perfil',
       component: SolicitacoesPerfilView,
       meta: {
+        title: 'Solicitações de perfil',
         requiresAuth: true,
         roles: ['ADMIN'],
       },
@@ -116,25 +125,45 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: { title: 'Entrar' },
     },
     {
       path: '/registro',
       name: 'registro',
       component: RegisterView,
+      meta: { title: 'Criar conta' },
     },
     {
       path: '/termos',
       name: 'termos',
       component: TermosView,
+      meta: { title: 'Termos de Uso' },
     },
     // Endereço inexistente: página 404 em vez de tela em branco.
     {
       path: '/:pathMatch(.*)*',
       name: 'nao-encontrada',
       component: NotFoundView,
+      meta: { title: 'Página não encontrada' },
     },
   ],
 })
+
+if (import.meta.env.DEV) {
+  router.addRoute({
+    path: '/loading-preview',
+    name: 'loading-preview',
+    component: () => import('@/pages/LoadingPreviewView.vue'),
+    meta: { title: 'Teste de loading' },
+  })
+}
+
+const finishRouteLoading = new WeakMap<object, () => void>()
+
+router.beforeEach(to => {
+  finishRouteLoading.set(to, startNavigationLoading())
+})
+
 router.beforeEach(async to => {
   const authStore = useAuthStore()
 
@@ -169,32 +198,16 @@ router.beforeEach(async to => {
   return true
 })
 
-// Título da aba conforme a página.
-const TITULOS: Array<[RegExp, string]> = [
-  [/^\/home/, 'Home'],
-  [/^\/edicoes\/.+/, 'Edição'],
-  [/^\/edicoes/, 'Edições'],
-  [/^\/explorar/, 'Explorar projetos'],
-  [/^\/projetos\/.+\/pre-avaliacao/, 'Pré-avaliação'],
-  [/^\/projetos/, 'Meus projetos'],
-  [/^\/equipes/, 'Equipes'],
-  [/^\/inscricao/, 'Inscrição'],
-  [/^\/configuracoes/, 'Configurações'],
-  [/^\/avaliacao\/.+\/projeto/, 'Avaliar projeto'],
-  [/^\/avaliacao\/.+/, 'Projetos para avaliar'],
-  [/^\/avaliacao/, 'Avaliações'],
-  [/^\/novo/, 'Novo projeto'],
-  [/^\/admin\/solicitacoes/, 'Solicitações de perfil'],
-  [/^\/login/, 'Entrar'],
-  [/^\/registro/, 'Criar conta'],
-  [/^\/termos/, 'Termos de Uso'],
-]
-
 router.afterEach(to => {
-  const titulo = to.name === 'nao-encontrada'
-    ? 'Página não encontrada'
-    : TITULOS.find(([re]) => re.test(to.path))?.[1]
-  document.title = titulo ? `${titulo} · HackIFC // 24H` : 'HackIFC // 24H'
+  finishRouteLoading.get(to)?.()
+  finishRouteLoading.delete(to)
+  const titulo = to.meta.title
+  document.title = typeof titulo === 'string' ? `${titulo} · HackIFC // 24H` : 'HackIFC // 24H'
+})
+
+router.onError((_error, to) => {
+  finishRouteLoading.get(to)?.()
+  finishRouteLoading.delete(to)
 })
 
 export default router

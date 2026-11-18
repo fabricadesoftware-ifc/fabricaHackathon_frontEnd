@@ -49,6 +49,12 @@
     }),
   )
 
+  const navWidthClass = computed(() => {
+    if (visibleItems.value.length >= 5) return 'w-80'
+    if (visibleItems.value.length === 4) return 'w-68'
+    return 'w-52'
+  })
+
   const currentItem = computed(() => {
     if (props.activeItem !== undefined) {
       return props.activeItem
@@ -70,35 +76,26 @@
 <template>
   <nav
     aria-label="Navegação principal"
-    class="pb-[env(safe-area-inset-bottom)] fixed inset-x-0 bottom-0 z-50 border-t border-app-border-default-neutral bg-app-surface md:hidden"
+    class="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-1/2 z-50 flex max-w-[calc(100vw-1rem)] -translate-x-1/2 items-center gap-0.5 rounded-full border border-app-border-default-neutral bg-app-surface p-1.5 shadow-app-soft min-[360px]:gap-1 md:hidden"
+    :class="navWidthClass"
   >
-    <div class="flex h-17 w-full items-center justify-around gap-1 px-2">
-      <RouterLink
-        v-for="item in visibleItems"
-        :key="item.id"
-        :aria-current="currentItem === item.id ? 'page' : undefined"
-        :aria-label="item.label"
-        class="flex min-w-0 flex-1 flex-col items-center justify-center rounded-xl px-1 py-2 transition-colors"
-        :class="
-          currentItem === item.id
-            ? 'bg-app-selection-soft text-app-link'
-            : 'text-app-text-muted-neutral hover:bg-app-surface-subtle-neutral'
-        "
-        :to="item.route"
-        @click="handleNavigation(item.id)"
-      >
-        <span
-          class="mdi text-[22px] leading-6"
-          :class="item.icon"
-        />
+    <RouterLink
+      v-for="item in visibleItems"
+      :key="item.id"
+      :aria-current="currentItem === item.id ? 'page' : undefined"
+      :aria-label="item.label"
+      class="flex h-10 min-w-10 basis-0 grow items-center justify-center overflow-hidden rounded-full px-1.5 text-app-text-secondary-neutral transition-[flex-grow,background-color,color] duration-300 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus-ring motion-reduce:transition-none min-[360px]:h-11 min-[360px]:min-w-11"
+      :class="currentItem === item.id ? 'grow-[3.2] bg-app-surface-muted-neutral text-app-text-strong-neutral' : 'hover:bg-app-surface-subtle-neutral'"
+      :to="item.route"
+      @click="handleNavigation(item.id)"
+    >
+      <span aria-hidden="true" class="mdi shrink-0 text-xl leading-none" :class="item.icon" />
 
-        <span
-          v-if="currentItem === item.id"
-          class="mt-1 max-w-full truncate text-[10px] font-semibold leading-3"
-        >
-          {{ item.label }}
-        </span>
-      </RouterLink>
-    </div>
+      <span
+        aria-hidden="true"
+        class="min-w-0 overflow-hidden text-[11px] font-semibold leading-none whitespace-nowrap transition-[max-width,opacity,margin] duration-300 ease-out motion-reduce:transition-none min-[360px]:text-xs"
+        :class="currentItem === item.id ? 'ml-1 max-w-28 opacity-100' : 'ml-0 max-w-0 opacity-0'"
+      >{{ item.label }}</span>
+    </RouterLink>
   </nav>
 </template>

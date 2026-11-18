@@ -30,7 +30,7 @@ export const navigationItems: NavItem[] = [
     label: 'Explorar',
     icon: 'mdi-magnify',
     route: '/explorar',
-    showOnMobile: false,
+    showOnMobile: true,
   },
   {
     id: 'projetos',
@@ -39,7 +39,7 @@ export const navigationItems: NavItem[] = [
     route: '/projetos',
     requiresAuth: true,
     roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'],
-    showOnMobile: true,
+    showOnMobile: false,
   },
   {
     id: 'equipes',
@@ -48,7 +48,7 @@ export const navigationItems: NavItem[] = [
     route: '/equipes',
     requiresAuth: true,
     roles: ['PARTICIPANTE', 'PROFESSOR', 'ADMIN'],
-    showOnMobile: true,
+    showOnMobile: false,
   },
   {
     id: 'inscricao',
@@ -57,6 +57,15 @@ export const navigationItems: NavItem[] = [
     route: '/inscricao',
     requiresAuth: true,
     roles: ['PARTICIPANTE'],
+    showOnMobile: false,
+  },
+  {
+    id: 'avaliacoes',
+    label: 'Avaliações',
+    icon: 'mdi-clipboard-check',
+    route: '/avaliacao',
+    requiresAuth: true,
+    roles: ['AVALIADOR'],
     showOnMobile: true,
   },
   {
@@ -66,15 +75,6 @@ export const navigationItems: NavItem[] = [
     route: '/configuracoes',
     requiresAuth: true,
     showOnMobile: true,
-  },
-  {
-    id: 'avaliacoes',
-    label: 'Avaliações',
-    icon: 'mdi-clipboard-check',
-    route: '/avaliacao',
-    requiresAuth: true,
-    roles: ['AVALIADOR', 'PROFESSOR', 'ADMIN'],
-    showOnMobile: false,
   },
   {
     id: 'solicitacoes',

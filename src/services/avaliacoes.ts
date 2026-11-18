@@ -1,7 +1,7 @@
 import type { MinhaAvaliacao, Nota, NotaCriterio } from '@/types'
 import { http } from './http'
 
-/** Projetos das edições do avaliador logado (lista sem paginação; `403` para outros perfis). */
+/** Projetos das edições em avaliação do avaliador logado (lista sem paginação; `403` para outros perfis). */
 export const listarMinhasAvaliacoes = () => http.get<MinhaAvaliacao[]>('/me/avaliacoes/')
 
 /** Lança várias notas de um projeto de uma vez (atômico). Só critérios ainda não avaliados. */

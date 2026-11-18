@@ -13,8 +13,7 @@
 
   const size = computed(() => {
     if (smAndDown.value) return 30
-    if (mdAndDown.value) return 34
-    return 45
+    return 34
   })
 
   const menuClass = computed(() => {
@@ -46,16 +45,25 @@
 </script>
 
 <template>
-  <div class="flex items-center gap-8 justify-end">
+  <div class="flex items-center justify-end">
 
     <v-menu v-model="menuOpen" location="bottom end">
 
       <template #activator="{ props: menuProps }">
 
-        <v-avatar v-bind="menuProps" class="cursor-pointer transition-opacity duration-150 ease-[ease-in-out] [&:hover]:opacity-90" color="app-avatar" :size="size">
-          <img v-if="props.userAvatar" :alt="props.userName" class="h-full w-full object-cover" :src="props.userAvatar">
-          <v-icon v-else color="app-on-brand" icon="mdi-account" />
-        </v-avatar>
+        <button
+          v-bind="menuProps"
+          :aria-label="`Abrir menu de perfil de ${props.userName}`"
+          class="inline-flex h-10 items-center gap-1 rounded-lg px-1 text-app-text-secondary-neutral transition-colors duration-200 hover:bg-app-surface-muted-neutral focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus-ring motion-reduce:transition-none"
+          type="button"
+        >
+          <v-avatar color="app-avatar" :size="size">
+            <img v-if="props.userAvatar" alt="" class="h-full w-full object-cover object-center" :src="props.userAvatar">
+            <v-icon v-else color="app-on-brand" icon="mdi-account" />
+          </v-avatar>
+
+          <span aria-hidden="true" class="mdi mdi-chevron-down text-base" />
+        </button>
 
       </template>
 

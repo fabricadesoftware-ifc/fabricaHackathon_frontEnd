@@ -1,4 +1,5 @@
-import { ref, type Ref } from 'vue'
+import { onScopeDispose, ref, type Ref } from 'vue'
+import { startNavigationLoading } from '@/composables/useNavigationLoading'
 import { ApiError } from '@/services/http'
 
 export interface AsyncState<T> {
@@ -13,18 +14,39 @@ export function useAsync<T> (fn: () => Promise<T>, immediate = true): AsyncState
   const data = ref<T | null>(null) as Ref<T | null>
   const loading = ref(false)
   const error = ref<ApiError | null>(null)
+  let requestId = 0
+  let finishLoading: (() => void) | null = null
+
+  onScopeDispose(() => {
+    requestId++
+    finishLoading?.()
+    finishLoading = null
+  })
 
   async function run () {
+    const currentRequest = ++requestId
+    const finishPrevious = finishLoading
+    finishLoading = startNavigationLoading()
+    finishPrevious?.()
     loading.value = true
     error.value = null
     try {
-      data.value = await fn()
+      const result = await fn()
+      if (currentRequest === requestId) {
+        data.value = result
+      }
     } catch (error_) {
-      error.value = error_ instanceof ApiError
-        ? error_
-        : new ApiError('client', error_ instanceof Error ? error_.message : 'Erro inesperado.')
+      if (currentRequest === requestId) {
+        error.value = error_ instanceof ApiError
+          ? error_
+          : new ApiError('client', error_ instanceof Error ? error_.message : 'Erro inesperado.')
+      }
     } finally {
-      loading.value = false
+      if (currentRequest === requestId) {
+        loading.value = false
+        finishLoading?.()
+        finishLoading = null
+      }
     }
   }
 

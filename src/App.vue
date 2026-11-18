@@ -4,6 +4,7 @@
   import AppHeader from '@/components/layout/AppHeader/AppHeader.vue'
   import BottomNavBar from '@/components/ui/BottomNavBar'
   import Sidebar from '@/components/ui/Sidebar/Sidebar.vue'
+  import { navigationLoading } from '@/composables/useNavigationLoading'
   import { navigationItems } from '@/constants/navigation'
   import { useAuthStore } from '@/stores/auth'
 
@@ -43,6 +44,8 @@
   const authStore = useAuthStore()
 
   const isLoggedIn = computed(() => authStore.isAuthenticated)
+  const sidebarCollapsed = ref(false)
+  const currentSection = computed(() => typeof route.meta.title === 'string' ? route.meta.title : 'HackIFC')
 
   // Nome exibido no menu do topo (cai para o e-mail se não houver nome).
   const userName = computed(() => {
@@ -65,22 +68,34 @@
 
 <template>
   <div class="flex min-h-screen bg-app-canvas">
+    <div
+      v-if="navigationLoading"
+      aria-label="Carregando página"
+      class="pointer-events-none fixed inset-x-0 top-0 z-100 h-0.5 overflow-hidden"
+      role="progressbar"
+    >
+      <div class="navigation-progress-indicator h-full w-1/3 bg-app-action-indicator motion-reduce:w-full" />
+    </div>
+
     <!-- Sidebar desktop -->
-    <Sidebar v-if="!isFullscreenPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
+    <Sidebar v-if="!isFullscreenPage" :active-item="activeItem" :collapsed="sidebarCollapsed" :is-logged-in="isLoggedIn" />
 
     <!-- Conteúdo -->
     <div class="flex min-w-0 flex-1 flex-col">
       <AppHeader
         v-if="!isFullscreenPage"
         :is-logged="isLoggedIn"
+        :section-title="currentSection"
+        :sidebar-collapsed="sidebarCollapsed"
         :user-avatar="authStore.user?.foto_perfil ?? undefined"
         :user-name="userName"
         @menu-option-click="handleMenuOption"
+        @toggle-sidebar="sidebarCollapsed = !sidebarCollapsed"
       />
 
       <main
         class="min-w-0 flex-1"
-        :class="isFullscreenPage ? '' : 'p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0'"
+        :class="isFullscreenPage ? '' : 'p-4 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:p-6 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] md:mx-10 md:mb-8 md:mt-2 md:p-0 md:pb-0'"
       >
         <RouterView v-slot="{ Component }">
           <component
@@ -97,3 +112,18 @@
     <BottomNavBar v-if="!isFullscreenPage" :active-item="activeItem" :is-logged-in="isLoggedIn" />
   </div>
 </template>
+
+<style scoped>
+  .navigation-progress-indicator {
+    animation: navigation-progress 1.2s ease-in-out infinite;
+  }
+
+  @keyframes navigation-progress {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(300%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .navigation-progress-indicator { animation: none; }
+  }
+</style>

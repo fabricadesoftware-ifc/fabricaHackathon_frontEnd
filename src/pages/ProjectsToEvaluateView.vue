@@ -2,41 +2,31 @@
   import { computed, ref, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
 
-  import CardGrid from '@/components/layout/CardGrid/CardGrid.vue'
   import AppButton from '@/components/ui/AppButton/AppButton.vue'
   import { AsyncView } from '@/components/ui/AsyncView'
   import EvaluationProjectCardList from '@/components/ui/EvaluationProjectCardList/EvaluationProjectCardList.vue'
   import FilterChipGroup from '@/components/ui/FilterChipGroup/FilterChipGroup.vue'
   import ProgressBar from '@/components/ui/ProgressBar/ProgressBar.vue'
   import { useAsync } from '@/composables/useAsync'
-  import { listarMinhasAvaliacoes, obterEdicao } from '@/services'
-  import { useAuthStore } from '@/stores/auth'
-  import { equipeParaCard } from '@/types'
-  import { mediaDasNotas } from '@/utils/avaliacao'
+  import { listarMinhasAvaliacoes } from '@/services'
+  import { avaliacoesEmAndamento, mediaDasNotas } from '@/utils/avaliacao'
 
   type FilterType = 'todos' | 'avaliados' | 'pendentes'
 
   const route = useRoute()
   const router = useRouter()
-  const auth = useAuthStore()
-
   const editionId = computed(() => Number(route.params.editionId))
-  const isAvaliador = computed(() => auth.userRole === 'AVALIADOR')
   const selectedFilter = ref<FilterType>('todos')
 
-  // Avaliador: seus projetos e progresso. Professor/admin: detalhe público da edição (somente leitura).
   const { data, loading, error, run } = useAsync(async () => {
     if (!Number.isInteger(editionId.value) || editionId.value <= 0) {
       throw new Error('Edição inválida.')
     }
-    if (isAvaliador.value) {
-      const todas = await listarMinhasAvaliacoes()
-      return { avaliacoes: todas.filter(a => a.edicao === editionId.value), edicao: null }
-    }
-    return { avaliacoes: [], edicao: await obterEdicao(editionId.value) }
+    const todas = await listarMinhasAvaliacoes()
+    return avaliacoesEmAndamento(todas).filter(a => a.edicao === editionId.value)
   })
 
-  const projects = computed(() => data.value?.avaliacoes ?? [])
+  const projects = computed(() => data.value ?? [])
   const aberta = computed(() => projects.value[0]?.avaliacao_aberta ?? false)
 
   const totalCount = computed(() => projects.value.length)
@@ -57,12 +47,6 @@
       return projects.value.filter(p => !p.concluido)
     }
     return projects.value
-  })
-
-  // Visão do professor/admin: equipes da edição, sem ações.
-  const equipesSomenteLeitura = computed(() => {
-    const e = data.value?.edicao
-    return e ? e.equipes.map(eq => equipeParaCard(eq, { nome: e.nome, status: e.status })) : []
   })
 
   // Só projetos pendentes podem abrir o formulário, enquanto a avaliação estiver aberta.
@@ -88,20 +72,16 @@
 
     <header class="mb-5">
       <h1 class="text-xl font-semibold tracking-tight text-app-text-body-strong sm:text-2xl">
-        {{ isAvaliador ? 'Projetos para avaliar' : 'Projetos da edição' }}
+        Projetos para avaliar
       </h1>
 
-      <p v-if="isAvaliador" class="mt-1 text-sm text-app-text-muted">
+      <p class="mt-1 text-sm text-app-text-muted">
         Acompanhe o progresso e avalie os projetos pendentes da edição.
-      </p>
-
-      <p v-else class="mt-1 text-sm text-app-text-muted">
-        Visão somente leitura.
       </p>
     </header>
 
     <ProgressBar
-      v-if="isAvaliador && !loading && !error && totalCount > 0"
+      v-if="!loading && !error && totalCount > 0"
       class="mb-6"
       :current="evaluatedCount"
       heading="Projetos avaliados"
@@ -110,7 +90,7 @@
     />
 
     <p
-      v-if="isAvaliador && !loading && !error && totalCount > 0 && !aberta"
+      v-if="!loading && !error && totalCount > 0 && !aberta"
       class="mb-5 rounded-lg border border-app-warning-border-200 bg-app-warning-surface-50 px-4 py-3 text-sm text-app-warning-text-800"
       role="status"
     >
@@ -118,46 +98,34 @@
     </p>
 
     <AsyncView :error="error" :loading="loading" @retry="run">
-      <!-- Professor / admin -->
-      <template v-if="!isAvaliador">
-        <p v-if="equipesSomenteLeitura.length === 0" class="py-8 text-center text-app-text-muted">
-          Não há equipes cadastradas nesta edição.
-        </p>
+      <div class="evaluation-filters mb-5 border-b border-app-border-default pb-3">
+        <FilterChipGroup v-model="selectedFilter" :options="filterOptions" />
+      </div>
 
-        <CardGrid v-else compact :items="equipesSomenteLeitura" />
-      </template>
+      <p v-if="filteredProjects.length === 0" class="py-8 text-center text-app-text-muted">
+        {{ totalCount === 0 ? 'Não há projetos nesta edição.' : 'Nenhum projeto neste filtro.' }}
+      </p>
 
-      <!-- Avaliador -->
-      <template v-else>
-        <div class="evaluation-filters mb-5 border-b border-app-border-default pb-3">
-          <FilterChipGroup v-model="selectedFilter" :options="filterOptions" />
-        </div>
+      <div v-else class="overflow-hidden rounded-lg border border-app-border-default bg-app-surface divide-y divide-app-border-default">
+        <template v-for="item in filteredProjects" :key="item.projeto.id">
+          <EvaluationProjectCardList
+            v-if="item.concluido"
+            :name="item.projeto.nome_projeto"
+            :score="mediaDasNotas(item)"
+            status="avaliado"
+            :team-name="item.projeto.equipe"
+          />
 
-        <p v-if="filteredProjects.length === 0" class="py-8 text-center text-app-text-muted">
-          {{ totalCount === 0 ? 'Não há projetos nesta edição.' : 'Nenhum projeto neste filtro.' }}
-        </p>
-
-        <div v-else class="overflow-hidden rounded-lg border border-app-border-default bg-app-surface divide-y divide-app-border-default">
-          <template v-for="item in filteredProjects" :key="item.projeto.id">
-            <EvaluationProjectCardList
-              v-if="item.concluido"
-              :name="item.projeto.nome_projeto"
-              :score="mediaDasNotas(item)"
-              status="avaliado"
-              :team-name="item.projeto.equipe"
-            />
-
-            <EvaluationProjectCardList
-              v-else
-              :editable="aberta"
-              :name="item.projeto.nome_projeto"
-              status="pendente"
-              :team-name="item.projeto.equipe"
-              @click="handleProjectClick(item.projeto.id)"
-            />
-          </template>
-        </div>
-      </template>
+          <EvaluationProjectCardList
+            v-else
+            :editable="aberta"
+            :name="item.projeto.nome_projeto"
+            status="pendente"
+            :team-name="item.projeto.equipe"
+            @click="handleProjectClick(item.projeto.id)"
+          />
+        </template>
+      </div>
     </AsyncView>
 
     <footer class="mt-6 flex items-center justify-start sm:mt-8">

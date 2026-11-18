@@ -10,6 +10,7 @@
   import SuccessState from '@/components/ui/SucessState/sucessState.vue'
   import { useAsync } from '@/composables/useAsync'
   import { ApiError, atualizarNota, lancarNotasLote, listarMinhasAvaliacoes } from '@/services'
+  import { avaliacoesEmAndamento } from '@/utils/avaliacao'
 
   interface Criterion {
     id: number
@@ -42,7 +43,7 @@
     if (!Number.isInteger(editionId.value) || !Number.isInteger(projectId.value)) {
       throw new TypeError('Edição ou projeto inválido.')
     }
-    const item = (await listarMinhasAvaliacoes())
+    const item = avaliacoesEmAndamento(await listarMinhasAvaliacoes())
       .find(a => a.edicao === editionId.value && a.projeto.id === projectId.value)
     if (!item) {
       throw new ApiError('client', 'Projeto não encontrado entre as suas avaliações.', 404)

@@ -2,6 +2,7 @@
   import { computed } from 'vue'
   import { selectedTheme, toggleTheme } from '../../theme/state'
 
+  const props = withDefaults(defineProps<{ minimal?: boolean }>(), { minimal: false })
   const isDark = computed(() => selectedTheme.value === 'dark')
   const label = computed(() => `Tema ${isDark.value ? 'escuro' : 'claro'} ativo. Ativar tema ${isDark.value ? 'claro' : 'escuro'}`)
 </script>
@@ -10,7 +11,10 @@
   <button
     :aria-label="label"
     :aria-pressed="isDark"
-    class="inline-flex aspect-square w-8 shrink-0 items-center justify-center rounded-lg border-[1px] border-app-brand-border-200 bg-app-canvas text-app-text-strong transition-colors duration-200 hover:border-app-brand-border-400 hover:bg-app-surface-muted motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus-ring"
+    class="inline-flex shrink-0 items-center justify-center rounded-lg transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-focus-ring motion-reduce:transition-none"
+    :class="props.minimal
+      ? 'size-10 text-app-text-secondary-neutral hover:bg-app-surface-muted-neutral hover:text-app-text-strong-neutral'
+      : 'aspect-square w-8 border-[1px] border-app-brand-border-200 bg-app-canvas text-app-text-strong hover:border-app-brand-border-400 hover:bg-app-surface-muted'"
     data-theme-control
     :title="label"
     type="button"
